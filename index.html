@@ -117,9 +117,71 @@ input.text, textarea.text {
 .talk .marker { fill: var(--ink); transition: transform .12s ease-out; }
 .talk .label { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; color: var(--bg); pointer-events: none; }
 .talk:disabled { opacity: .5; }
-.typebar { display: flex; gap: 8px; padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); flex: none; }
-.typebar input { flex: 1; }
-.typebar button { border: none; border-radius: 14px; background: var(--calm); color: var(--bg); padding: 0 18px; font-weight: 600; }
+.typebar { display: flex; flex-direction: column; gap: 8px; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); flex: none; }
+.typebar textarea { width: 100%; min-height: 96px; max-height: 42vh; resize: none; font-family: var(--round); font-size: 18px; line-height: 1.4;
+  padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--bg-raise); color: var(--ink); overflow-y: auto; }
+.typebar textarea:focus { border-color: var(--calm); outline: none; }
+.typebar .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.typebar .hint { font-size: 12px; color: var(--ink-soft); flex: 1; text-align: center; }
+.typebar .send { border: none; border-radius: 14px; background: var(--calm); color: var(--bg); padding: 12px 26px; font-weight: 600; font-size: 17px; }
+.typebar .send:disabled { opacity: .45; }
+
+/* header icon buttons */
+.head-actions { display: flex; gap: 6px; align-items: center; }
+.icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: none; padding: 0;
+  display: grid; place-items: center; color: var(--ink-soft); flex: none; }
+.icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn[aria-pressed="false"] { opacity: .6; }
+.icon-btn.avatar { background: var(--calm); color: var(--bg); border-color: var(--calm); font-weight: 700; font-size: 16px; }
+
+/* options and profile */
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sheet-head h1 { margin: 16px 0 12px; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 14px; background: var(--bg-raise);
+  border: 1px solid var(--line); margin: 0 0 16px; }
+.tabs button { border: none; background: none; border-radius: 10px; padding: 9px 4px; font-size: 15px; color: var(--ink-soft); }
+.tabs button[aria-selected="true"] { background: var(--calm); color: var(--bg); font-weight: 600; }
+.conv { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg-raise); border-radius: 14px;
+  padding: 12px 14px; margin: 0 0 10px; }
+.conv .when { font-size: 13px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 8px; }
+.conv .sum { display: block; margin: 4px 0; font-family: var(--serif); font-size: 17px; line-height: 1.35; }
+.conv .moodline { display: flex; gap: 3px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+.conv .next { display: block; font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+.line { margin: 10px 0; max-width: 88%; }
+.line.person { margin-left: auto; text-align: right; color: var(--ink-soft); }
+.line.bewhole { font-family: var(--serif); font-size: 17px; }
+.line small { display: block; font-family: var(--round); font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.line.note small { color: var(--calm); }
+.card { border: 1px solid var(--line); background: var(--bg-raise); border-radius: 14px; padding: 14px; margin: 0 0 14px; }
+.card h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+.card p { margin: 4px 0 0; font-size: 13px; color: var(--ink-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font-size: 13px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); }
+.chips span b { font-weight: 600; color: var(--calm); margin-left: 4px; }
+.chart { width: 100%; height: 120px; display: block; }
+.chart .ax { stroke: var(--line); stroke-width: 1; }
+.chart .ln { fill: none; stroke: var(--calm); stroke-width: 2.2; stroke-linejoin: round; }
+.chart .pt { fill: var(--calm); }
+.chart text { font-family: var(--round); font-size: 10px; fill: var(--ink-soft); }
+.layer-row { display: grid; grid-template-columns: 9.5em 1fr 2.4em; gap: 8px; align-items: center; font-size: 13px; margin: 5px 0; }
+.layer-row .bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.layer-row .bar span { display: block; height: 100%; background: var(--calm); }
+.layer-row.lowest .bar span { background: var(--high); }
+.profile-top { display: flex; align-items: center; gap: 14px; margin: 16px 0 18px; }
+.big-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--calm); color: var(--bg); display: grid; place-items: center;
+  font-size: 28px; font-weight: 700; flex: none; }
+.kept { list-style: none; padding: 0; margin: 0; font-size: 14px; }
+.kept li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.kept li:last-child { border-bottom: none; }
+.int-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 6px; }
+.int-chip { border: 1px solid var(--line); background: none; border-radius: 999px; padding: 7px 12px; font-size: 14px;
+  display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.int-chip[data-state="yes"] { background: var(--calm); border-color: var(--calm); color: var(--bg); font-weight: 600; }
+.int-chip[data-state="no"] { color: var(--ink-soft); text-decoration: line-through; opacity: .7; }
+.int-chip .seen { font-size: 11px; color: var(--calm); }
+.int-chip[data-state="yes"] .seen { color: var(--bg); }
+.int-chip .lock { font-size: 11px; opacity: .7; }
+.empty { color: var(--ink-soft); font-size: 15px; text-align: center; padding: 24px 8px; }
 
 /* start screen (Logozzz Omni-Studio) */
 #s-start { background: var(--space); color: #f0f0f0; align-items: center; justify-content: center; text-align: center;
@@ -144,6 +206,39 @@ input.text, textarea.text {
 @keyframes pulse-frequency { 0% { transform: scale(.95); opacity: .6; } 100% { transform: scale(1.05); opacity: 1; } }
 @keyframes spin-geometry { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .cymatic-core, .cymatic-ring-inner { animation: none !important; } .cymatic-ring-inner { transform: translate(-50%, -50%); } }
+
+/* get to know me */
+.know-progress { color: var(--ink-soft); font-size: 14px; margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+.know-statement { font-family: var(--serif); font-size: 26px; line-height: 1.3; margin: 8px 0 18px; text-wrap: balance; }
+.know-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 14px; }
+.know-scale button { border: 1px solid var(--line); background: var(--bg-raise); border-radius: 12px; padding: 10px 2px;
+  font-size: 20px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.know-scale button small { font-size: 11px; font-weight: 400; color: var(--ink-soft); }
+.know-scale button:active { background: var(--calm); color: var(--bg); }
+.know-h2 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin: 8px 0 12px; }
+.trait { margin: 0 0 16px; }
+.trait b { display: block; font-size: 15px; }
+.trait .bar { position: relative; height: 8px; border-radius: 4px; background: var(--line); margin: 6px 0 4px; }
+.trait .dot { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--calm);
+  transform: translate(-50%, -50%); border: 2px solid var(--bg); }
+.trait .ends { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--ink-soft); }
+.trait .ends span:last-child { text-align: right; }
+.trait .words { font-size: 14px; color: var(--ink-soft); margin-top: 2px; }
+
+/* my story */
+.era-card { border: 1px solid var(--line); background: var(--bg-raise); border-radius: 14px; padding: 14px; margin: 0 0 18px; }
+.era-card b { display: block; margin-bottom: 4px; }
+.era-card .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.era-card .chips span { font-size: 13px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
+.era-card p { margin: 6px 0 0; font-size: 13px; color: var(--ink-soft); }
+.story-item { margin: 0 0 18px; }
+.story-item b { display: block; font-size: 15px; }
+.story-item .q { color: var(--ink-soft); font-size: 14px; margin: 2px 0 6px; }
+.story-item textarea { width: 100%; min-height: 64px; resize: vertical; font: inherit; font-size: 16px; padding: 10px 12px;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--bg-raise); color: var(--ink); }
+.story-item .row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.story-item .row button { border: 1px solid var(--line); background: none; border-radius: 10px; padding: 6px 12px; font-size: 14px; }
+.story-item .saved { color: var(--calm); font-size: 13px; }
 
 /* report */
 .pyramid { width: 100%; max-width: 420px; margin: 8px auto 6px; display: block; }
@@ -203,8 +298,11 @@ body { padding-top: 0 !important; }
     <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="var(--calm)" stroke-width="2.5"/><circle cx="13" cy="13" r="5" fill="var(--calm)"/></svg>
     Be Whole<span class="test-badge">TEST</span>
   </div>
-  <div style="display:flex;gap:8px">
-    <button class="exit" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud">Voice: on</button>
+  <div class="head-actions">
+    <button class="icon-btn" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud: on" title="Read replies aloud"></button>
+    <button class="icon-btn" id="options-btn" aria-label="Options: saved conversations and insights" title="Options" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <button class="icon-btn" id="profile-btn" aria-label="My profile" title="My profile" hidden></button>
     <button class="exit" id="exit" title="Leave quickly">Exit</button>
   </div>
 </header>
@@ -226,6 +324,41 @@ body { padding-top: 0 !important; }
       <button class="symphony-toggle" id="audio-btn" aria-pressed="false">▶ Engage 3710 Symphony</button>
       <button class="start-begin" id="begin-btn">Begin</button>
     </div>
+  </section>
+
+  <!-- get to know me: Big Five (Mini-IPIP) check-in -->
+  <section class="screen" id="s-know" hidden>
+    <h1>Get to know me</h1>
+    <p class="lede" id="know-lede">20 short statements, about 3 minutes. There are no right or wrong answers, and you can skip any of them.</p>
+    <div id="know-q">
+      <p class="know-progress" id="know-progress"></p>
+      <p class="know-statement" id="know-text"></p>
+      <p class="note" style="margin:0 0 8px">How true is this of you?</p>
+      <div class="know-scale" role="group" aria-label="How true is this of you?">
+        <button data-s="1">1<small>Not at all</small></button><button data-s="2">2<small>A little</small></button><button data-s="3">3<small>Somewhat</small></button><button data-s="4">4<small>Mostly</small></button><button data-s="5">5<small>Very</small></button>
+      </div>
+      <button class="secondary" id="know-skip">Skip this one</button>
+    </div>
+    <div id="know-result" hidden>
+      <h2 class="know-h2">How I see you</h2>
+      <div id="know-profile"></div>
+      <p class="note">A sketch from a short questionnaire (the Mini-IPIP), not a diagnosis. It changes how I talk with you: the pace, the kind of ideas, and the size of the steps I suggest.</p>
+    </div>
+    <button class="primary" id="know-done">Done</button>
+    <button class="secondary" id="know-forget">Forget my personality profile</button>
+    <p class="error" id="know-err" role="alert"></p>
+  </section>
+
+  <!-- my story: background and life story, in their own words -->
+  <section class="screen" id="s-story" hidden>
+    <h1>My story</h1>
+    <p class="lede">Only what you choose to tell me, in your own words. It helps me understand where you're coming from. I never guess these things, and you can change or remove any of it.</p>
+    <p class="note" id="story-off" hidden>To keep your story, tick "Remember my background and life story" on the start screen.</p>
+    <div class="era-card" id="era-card" hidden></div>
+    <div id="story-list"></div>
+    <button class="primary" id="story-done">Done</button>
+    <button class="secondary" id="story-forget">Forget my story</button>
+    <p class="error" id="story-err" role="alert"></p>
   </section>
 
   <section class="screen" id="s-pair" hidden>
@@ -250,12 +383,17 @@ body { padding-top: 0 !important; }
       <ul class="consents">
         <li><label><input type="checkbox" data-c="voice_analysis" checked><span>Listen to the tone of my voice<small>Recordings are deleted straight away; only measurements like pitch are kept.</small></span></label></li>
         <li><label><input type="checkbox" data-c="profile_scales" checked><span>Remember how I'm doing between sessions<small>Your Maslow scores and strengths.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="conversation_memory" checked><span>Remember our conversations as text<small>Only the words and a short mood note are kept, so I can pick up where we left off. Recordings are never kept.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="life_story"><span>Remember my background and life story<small>Where I grew up, my upbringing, good memories, in my own words, so you understand where I'm coming from. Only what I choose to tell you.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="interests" checked><span>Notice what I'm into<small>Music, sport, food and more, from what I talk about, so our chats can include things I enjoy. Faith, health, romance, work and politics only if I tick them myself.</small></span></label></li>
         <li><label><input type="checkbox" data-c="lifestyle_insights"><span>Notice patterns in my day and relationships<small>People are recorded by role only, never by name.</small></span></label></li>
         <li><label><input type="checkbox" data-c="video_suggestions" checked><span>Suggest videos and music after a session</span></label></li>
       </ul>
     </div>
     <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
     <button class="primary" id="start-btn">Start talking</button>
+    <button class="secondary" id="story-btn">Tell me about you (optional)</button>
+    <button class="secondary" id="know-btn">Get to know me first (optional, 3 minutes)</button>
     <button class="secondary" id="demo-btn" hidden>Use the demo person "Tester" (3 past conversations)</button>
     <p class="error" id="start-err" role="alert"></p>
   </section>
@@ -278,9 +416,12 @@ body { padding-top: 0 !important; }
       <input type="file" id="memo" accept="audio/*" hidden>
     </div>
     <form class="typebar" id="typebar" hidden>
-      <input class="text" id="msg" placeholder="Type here" autocomplete="off" enterkeyhint="send">
-      <button type="submit">Send</button>
-      <button type="button" class="side" id="to-talk" style="background:none;color:var(--ink-soft);padding:0 4px">Talk</button>
+      <textarea id="msg" rows="3" maxlength="2000" placeholder="Write as much as you like…" autocomplete="off" enterkeyhint="send" aria-label="Your message"></textarea>
+      <div class="row">
+        <button type="button" class="side" id="to-talk">Talk instead</button>
+        <span class="hint" id="type-hint">Shift + Enter for a new line</span>
+        <button type="submit" class="send" id="send-btn">Send</button>
+      </div>
     </form>
   </section>
 
@@ -305,6 +446,49 @@ body { padding-top: 0 !important; }
     </div>
     <button class="primary" id="again-btn">Talk again</button>
     <button class="secondary" id="delete-btn">Delete everything Be Whole knows about me</button>
+  </section>
+  <!-- 5. options: saved conversations and insights -->
+  <section class="screen" id="s-options" hidden>
+    <div class="sheet-head"><h1>Options</h1><button class="exit" data-close>Close</button></div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-conv" aria-selected="true" aria-controls="pane-conv">Conversations</button>
+      <button role="tab" id="tab-ins" aria-selected="false" aria-controls="pane-ins">Insights</button>
+    </div>
+    <div id="pane-conv" role="tabpanel">
+      <p class="note">Saved as text only, with a short mood note. Recordings are never kept.</p>
+      <div id="conv-list"></div>
+      <div id="conv-detail" hidden>
+        <button class="secondary" id="conv-back" style="margin:0 0 10px">← All conversations</button>
+        <p class="note" id="conv-when"></p>
+        <div id="conv-lines"></div>
+        <div class="card" id="conv-next" hidden></div>
+      </div>
+    </div>
+    <div id="pane-ins" role="tabpanel" hidden>
+      <div id="ins-body"></div>
+      <p class="note">These are patterns from what you chose to share, not a diagnosis.</p>
+    </div>
+    <p class="error" id="opt-err" role="alert"></p>
+  </section>
+
+  <!-- 6. profile -->
+  <section class="screen" id="s-profile" hidden>
+    <div class="sheet-head"><h1>My profile</h1><button class="exit" data-close>Close</button></div>
+    <div class="profile-top"><div class="big-avatar" id="pf-avatar">?</div>
+      <label class="field" style="flex:1;margin:0"><span>What should I call you?</span><input class="text" id="pf-name" maxlength="40"></label></div>
+    <div class="card"><h3>What I keep about you</h3><ul class="kept" id="pf-kept"></ul></div>
+    <div class="card"><h3>What you're into</h3>
+      <p style="margin:0 0 8px">Tap once for "yes, I'm into this", twice for "not for me", three times to clear. A small number means I noticed you talking about it.
+      Ones marked ◦ are personal: I only bring them up if you tick them.</p>
+      <div class="int-grid" id="pf-interests"></div></div>
+    <div class="card"><h3>Your choices</h3><ul class="consents" id="pf-consents" style="margin:0;border-top:none"></ul>
+      <button class="primary" id="pf-save">Save changes</button><p class="note" id="pf-note" style="margin:8px 0 0"></p></div>
+    <button class="secondary" id="pf-story">My story</button>
+    <button class="secondary" id="pf-know">How I see you (personality)</button>
+    <button class="secondary" id="pf-forget-mem">Forget our conversations</button>
+    <button class="secondary" id="pf-delete" style="color:var(--alert);border-color:var(--alert)">Delete everything Be Whole knows about me</button>
+    <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
+    <p class="error" id="pf-err" role="alert"></p>
   </section>
 </main>
 
@@ -528,7 +712,9 @@ from bewhole import browser`);
   async function deepen(userText, out, language) {
     // Deeper replies: Claude writes the reply from the engine's draft (never for crisis or safety replies).
     if (!window.BW_DEEP) return;
+    const before = out.reply;
     out.reply = await window.BW_DEEP.rewrite(userText, out, language || "en");
+    if (out.reply !== before && out.turn) out.turn.melody = null;   // speak the words on screen, not the old draft
     window.BW_DEEP.record("Person", userText);
     window.BW_DEEP.record("Be Whole", out.reply);
   }
@@ -587,8 +773,21 @@ let token = store.get("bw-token");
 let speakOn = store.get("bw-speak") !== "off";
 let baselineHz = null;
 
+let current = "s-start";
 function show(id) {
   for (const s of document.querySelectorAll(".screen")) s.hidden = s.id !== id;
+  if (!["s-options", "s-profile", "s-know", "s-story"].includes(id)) current = id;
+  paintHead(id);
+}
+function who() { return ($("name") && $("name").value.trim()) || store.get("bw-name") || ""; }
+function paintHead(id) {
+  // Options and profile appear once we know who this is (not on the start or pairing screens)
+  const known = !!who() && !["s-start", "s-pair"].includes(id || current);
+  $("options-btn").hidden = !known; $("profile-btn").hidden = !known;
+  $("profile-btn").textContent = "";
+  const n = who();
+  if (n) { $("profile-btn").textContent = n.trim()[0].toUpperCase(); $("profile-btn").classList.add("avatar"); }
+  else $("profile-btn").classList.remove("avatar");
 }
 
 async function api(path, body, raw) {
@@ -606,8 +805,11 @@ async function api(path, body, raw) {
 
 /* ---------- read-aloud switch ---------- */
 function paintToggle() {
-  $("voice-toggle").textContent = "Voice: " + (speakOn ? "on" : "off");
+  $("voice-toggle").innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/>` +
+    (speakOn ? `<path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>` : `<path d="M16 9.5l5 5M21 9.5l-5 5"/>`) + `</svg>`;
   $("voice-toggle").setAttribute("aria-pressed", String(speakOn));
+  $("voice-toggle").setAttribute("aria-label", "Read replies aloud: " + (speakOn ? "on" : "off"));
+  $("voice-toggle").title = "Read replies aloud: " + (speakOn ? "on" : "off");
 }
 $("voice-toggle").onclick = () => {
   speakOn = !speakOn; store.set("bw-speak", speakOn ? "on" : "off");
@@ -647,8 +849,8 @@ async function startSession() {
   const name = $("name").value.trim();
   store.set("bw-name", name);
   try {
-    const d = await api("/api/start", { name, consents: store.get("bw-consented") ? null : consents });
-    store.set("bw-consented", "1");
+    const d = await api("/api/start", { name, consents: store.get("bw-consented-4") ? null : consents });
+    store.set("bw-consented-4", "1");
     baselineHz = d.baseline_hz;
     $("log").innerHTML = "";
     show("s-talk");
@@ -680,6 +882,8 @@ function say(text, alert, pitch, melody, rate) {
   const p = document.createElement("p");
   p.className = "bw" + (alert ? " alert" : "");
   p.textContent = text;
+  p.title = "Tap to hear it again";
+  p.onclick = () => speak(text, pitch, melody, rate);
   $("log").append(p);
   p.scrollIntoView({ block: "end" });
   speak(text, pitch, melody, rate);
@@ -689,28 +893,66 @@ function thinking(on) {
   if (on && !t) { t = document.createElement("p"); t.className = "bw thinking"; t.textContent = "Listening…"; $("log").append(t); t.scrollIntoView({ block: "end" }); }
   if (!on && t) t.remove();
 }
+let voices = [];
+function loadVoices() { try { voices = speechSynthesis.getVoices() || []; } catch { voices = []; } }
+if ("speechSynthesis" in window) { loadVoices(); try { speechSynthesis.onvoiceschanged = loadVoices; } catch {} }
+function pickVoice(lang) {
+  // The most natural installed voice for the language: enhanced/premium voices first, British English first.
+  const want = lang === "lv" ? ["lv"] : ["en-GB", "en-IE", "en-AU", "en-US", "en"];
+  const score = (v) => (/(premium|enhanced|natural|neural|siri)/i.test(v.name) ? 10 : 0) + (v.localService ? 1 : 0);
+  for (const w of want) {
+    const list = voices.filter((v) => v.lang && v.lang.replace("_", "-").toLowerCase().startsWith(w.toLowerCase()));
+    if (list.length) return list.sort((a, b) => score(b) - score(a))[0];
+  }
+  return null;
+}
+let speechUnlocked = false;
+function unlockSpeech() {
+  // iPhone only lets a page speak after a tap: say nothing once, inside the first tap.
+  if (speechUnlocked || !("speechSynthesis" in window)) return;
+  try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); speechUnlocked = true; loadVoices(); } catch {}
+}
+document.addEventListener("click", unlockSpeech, { capture: true });
+document.addEventListener("touchend", unlockSpeech, { capture: true });
 function speak(text, pitch = 1, melody, rate = 0.96) {
   if (!speakOn || !("speechSynthesis" in window)) return;
-  if (/[āčēģīķļņšūž]/i.test(text)) return; // no Latvian voice on most iPhones
-  speechSynthesis.cancel();
+  const latvian = /[āčēģīķļņšūž]/i.test(text);
+  const voice = pickVoice(latvian ? "lv" : "en");
+  if (latvian && !voice) return;   // no Latvian voice installed on this phone
+  try { speechSynthesis.cancel(); } catch {}
   // Value 10: in major tonality each phrase is spoken on the next note of the pi melody.
   // Value 9: in minor tonality the whole reply uses the golden-ratio lift pitch.
   const parts = melody && melody.length ? melody : [{ text, pitch: pitch || 1 }];
   for (const seg of parts) {
     const u = new SpeechSynthesisUtterance(seg.text);
-    u.lang = "en-GB"; u.rate = seg.rate || rate || 0.96; u.pitch = Math.max(0.5, Math.min(2, seg.pitch || 1));
-    speechSynthesis.speak(u);
+    if (voice) u.voice = voice;
+    u.lang = voice ? voice.lang : (latvian ? "lv-LV" : "en-GB");
+    u.rate = seg.rate || rate || 0.96; u.pitch = Math.max(0.5, Math.min(2, seg.pitch || 1));
+    try { speechSynthesis.speak(u); } catch {}
   }
 }
 
 /* ---------- typing ---------- */
-$("to-type").onclick = () => { $("dock").hidden = true; $("typebar").hidden = false; $("msg").focus(); };
+function growMsg() {
+  // the box grows with what you write, up to about 40% of the screen, then scrolls
+  const m = $("msg");
+  m.style.height = "auto";
+  m.style.height = Math.min(m.scrollHeight + 2, Math.round(window.innerHeight * 0.42)) + "px";
+  $("send-btn").disabled = !m.value.trim();
+}
+const touch = window.matchMedia && matchMedia("(pointer: coarse)").matches;
+if (touch) $("type-hint").textContent = "";
+$("msg").addEventListener("input", growMsg);
+$("msg").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("typebar").requestSubmit(); }
+});
+$("to-type").onclick = () => { $("dock").hidden = true; $("typebar").hidden = false; growMsg(); $("msg").focus(); };
 $("to-talk").onclick = () => { $("typebar").hidden = true; $("dock").hidden = false; };
 $("typebar").onsubmit = async (e) => {
   e.preventDefault();
   const text = $("msg").value.trim();
   if (!text) return;
-  $("msg").value = "";
+  $("msg").value = ""; growMsg();
   addMe(text);
   thinking(true);
   try { const d = await api("/api/text", { text }); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
@@ -852,6 +1094,29 @@ function report(d) {
     `<br><small style="color:var(--ink-soft)">From ${Math.round(d.path.here_r * 100)}% out towards ${Math.round(d.path.target_r * 100)}%` +
     (d.path.steps_needed ? `, about ${d.path.steps_needed} step${d.path.steps_needed > 1 ? "s" : ""} like this` : "") +
     ` · star point ${esc(d.path.direction)}, on course ${Math.round(d.path.aim * 100)}%</small>`);
+  if (d.personality) {
+    const left = 20 - d.personality.reduce((n, t) => n + t.answered, 0);
+    item("How I see you", renderProfile(d.personality) + (left > 0 ? `<button class="secondary" id="know-more" style="margin-top:4px">Answer the rest (${left} left, about ${Math.max(1, Math.round(left / 6))} min)</button>` : ""));
+    const more = document.getElementById("know-more"); if (more) more.onclick = () => openKnow("s-report");
+  }
+  item("What you enjoy", (d.interests && d.interests.length ? escT(d.interests.join(", ")) + ". I'll bring these into our chats on good days."
+    : "Tell me what you're into, and our chats can include it.") + ` <button class="secondary" id="int-more" style="margin-top:6px">Choose what I'm into</button>`);
+  document.getElementById("int-more").onclick = () => $("profile-btn").click();
+  item("Your story", `What you've told me about your background, in your own words. <button class="secondary" id="story-more" style="margin-top:6px">See or add to my story</button>`);
+  document.getElementById("story-more").onclick = () => openStory("s-report");
+  if (d.memory) {
+    const n = d.memory.next;
+    item("What I'll remember", `${d.memory.lines} lines from ${d.memory.conversations} conversation${d.memory.conversations === 1 ? "" : "s"}, as text only (no recordings).` +
+      (n && n.question ? `<br>Next time I'll ask: <i>${escT(n.question)}</i>` : "") +
+      `<br><button class="secondary" id="mem-forget" style="margin-top:6px">Forget our conversations</button>`);
+    let armed = 0;
+    document.getElementById("mem-forget").onclick = async (e) => {
+      const b = e.target;
+      if (!armed) { b.textContent = "Tap again to forget every conversation"; armed = setTimeout(() => { armed = 0; b.textContent = "Forget our conversations"; }, 6000); return; }
+      clearTimeout(armed);
+      try { await api("/api/memory/forget", { name: store.get("bw-name") || "" }); b.textContent = "Forgotten"; b.disabled = true; } catch (err) { b.textContent = err.message; }
+    };
+  }
   if (d.ascent) item("Next step", esc(d.ascent.next_step) + `<br><small style="color:var(--ink-soft)">Resource ${d.ascent.x_resource.toFixed(2)} · action ${d.ascent.y_action.toFixed(2)} · information ${d.ascent.z_information.toFixed(2)}: incline ${d.ascent.angle_deg}° → ${d.ascent.angle_after}°, rising about ${d.ascent.h_gain.toFixed(2)}</small>`);
   if (d.timing && d.timing.sequence && d.timing.sequence.length) item("When", d.timing.sequence.map((st) =>
     `<b style="display:inline;color:var(--ink)">${esc(st.when[0].toUpperCase() + st.when.slice(1))}</b>, ${esc(st.at.slice(11, 16))}: ${esc(st.step)}` +
@@ -975,12 +1240,254 @@ $("delete-btn").onclick = async () => {
   }
   clearTimeout(deleteArmed); deleteArmed = 0;
   b.textContent = "Delete everything Be Whole knows about me";
+  await deleteEverything();
+};
+async function deleteEverything() {
   try { await api("/api/delete", { name: store.get("bw-name") || "" }); } catch {}
-  ["bw-token", "bw-name", "bw-consented"].forEach(store.del);
+  ["bw-token", "bw-name", "bw-consented-4"].forEach(store.del);
   token = null;
   if (window.BW_LOCAL) { $("name").value = ""; $("consent-box").hidden = false; show("s-welcome"); }
   else show("s-pair");
+}
+function twoTap(button, armedText, action) {
+  // two taps instead of a pop-up, so it works in every browser
+  const label = button.textContent;
+  let armed = 0;
+  button.onclick = async () => {
+    if (!armed) { button.textContent = armedText; armed = setTimeout(() => { armed = 0; button.textContent = label; }, 6000); return; }
+    clearTimeout(armed); armed = 0; button.textContent = label;
+    await action(button);
+  };
+}
+
+/* ---------- get to know me (Big Five, Mini-IPIP) ---------- */
+const escT = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function renderProfile(list) {
+  return list.map((t) => `<div class="trait"><b>${escT(t.name)}</b>` +
+    (t.score === null ? `<div class="words">Still getting to know you (${t.answered} of 4 answered)</div>` :
+      `<div class="bar"><span class="dot" style="left:${Math.round(t.score * 100)}%"></span></div>` +
+      `<div class="ends"><span>${escT(t.low)}</span><span>${escT(t.high)}</span></div><div class="words">You: ${escT(t.words)}</div>`) +
+    `</div>`).join("");
+}
+let know = { back: "s-welcome", skip: [], cur: null };
+function paintKnow(d) {
+  know.cur = d.next;
+  $("know-q").hidden = !d.next;
+  $("know-result").hidden = !!d.next;
+  if (d.next) {
+    $("know-progress").textContent = `${Math.min(d.total, d.done + know.skip.length + 1)} of ${d.total}`;
+    $("know-text").textContent = d.next.text;
+  } else {
+    $("know-profile").innerHTML = renderProfile(d.profile);
+    $("know-lede").textContent = d.done ? "Thank you. Here's the sketch I'll use to talk with you in a way that suits you." : "No answers yet.";
+  }
+}
+async function openKnow(back) {
+  know = { back, skip: [], cur: null };
+  $("know-err").textContent = "";
+  try { paintKnow(await api("/api/personality", { name: who() })); show("s-know"); }
+  catch (e) { (back === "s-welcome" ? $("start-err") : $("know-err")).textContent = e.message; }
+}
+$("know-btn").onclick = () => {
+  if (!$("name").value.trim()) { $("start-err").textContent = "Type what I should call you first, so I can remember your answers."; $("name").focus(); return; }
+  store.set("bw-name", $("name").value.trim());
+  openKnow("s-welcome");
 };
+for (const b of document.querySelectorAll(".know-scale button")) b.onclick = async () => {
+  if (!know.cur) return;
+  try { paintKnow(await api("/api/personality/answer", { name: who(), id: know.cur.id, score: +b.dataset.s, skip: know.skip })); }
+  catch (e) { $("know-err").textContent = e.message; }
+};
+$("know-skip").onclick = async () => {
+  if (!know.cur) return;
+  know.skip.push(know.cur.id);
+  try { paintKnow(await api("/api/personality", { name: who(), skip: know.skip })); } catch (e) { $("know-err").textContent = e.message; }
+};
+$("know-done").onclick = () => show(know.back);
+let forgetArmed = 0;
+$("know-forget").onclick = async () => {
+  const b = $("know-forget");
+  if (!forgetArmed) { b.textContent = "Tap again to forget all your answers"; forgetArmed = setTimeout(() => { forgetArmed = 0; b.textContent = "Forget my personality profile"; }, 6000); return; }
+  clearTimeout(forgetArmed); forgetArmed = 0; b.textContent = "Forget my personality profile";
+  try { paintKnow(await api("/api/personality/forget", { name: who() })); } catch (e) { $("know-err").textContent = e.message; }
+};
+
+/* ---------- my story ---------- */
+let storyBack = "s-welcome";
+function paintStory(d) {
+  $("story-off").hidden = d.allowed !== false;
+  const e = d.era;
+  $("era-card").hidden = !e;
+  if (e) $("era-card").innerHTML = `<b>Your childhood years: ${escT(e.years)}${e.country ? ", " + ({ LV: "Latvia", UK: "the UK" }[e.country] || "") : ""}</b>` +
+    `<div class="chips">${e.things.map((t) => `<span>${escT(t.name)}</span>`).join("")}</div>` +
+    `<p>What was around when you were growing up, from recorded history. It's only to help us talk about your childhood; it doesn't say anything about you unless you tell me.</p>`;
+  $("story-list").innerHTML = d.story.map((q) => `<div class="story-item" data-id="${q.id}"><b>${escT(q.area)}</b>
+    <div class="q">${escT(q.question)}</div><textarea id="st-${q.id}" maxlength="400" placeholder="${q.skipped ? "Skipped" : "In your own words (optional)"}">${escT(q.text)}</textarea>
+    <div class="row"><button type="button" data-save="${q.id}">Save</button><span class="saved" id="sv-${q.id}"></span></div></div>`).join("");
+  for (const b of document.querySelectorAll("[data-save]")) b.onclick = async () => {
+    const id = b.dataset.save;
+    try {
+      const r = await api("/api/story/answer", { name: $("name").value.trim() || store.get("bw-name") || "", id, text: $("st-" + id).value });
+      $("sv-" + id).textContent = r.harm ? "Saved. Thank you for trusting me with that." : r.minor ? "Saved. If you're under 18: Childline 0800 1111 (UK), 116 111 (Latvia)." : "Saved";
+    } catch (e) { $("story-err").textContent = e.message; }
+  };
+}
+async function openStory(back) {
+  storyBack = back; $("story-err").textContent = "";
+  try { paintStory(await api("/api/story", { name: $("name").value.trim() || store.get("bw-name") || "" })); show("s-story"); }
+  catch (e) { (back === "s-welcome" ? $("start-err") : $("story-err")).textContent = e.message; }
+}
+$("story-btn").onclick = () => {
+  if (!$("name").value.trim()) { $("start-err").textContent = "Type what I should call you first, so I can remember your story."; $("name").focus(); return; }
+  store.set("bw-name", $("name").value.trim());
+  openStory("s-welcome");
+};
+$("story-done").onclick = () => show(storyBack);
+let storyArmed = 0;
+$("story-forget").onclick = async () => {
+  const b = $("story-forget");
+  if (!storyArmed) { b.textContent = "Tap again to forget your whole story"; storyArmed = setTimeout(() => { storyArmed = 0; b.textContent = "Forget my story"; }, 6000); return; }
+  clearTimeout(storyArmed); storyArmed = 0; b.textContent = "Forget my story";
+  try { paintStory(await api("/api/story/forget", { name: $("name").value.trim() || store.get("bw-name") || "" })); } catch (e) { $("story-err").textContent = e.message; }
+};
+
+/* ---------- options: saved conversations and insights ---------- */
+const TONE_CLASS = { calm: "baseline", low: "low", lively: "high_positive", heated: "high_negative" };
+let optTab = store.get("bw-opt-tab") || "conv";
+const niceDate = (iso) => { try { return new Date(iso).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch { return iso; } };
+function setTab(t) {
+  optTab = t; store.set("bw-opt-tab", t);
+  $("tab-conv").setAttribute("aria-selected", String(t === "conv")); $("tab-ins").setAttribute("aria-selected", String(t === "ins"));
+  $("pane-conv").hidden = t !== "conv"; $("pane-ins").hidden = t !== "ins";
+  (t === "conv" ? loadConversations : loadInsights)();
+}
+$("tab-conv").onclick = () => setTab("conv");
+$("tab-ins").onclick = () => setTab("ins");
+$("options-btn").onclick = () => { $("opt-err").textContent = ""; show("s-options"); setTab(optTab); };
+for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => show(current);
+async function loadConversations() {
+  $("conv-detail").hidden = true; $("conv-list").hidden = false;
+  try {
+    const d = await api("/api/insights/conversations", { name: who() });
+    const list = d.conversations || [];
+    $("conv-list").innerHTML = list.length ? list.map((c) =>
+      `<button class="conv" data-i="${c.i}"><span class="when"><span>${escT(niceDate(c.started))}</span><span>${c.lines} lines${c.finished ? "" : " · open"}</span></span>` +
+      `<span class="sum">${escT(c.summary || "A short conversation")}</span>` +
+      (c.topic ? `<span class="chips"><span>${escT(c.topic)}</span></span>` : "") +
+      (c.mood.length ? `<span class="moodline" aria-label="Mood through the conversation">${c.mood.map((m) => `<span class="dot ${TONE_CLASS[m] || ""}" title="${escT(m)}"></span>`).join("")}</span>` : "") +
+      (c.next && c.next.question ? `<span class="next">Next time: ${escT(c.next.question)}</span>` : "") + `</button>`).join("")
+      : `<p class="empty">${d.allowed ? "No saved conversations yet. Talk with me and they'll appear here." :
+          "Conversations aren't being saved. Turn on \"Remember our conversations as text\" in your profile to keep them."}</p>`;
+    for (const b of document.querySelectorAll(".conv")) b.onclick = () => openConversation(+b.dataset.i);
+  } catch (e) { $("opt-err").textContent = e.message; }
+}
+async function openConversation(i) {
+  try {
+    const c = await api("/api/insights/conversation", { name: who(), i });
+    $("conv-list").hidden = true; $("conv-detail").hidden = false;
+    $("conv-when").textContent = niceDate(c.started);
+    $("conv-lines").innerHTML = c.lines.map((l) => `<div class="line ${l.who}">${escT(l.text)}` +
+      (l.who === "person" && l.mood ? `<small>${escT(l.time)} · ${escT(l.mood)}</small>` : l.time ? `<small>${escT(l.time)}</small>` : "") + `</div>`).join("");
+    const n = c.end && c.end.next;
+    $("conv-next").hidden = !(n && n.question);
+    if (n && n.question) $("conv-next").innerHTML = `<h3>Note for next time</h3>${n.note ? `<p>${escT(n.note)}</p>` : ""}<p><i>${escT(n.question)}</i></p>`;
+    $("s-options").scrollTop = 0;
+  } catch (e) { $("opt-err").textContent = e.message; }
+}
+$("conv-back").onclick = loadConversations;
+function lineChart(values, lo, hi, labels, fmt) {
+  const W = 320, H = 120, pl = 26, pr = 8, pt = 10, pb = 20;
+  const x = (i) => pl + (values.length < 2 ? (W - pl - pr) / 2 : i * (W - pl - pr) / (values.length - 1));
+  const y = (v) => pt + (1 - (v - lo) / (hi - lo)) * (H - pt - pb);
+  let out = `<line class="ax" x1="${pl}" y1="${y(lo)}" x2="${W - pr}" y2="${y(lo)}"/><line class="ax" x1="${pl}" y1="${y(hi)}" x2="${W - pr}" y2="${y(hi)}" stroke-dasharray="3 4"/>` +
+    `<text x="${pl - 4}" y="${y(hi) + 3}" text-anchor="end">${fmt(hi)}</text><text x="${pl - 4}" y="${y(lo) + 3}" text-anchor="end">${fmt(lo)}</text>`;
+  if (lo < 0 && hi > 0) out += `<line class="ax" x1="${pl}" y1="${y(0)}" x2="${W - pr}" y2="${y(0)}" stroke-dasharray="1 3"/>`;
+  out += `<polyline class="ln" points="${values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ")}"/>`;
+  out += values.map((v, i) => `<circle class="pt" cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3"/>`).join("");
+  if (labels.length) out += `<text x="${x(0)}" y="${H - 4}" text-anchor="start">${escT(labels[0])}</text><text x="${x(values.length - 1)}" y="${H - 4}" text-anchor="end">${escT(labels[labels.length - 1])}</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${out}</svg>`;
+}
+async function loadInsights() {
+  try {
+    const d = await api("/api/insights/insights", { name: who() });
+    const card = (title, body, note) => `<div class="card"><h3>${title}</h3>${body}${note ? `<p>${note}</p>` : ""}</div>`;
+    const chips = (pairs) => `<div class="chips">${pairs.map(([k, n]) => `<span>${escT(k)}${n > 1 ? `<b>${n}</b>` : ""}</span>`).join("")}</div>`;
+    let html = "";
+    html += card("At a glance", `<ul class="kept"><li><span>Conversations</span><b>${d.conversations}</b></li>` +
+      (d.history.length ? `<li><span>Wellbeing now</span><b>${d.history[d.history.length - 1].wellbeing.toFixed(1)} of 5</b></li>` : "") + `</ul>`);
+    if (d.history.length) html += card("Wellbeing over time", lineChart(d.history.map((h) => h.wellbeing), 1, 5, d.history.map((h) => h.date.slice(5)), (v) => v.toFixed(0)),
+      "The average of your five needs after each conversation (1 to 5).");
+    const mood = d.mood.filter((m) => m.valence !== null && m.valence !== undefined);
+    if (mood.length) html += card("Mood over time", lineChart(mood.map((m) => m.valence), -1, 1, mood.map((m) => m.date.slice(5)), (v) => v > 0 ? "+" : v < 0 ? "−" : "0"),
+      "How positive or heavy your words felt on average, conversation by conversation.");
+    if (d.maslow) {
+      const vals = Object.entries(d.maslow), low = vals.reduce((a, b) => (b[1] < a[1] ? b : a))[0];
+      const order = ["Self-actualisation", "Esteem", "Love and belonging", "Safety", "Physiological"];
+      html += card("Your needs today", order.filter((k) => k in d.maslow).map((k) => `<div class="layer-row${k === low ? " lowest" : ""}"><span>${escT(k)}</span>` +
+        `<span class="bar"><span style="width:${(d.maslow[k] / 5 * 100).toFixed(0)}%"></span></span><span>${d.maslow[k].toFixed(1)}</span></div>`).join(""), "Amber is the need that needs the most care right now.");
+    }
+    if (d.interests && d.interests.length) html += card("What you enjoy", `<ul class="kept">${d.interests.map((i) =>
+      `<li><span>${escT(i.label)}${i.said ? `<br><small style="color:var(--ink-soft)">"${escT(i.said)}"</small>` : ""}</span><b>${i.state === "yes" ? "chosen" : "noticed " + i.noticed + "×"}</b></li>`).join("")}</ul>`,
+      "I use these to make our chats about things you like, on good days. Change them in your profile.");
+    if (d.topics.length) html += card("What we talk about", chips(d.topics));
+    if (d.feelings.length) html += card("Feelings you named", chips(d.feelings));
+    if (d.needs.length) html += card("Needs that came up", chips(d.needs));
+    if (d.strengths.length) html += card("Strengths I've noticed", chips(d.strengths.map((x) => [x, 1])));
+    if (d.circle.length) html += card("The people you mention", d.circle.map((c) => `<div class="layer-row"><span>${escT(c.role)}</span>` +
+      `<span class="bar"><span style="width:${((c.valence + 1) / 2 * 100).toFixed(0)}%;background:${c.valence >= 0 ? "var(--calm)" : "var(--high)"}"></span></span><span>${c.mentions}×</span></div>`).join(""),
+      "By role only, never by name. The bar shows how warm the conversations about them felt.");
+    if (d.personality) html += card("How I see you", renderProfile(d.personality), "From the short Mini-IPIP questionnaire, not a diagnosis.");
+    if (!html.includes("<svg") && !d.topics.length) html += `<p class="empty">Insights grow as we talk. After a few conversations you'll see your patterns here.</p>`;
+    $("ins-body").innerHTML = html;
+  } catch (e) { $("opt-err").textContent = e.message; }
+}
+
+/* ---------- profile ---------- */
+function paintProfile(d) {
+  $("pf-name").value = d.name || who();
+  $("pf-avatar").textContent = (d.name || who() || "?").trim()[0].toUpperCase();
+  const k = d.kept;
+  $("pf-kept").innerHTML = [["Conversations saved as text", k.conversations], ["Lines of text", k.lines],
+    ["Personality answers", `${k.personality_answers} of 20`], ["Story answers", k.story_answers],
+    ["Calm voice learned", d.calibrated ? "yes (measurements only)" : "not yet"], ["Recordings kept", "none, ever"]]
+    .map(([a, b]) => `<li><span>${a}</span><b>${b}</b></li>`).join("");
+  paintInterests(d.interests || []);
+  $("pf-consents").innerHTML = d.consents.map((c) => `<li><label><input type="checkbox" data-pc="${c.id}"${c.on ? " checked" : ""}><span>${escT(c.label)}</span></label></li>`).join("");
+}
+function paintInterests(list) {
+  $("pf-interests").innerHTML = list.map((i) => `<button type="button" class="int-chip" data-int="${i.id}" data-state="${i.state || ""}"` +
+    ` aria-label="${escT(i.label)}: ${i.state === "yes" ? "yes" : i.state === "no" ? "not for me" : "not chosen"}">` +
+    `${i.state === "yes" ? "✓ " : ""}${escT(i.label)}${i.kind === "personal" ? ` <span class="lock" title="Personal: only if you tick it">◦</span>` : ""}` +
+    `${i.noticed && i.state !== "no" ? ` <span class="seen" title="Times I noticed you mention it">${i.noticed}</span>` : ""}</button>`).join("");
+  for (const b of document.querySelectorAll("[data-int]")) b.onclick = async () => {
+    const next = { "": "yes", yes: "no", no: null }[b.dataset.state || ""];
+    try { const r = await api("/api/insights/interest", { name: who(), id: b.dataset.int, state: next }); paintInterests(r.interests); }
+    catch (e) { $("pf-err").textContent = e.message; }
+  };
+}
+$("profile-btn").onclick = async () => {
+  $("pf-err").textContent = ""; $("pf-note").textContent = "";
+  try { paintProfile(await api("/api/insights/profile", { name: who() })); show("s-profile"); }
+  catch (e) { $("pf-err").textContent = e.message; show("s-profile"); }
+};
+$("pf-save").onclick = async () => {
+  const consents = {};
+  for (const c of document.querySelectorAll("[data-pc]")) consents[c.dataset.pc] = c.checked;
+  const newName = $("pf-name").value.trim();
+  try {
+    paintProfile(await api("/api/insights/consents", { name: who(), consents, new_name: newName }));
+    if (newName) { store.set("bw-name", newName); $("name").value = newName; paintHead("s-profile"); }
+    $("pf-note").textContent = "Saved." + (consents.conversation_memory === false ? " New conversations won't be saved. Use \"Forget our conversations\" to remove the old ones." : "");
+  } catch (e) { $("pf-err").textContent = e.message; }
+};
+$("name").addEventListener("change", () => paintHead());
+$("pf-story").onclick = () => openStory("s-profile");
+$("pf-know").onclick = () => openKnow("s-profile");
+twoTap($("pf-forget-mem"), "Tap again to forget every conversation", async (b) => {
+  try { await api("/api/memory/forget", { name: who() }); $("profile-btn").click(); b.textContent = "Forgotten"; setTimeout(() => (b.textContent = "Forget our conversations"), 3000); }
+  catch (e) { $("pf-err").textContent = e.message; }
+});
+twoTap($("pf-delete"), "Tap again to delete everything. This can't be undone.", deleteEverything);
 
 /* ---------- boot ---------- */
 $("demo-btn").onclick = async () => {
@@ -990,7 +1497,7 @@ $("demo-btn").onclick = async () => {
     await api("/api/demo");
     $("name").value = "Tester";
     for (const c of document.querySelectorAll("[data-c]")) c.checked = true;
-    store.del("bw-consented");
+    store.del("bw-consented-4");
     await startSession();
   } catch (e) { $("start-err").textContent = e.message; }
   $("demo-btn").disabled = false; $("demo-btn").textContent = 'Use the demo person "Tester" (3 past conversations)';
@@ -1044,12 +1551,12 @@ if (window.BW_LOCAL) {
     $("to-talk").textContent = "Memo";
   }
   $("name").value = store.get("bw-name") || "";
-  $("consent-box").hidden = !!store.get("bw-consented");
+  $("consent-box").hidden = !!store.get("bw-consented-4");
   show("s-welcome");
 } else if (!token) show("s-pair");
 else {
   $("name").value = store.get("bw-name") || "";
-  $("consent-box").hidden = !!store.get("bw-consented");
+  $("consent-box").hidden = !!store.get("bw-consented-4");
   show("s-welcome");
 }
 }
