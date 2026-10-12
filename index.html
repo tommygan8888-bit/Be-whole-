@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Be Whole">
+<meta name="theme-color" content="#14231f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Be Whole</title>
+<style>
+:root {
+  --bg: #14231f;
+  --bg-raise: #1b2e29;
+  --ink: #e4ece6;
+  --ink-soft: #9fb3aa;
+  --line: #2c433c;
+  --calm: #86c2a8;
+  --low: #95a8d6;
+  --high: #e3a75c;
+  --alert: #e07a72;
+  --gold: #d4af37;
+  --space: #050508;
+  --serif: ui-serif, "New York", Georgia, serif;
+  --round: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #eef2ec; --bg-raise: #ffffff; --ink: #1b2a26; --ink-soft: #5b6f67; --line: #d3ddd6;
+    --calm: #3f8a6c; --low: #5b6fa8; --high: #b9772a; --alert: #b8463e; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #eef2ec; --bg-raise: #ffffff; --ink: #1b2a26; --ink-soft: #5b6f67; --line: #d3ddd6;
+  --calm: #3f8a6c; --low: #5b6fa8; --high: #b9772a; --alert: #b8463e; color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+body {
+  font-family: var(--round); font-size: 17px; line-height: 1.45;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  display: flex; flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--calm); outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+/* top bar */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; flex: none;
+}
+.mark { display: flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: .01em; white-space: nowrap; }
+.mark svg { width: 26px; height: 26px; }
+.exit {
+  background: none; border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 12px; font-size: 15px; color: var(--ink-soft); white-space: nowrap;
+}
+
+/* screens */
+main { flex: 1; min-height: 0; display: flex; flex-direction: column; width: 100%; max-width: 640px; margin: 0 auto; }
+.screen { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 8px 20px 20px; overflow-y: auto; }
+.screen > * { flex-shrink: 0; }  /* long screens scroll instead of squeezing pictures */
+#s-talk > #log { flex: 1 1 auto; }
+h1 { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 1.2; margin: 24px 0 8px; }
+.lede { color: var(--ink-soft); margin: 0 0 24px; }
+label.field { display: block; margin: 0 0 18px; }
+label.field span { display: block; font-size: 15px; color: var(--ink-soft); margin-bottom: 6px; }
+input.text, textarea.text {
+  width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line);
+  background: var(--bg-raise); font-size: 18px;
+}
+.pin { letter-spacing: .5em; text-align: center; font-size: 28px; font-variant-numeric: tabular-nums; }
+.primary {
+  width: 100%; padding: 15px; border-radius: 14px; border: none;
+  background: var(--calm); color: var(--bg); font-weight: 600; font-size: 18px; margin-top: 8px;
+}
+.primary:disabled { opacity: .5; }
+.error { color: var(--alert); min-height: 1.4em; margin: 10px 0 0; font-size: 15px; }
+.consents { list-style: none; padding: 0; margin: 0 0 18px; border-top: 1px solid var(--line); }
+.consents li { border-bottom: 1px solid var(--line); }
+.consents label { display: flex; gap: 14px; align-items: flex-start; padding: 14px 2px; }
+.consents input { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--calm); flex: none; }
+.consents small { display: block; color: var(--ink-soft); font-size: 14px; }
+.note { font-size: 14px; color: var(--ink-soft); margin: 4px 0 16px; }
+
+/* conversation */
+#log { flex: 1; overflow-y: auto; padding: 8px 20px 24px; scroll-behavior: smooth; }
+.bw { font-family: var(--serif); font-size: 20px; line-height: 1.5; margin: 18px 0; max-width: 34em; white-space: pre-line; }
+.bw.alert { border-left: 3px solid var(--alert); padding-left: 14px; }
+.me { margin: 18px 0 18px auto; max-width: 85%; text-align: right; color: var(--ink-soft); font-size: 16px; }
+.me .meta { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; margin-top: 4px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--calm); display: inline-block; }
+.dot.low { background: var(--low); } .dot.high_positive, .dot.high_negative { background: var(--high); }
+.thinking { color: var(--ink-soft); font-family: var(--serif); font-style: italic; }
+
+/* talk dock */
+.dock {
+  flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line);
+}
+.side { background: none; border: none; color: var(--ink-soft); font-size: 15px; padding: 10px 4px; justify-self: start; }
+.side.right { justify-self: end; }
+.talk { position: relative; width: 108px; height: 108px; border: none; background: none; padding: 0; }
+.talk svg { width: 100%; height: 100%; overflow: visible; }
+.talk .core { fill: var(--calm); transition: r .08s linear; }
+.talk.rec .core { fill: var(--ink); }
+.talk .band { fill: none; stroke: var(--calm); stroke-opacity: .25; stroke-width: 10; }
+.talk .zone { fill: none; stroke: var(--calm); stroke-width: 10; stroke-linecap: round; opacity: 0; transition: opacity .2s; }
+.talk.rec.known .zone { opacity: .9; }
+.talk .marker { fill: var(--ink); transition: transform .12s ease-out; }
+.talk .label { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 600; color: var(--bg); pointer-events: none; }
+.talk:disabled { opacity: .5; }
+.typebar { display: flex; gap: 8px; padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); flex: none; }
+.typebar input { flex: 1; }
+.typebar button { border: none; border-radius: 14px; background: var(--calm); color: var(--bg); padding: 0 18px; font-weight: 600; }
+
+/* start screen (Logozzz Omni-Studio) */
+#s-start { background: var(--space); color: #f0f0f0; align-items: center; justify-content: center; text-align: center;
+  position: relative; overflow: hidden; padding: 20px 16px calc(28px + env(safe-area-inset-bottom)); }
+.start-hud { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; max-width: 640px; }
+.hud-pill { background: rgba(255,255,255,.05); border: 1px solid rgba(212,175,55,.3); border-radius: 50px;
+  padding: 8px 16px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #f0f0f0; }
+.start-stage { position: relative; width: min(78vw, 360px); aspect-ratio: 1; margin: 28px auto 20px; flex-shrink: 0; }
+.cymatic-core { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--gold);
+  box-shadow: 0 0 50px rgba(212,175,55,.8), inset 0 0 50px rgba(212,175,55,.8);
+  animation: pulse-frequency 4s infinite alternate ease-in-out; transition: box-shadow 1s ease; }
+.cymatic-core.active { animation-duration: 2s; box-shadow: 0 0 100px rgba(212,175,55,.8), inset 0 0 80px rgba(212,175,55,.8); }
+.cymatic-ring-inner { position: absolute; top: 50%; left: 50%; width: 62%; height: 62%; border-radius: 50%;
+  border: 2px dashed var(--gold); animation: spin-geometry 20s linear infinite; }
+.start-name { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--serif);
+  font-size: clamp(26px, 8vw, 38px); color: #f0f0f0; letter-spacing: .02em; }
+.start-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 360px; }
+.symphony-toggle { cursor: pointer; background: rgba(255,255,255,.05); color: var(--gold); border: 1px solid var(--gold);
+  border-radius: 50px; padding: 12px 20px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+.symphony-toggle[aria-pressed="true"] { background: rgba(212,175,55,.15); }
+.start-begin { background: var(--gold); color: var(--space); border: none; border-radius: 14px; padding: 15px; font-weight: 600; font-size: 17px; }
+@keyframes pulse-frequency { 0% { transform: scale(.95); opacity: .6; } 100% { transform: scale(1.05); opacity: 1; } }
+@keyframes spin-geometry { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .cymatic-core, .cymatic-ring-inner { animation: none !important; } .cymatic-ring-inner { transform: translate(-50%, -50%); } }
+
+/* report */
+.pyramid { width: 100%; max-width: 420px; margin: 8px auto 6px; display: block; }
+.pyramid text { font-family: var(--round); font-size: 15px; fill: var(--ink); }
+.pyramid .back { fill: var(--bg-raise); stroke: var(--line); }
+.pyramid .fill { fill: var(--calm); fill-opacity: .55; }
+.pyramid .fill.lowest { fill: var(--high); fill-opacity: .7; }
+.spiral { width: 220px; height: 242px; display: block; margin: 0 auto; }
+.spiral path { fill: none; stroke: var(--calm); stroke-width: 2; stroke-linecap: round; }
+.spiral .past { stroke-opacity: .35; }
+.spiral .now { fill: var(--high); }
+.spiral .guide { fill: none; stroke: var(--line); }
+.spiral .core-dot { fill: var(--low); }
+.spiral .torus { fill: var(--calm); stroke: var(--calm); stroke-width: 1; }
+.spiral .torus-hole { fill: var(--bg); stroke: var(--calm); stroke-opacity: .5; }
+.spiral .home { fill: none; stroke: var(--ink-soft); stroke-dasharray: 3 4; }
+.spiral .arrow { stroke: var(--high); stroke-width: 2.5; fill: none; }
+.vision { width: 100%; max-width: 420px; display: block; margin: 10px auto 0; }
+.vision text { font-family: var(--round); font-size: 11px; fill: var(--ink-soft); }
+.vision .pot { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.vision .slot { fill: var(--bg-raise); stroke: var(--line); }
+.vision .star { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.vision .star.lit { stroke: var(--calm); }
+.vision .dir { fill: var(--high); }
+.vision .dir-line { stroke: var(--high); stroke-width: 2.5; }
+.where { font-family: var(--serif); font-size: 18px; line-height: 1.5; margin: 8px 0 4px; }
+.rec-list { list-style: none; padding: 0; margin: 12px 0 20px; border-top: 1px solid var(--line); }
+.rec-list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.rec-list b { display: block; font-size: 14px; color: var(--ink-soft); font-weight: 500; }
+.rec-list a { color: var(--calm); }
+.feedback { margin: 4px 0 18px; }
+.fb-all { white-space: pre-wrap; font-size: 13px; background: var(--bg-raise); border: 1px solid var(--line); border-radius: 10px; padding: 10px; user-select: text; -webkit-user-select: text; }
+.feedback textarea { resize: vertical; font-family: inherit; font-size: 16px; color: var(--ink); }
+.test-badge { font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--high); border: 1px solid var(--high); border-radius: 6px; padding: 1px 4px; margin-left: 2px; }
+.secondary { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: none; margin-top: 10px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+
+.engine-status { margin: 0 20px 4px; padding: 10px 14px; border-radius: 12px; font-size: 14px;
+  background: var(--bg-raise); border: 1px solid var(--line); color: var(--ink-soft); }
+.engine-status[data-kind="error"] { color: var(--alert); border-color: var(--alert); }
+body { padding-top: 0 !important; }
+.voice-box { margin: 4px 0 18px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raise); }
+.voice-title { margin: 0 0 4px; font-weight: 600; }
+.voice-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.voice-pick { flex: 1 1 140px; min-width: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--ink-soft); }
+.voice-pick select { font: inherit; font-size: 16px; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.voice-bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 8px; }
+.deep-switch { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raise); }
+.deep-switch input { margin-top: 4px; width: 20px; height: 20px; accent-color: var(--calm); flex: none; }
+.deep-switch small { display: block; color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
+.voice-bar > div { height: 100%; width: 0; background: var(--calm); transition: width .2s; }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">
+    <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="var(--calm)" stroke-width="2.5"/><circle cx="13" cy="13" r="5" fill="var(--calm)"/></svg>
+    Be Whole<span class="test-badge">TEST</span>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="exit" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud">Voice: on</button>
+    <button class="exit" id="exit" title="Leave quickly">Exit</button>
+  </div>
+</header>
+
+<p class="engine-status" id="engine-status" role="status"></p>
+<main>
+  <!-- 1. pairing -->
+  <!-- 0. start screen -->
+  <section class="screen" id="s-start">
+    <div class="start-hud">
+      <div class="hud-pill">Admin: TommyGem</div>
+      <div class="hud-pill">Target: 2 August 2027</div>
+    </div>
+    <div class="start-stage" aria-hidden="true">
+      <div class="cymatic-core" id="core-visualizer"><div class="cymatic-ring-inner"></div></div>
+      <div class="start-name">Be Whole</div>
+    </div>
+    <div class="start-actions">
+      <button class="symphony-toggle" id="audio-btn" aria-pressed="false">▶ Engage 3710 Symphony</button>
+      <button class="start-begin" id="begin-btn">Begin</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-pair" hidden>
+    <h1>Connect to your computer</h1>
+    <p class="lede">Type the 6-digit PIN shown in the Be Whole window on your computer.</p>
+    <label class="field"><span>PIN</span>
+      <input class="text pin" id="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    </label>
+    <button class="primary" id="pair-btn">Connect</button>
+    <p class="error" id="pair-err" role="alert"></p>
+  </section>
+
+  <!-- 2. welcome and consent -->
+  <section class="screen" id="s-welcome" hidden>
+    <h1>Welcome to Be Whole</h1>
+    <p class="lede">A place to talk things through. I'm a self-help companion, not a therapist.</p>
+    <label class="field"><span>What should I call you?</span>
+      <input class="text" id="name" autocomplete="given-name" maxlength="40">
+    </label>
+    <div id="consent-box">
+      <p class="note">Choose what I may do. You can change this later.</p>
+      <ul class="consents">
+        <li><label><input type="checkbox" data-c="voice_analysis" checked><span>Listen to the tone of my voice<small>Recordings are deleted straight away; only measurements like pitch are kept.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="profile_scales" checked><span>Remember how I'm doing between sessions<small>Your Maslow scores and strengths.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="lifestyle_insights"><span>Notice patterns in my day and relationships<small>People are recorded by role only, never by name.</small></span></label></li>
+        <li><label><input type="checkbox" data-c="video_suggestions" checked><span>Suggest videos and music after a session</span></label></li>
+      </ul>
+    </div>
+    <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
+    <button class="primary" id="start-btn">Start talking</button>
+    <button class="secondary" id="demo-btn" hidden>Use the demo person "Tester" (3 past conversations)</button>
+    <p class="error" id="start-err" role="alert"></p>
+  </section>
+
+  <!-- 3. conversation -->
+  <section class="screen" id="s-talk" hidden style="padding:0">
+    <div id="log" aria-live="polite"></div>
+    <div class="dock" id="dock">
+      <button class="side" id="to-type">Type instead</button>
+      <button class="talk" id="talk" aria-label="Tap to talk">
+        <svg viewBox="0 0 108 108" aria-hidden="true">
+          <circle class="band" cx="54" cy="54" r="46"/>
+          <path class="zone" d="M14.16 31 A46 46 0 0 1 93.84 31"/>
+          <circle class="core" id="core" cx="54" cy="54" r="34"/>
+          <g id="marker-g" style="transform-origin:54px 54px"><circle class="marker" id="marker" cx="54" cy="8" r="5" opacity="0"/></g>
+        </svg>
+        <span class="label" id="talk-label">Talk</span>
+      </button>
+      <button class="side right" id="end-btn">Finish</button>
+      <input type="file" id="memo" accept="audio/*" hidden>
+    </div>
+    <form class="typebar" id="typebar" hidden>
+      <input class="text" id="msg" placeholder="Type here" autocomplete="off" enterkeyhint="send">
+      <button type="submit">Send</button>
+      <button type="button" class="side" id="to-talk" style="background:none;color:var(--ink-soft);padding:0 4px">Talk</button>
+    </form>
+  </section>
+
+  <!-- 4. report -->
+  <section class="screen" id="s-report" hidden>
+    <h1>Today's picture</h1>
+    <p class="lede" id="report-lede"></p>
+    <svg class="pyramid" id="pyramid" viewBox="0 0 420 266" role="img" aria-label="Your Maslow scores"></svg>
+    <p class="lede" id="cycle-line" style="margin:14px 0 4px"></p>
+    <svg class="spiral" id="spiral" viewBox="0 0 240 264" role="img" aria-label="Your progress spiral"></svg>
+    <p class="where" id="vortex-text"></p>
+    <svg class="vision" id="vision" viewBox="0 0 420 182" role="img" aria-label="Your light spectrum and best direction" hidden></svg>
+    <p class="lede" id="vision-text" style="margin:6px 0 4px"></p>
+    <ul class="rec-list" id="recs"></ul>
+    <div class="feedback">
+      <label class="field"><span>Test version: anything to tell the developer?</span>
+        <textarea class="text" id="fb-text" rows="3" maxlength="2000" placeholder="What felt right, what felt wrong, what was confusing"></textarea>
+      </label>
+      <button class="secondary" id="fb-btn" style="margin-top:0">Save feedback</button>
+      <p class="note" id="fb-note">Saved only on your computer, in feedback.txt. Only what you type here is saved.</p>
+      <pre class="fb-all" id="fb-all" hidden></pre>
+    </div>
+    <button class="primary" id="again-btn">Talk again</button>
+    <button class="secondary" id="delete-btn">Delete everything Be Whole knows about me</button>
+  </section>
+</main>
+
+<script src="pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+<script>window.BW_LIVE = true;
+window.BW_PYDIR = "";
+window.BW_STT_META = {"small": {"n_mels": 80, "n_text_layer": 12, "n_text_ctx": 448, "n_text_state": 768, "eot": 50257, "sot": 50258, "no_timestamps": 50363, "transcribe": 50359, "langs": {"en": 50259, "lv": 50301}}, "base": {"n_mels": 80, "n_text_layer": 6, "n_text_ctx": 448, "n_text_state": 512, "eot": 50257, "sot": 50258, "no_timestamps": 50363, "transcribe": 50359, "langs": {"en": 50259, "lv": 50301}}};</script>
+<script>
+// Be Whole iPhone: speech to text ON the phone, with the same Whisper models as the computer version.
+// The model is downloaded once (from Hugging Face) into this browser's storage; after that it works
+// offline. Recordings are turned into words in memory and never stored or sent anywhere.
+window.BW_STT = (() => {
+  "use strict";
+  const HF = "https://huggingface.co/csukuangfj/sherpa-onnx-whisper-{m}/resolve/main/";
+  const MODELS = {   // sizes of the int8 files, in MB
+    small: { label: "Small: better for Latvian", mb: 375 },
+    base: { label: "Base: faster, best for English", mb: 160 },
+  };
+  const CACHE = "bewhole-voice-v1";
+  const MAX_TOKENS = 224, CHUNK = 30 * 16000;
+  let enc = null, dec = null, meta = null, vocab = null, loadedModel = null;
+  const settings = {
+    get model() { try { return localStorage.getItem("bw-stt-model") || "small"; } catch { return "small"; } },
+    set model(v) { try { localStorage.setItem("bw-stt-model", v); } catch {} },
+    get language() { try { return localStorage.getItem("bw-stt-lang") || "auto"; } catch { return "auto"; } },
+    set language(v) { try { localStorage.setItem("bw-stt-lang", v); } catch {} },
+  };
+  const urlFor = (m, file) => (window.BW_MODEL_BASE ? window.BW_MODEL_BASE.replace("{m}", m) : HF.replace("{m}", m)) + file;
+  const files = (m) => [`${m}-encoder.int8.onnx`, `${m}-decoder.int8.onnx`, `${m}-tokens.txt`];
+
+  async function cached(url, onBytes) {
+    let cache = null;
+    try { cache = await caches.open(CACHE); const hit = await cache.match(url); if (hit) return new Uint8Array(await hit.arrayBuffer()); } catch {}
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`download failed (${r.status}) for ${url.split("/").pop()}`);
+    const total = +r.headers.get("content-length") || 0, reader = r.body.getReader(), parts = [];
+    let got = 0;
+    for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); got += value.length; onBytes && onBytes(value.length, total); }
+    const out = new Uint8Array(got); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; }
+    try { await cache.put(url, new Response(out)); } catch {}
+    return out;
+  }
+  async function isDownloaded(m = settings.model) {
+    try { const c = await caches.open(CACHE); for (const f of files(m)) if (!(await c.match(urlFor(m, f)))) return false; return true; }
+    catch { return false; }
+  }
+  async function forget(m) { try { const c = await caches.open(CACHE); for (const f of files(m)) await c.delete(urlFor(m, f)); } catch {} }
+
+  async function load(onProgress) {
+    const m = settings.model;
+    if (loadedModel === m && enc) return;
+    if (!window.ort) throw new Error("the voice engine (onnxruntime) did not load: check the internet connection once");
+    ort.env.wasm.numThreads = 1;
+    meta = window.BW_STT_META[m];
+    let done = 0; const want = MODELS[m].mb * 1e6;
+    const tick = (n) => { done += n; onProgress && onProgress(Math.min(99, Math.round(done / want * 100))); };
+    const eb = await cached(urlFor(m, files(m)[0]), tick);
+    const db = await cached(urlFor(m, files(m)[1]), tick);
+    const tb = await cached(urlFor(m, files(m)[2]), tick);
+    onProgress && onProgress(100, "Starting the voice engine...");
+    const opts = { executionProviders: ["wasm"], graphOptimizationLevel: "all" };
+    enc = await ort.InferenceSession.create(eb, opts);
+    dec = await ort.InferenceSession.create(db, opts);
+    vocab = new Map();
+    for (const line of new TextDecoder().decode(tb).split("\n")) {
+      const i = line.lastIndexOf(" "); if (i < 0) continue;
+      let piece = line.slice(0, i).replace(/[^A-Za-z0-9+/]/g, "");
+      piece += "===".slice((piece.length + 3) % 4);
+      let bin = ""; try { bin = atob(piece); } catch { continue; }
+      const bytes = new Uint8Array(bin.length);
+      for (let k = 0; k < bin.length; k++) bytes[k] = bin.charCodeAt(k);
+      vocab.set(+line.slice(i + 1), bytes);
+    }
+    loadedModel = m;
+  }
+
+  const i64 = (arr) => new BigInt64Array(arr.map((x) => BigInt(x)));
+  function zeros() { const n = meta.n_text_layer * meta.n_text_ctx * meta.n_text_state; return new Float32Array(n); }
+  async function step(tokens, selfK, selfV, crossK, crossV, offset) {
+    const L = meta.n_text_layer, C = meta.n_text_ctx, S = meta.n_text_state;
+    const feeds = {
+      tokens: new ort.Tensor("int64", i64(tokens), [1, tokens.length]),
+      in_n_layer_self_k_cache: new ort.Tensor("float32", selfK, [L, 1, C, S]),
+      in_n_layer_self_v_cache: new ort.Tensor("float32", selfV, [L, 1, C, S]),
+      n_layer_cross_k: crossK, n_layer_cross_v: crossV,
+      offset: new ort.Tensor("int64", i64([offset]), [1]),
+    };
+    const out = await dec.run(feeds);
+    return [out.logits, out.out_n_layer_self_k_cache.data, out.out_n_layer_self_v_cache.data];
+  }
+  function lastRow(logits) {
+    const [, T, V] = logits.dims; return logits.data.subarray((T - 1) * V, T * V);
+  }
+  function looping(t, n = 4, r = 3) {
+    if (t.length < n * r) return false;
+    const tail = t.slice(-n).join(",");
+    for (let k = 1; k < r; k++) if (t.slice(t.length - n * (k + 1), t.length - n * k).join(",") !== tail) return false;
+    return true;
+  }
+
+  async function decodeChunk(mel, langChoice) {
+    const eo = await enc.run({ mel: new ort.Tensor("float32", mel, [1, meta.n_mels, mel.length / meta.n_mels]) });
+    const crossK = eo.n_layer_cross_k, crossV = eo.n_layer_cross_v;
+    let lang = langChoice;
+    if (lang === "auto") {   // detect, but only among the app's languages
+      const [logits] = await step([meta.sot], zeros(), zeros(), crossK, crossV, 0);
+      const row = lastRow(logits);
+      lang = Object.keys(meta.langs).reduce((a, b) => (row[meta.langs[a]] >= row[meta.langs[b]] ? a : b));
+    }
+    let feed = [meta.sot, meta.langs[lang], meta.transcribe, meta.no_timestamps];
+    let selfK = zeros(), selfV = zeros(), offset = 0; const out = [];
+    for (let i = 0; i < MAX_TOKENS; i++) {
+      const [logits, k, v] = await step(feed, selfK, selfV, crossK, crossV, offset);
+      selfK = k; selfV = v; offset += feed.length;
+      const row = lastRow(logits);
+      let best = 0, bestV = -Infinity;
+      for (let j = 0; j <= meta.eot; j++) if (row[j] > bestV) { bestV = row[j]; best = j; }   // text tokens only
+      if (best === meta.eot || offset >= meta.n_text_ctx - 1) break;
+      out.push(best);
+      if (looping(out)) { out.splice(-8); break; }
+      feed = [best];
+    }
+    const parts = out.map((t) => vocab.get(t) || new Uint8Array());
+    const all = new Uint8Array(parts.reduce((s, p) => s + p.length, 0)); let o = 0;
+    for (const p of parts) { all.set(p, o); o += p.length; }
+    return { text: new TextDecoder().decode(all).trim(), language: lang };
+  }
+
+  // pcm: Float32Array at 16 kHz. melOf(chunk) -> Float32Array (n_mels x 3000), computed by Be Whole's Python.
+  async function transcribe(pcm, melOf) {
+    let peak = 0; for (const x of pcm) peak = Math.max(peak, Math.abs(x));
+    if (!peak) return { text: "", language: "en" };
+    const norm = new Float32Array(pcm.length); for (let i = 0; i < pcm.length; i++) norm[i] = pcm[i] / peak * 0.9;
+    const texts = []; let language = "en";
+    for (let s = 0; s < norm.length; s += CHUNK) {
+      const r = await decodeChunk(await melOf(norm.subarray(s, s + CHUNK), meta.n_mels), settings.language);
+      if (r.text) texts.push(r.text); language = r.language;
+    }
+    return { text: texts.join(" "), language };
+  }
+  return { MODELS, settings, load, isDownloaded, forget, transcribe, get ready() { return !!enc && loadedModel === settings.model; } };
+})();
+</script>
+<script>
+// Be Whole iPhone demo: runs the real Be Whole engine (Python) inside this browser with Pyodide.
+// Nothing is sent anywhere: conversations, the profile and voice memos stay on this phone.
+window.BW_LOCAL = (() => {
+  "use strict";
+  const SITE = "/lib/python3.12/site-packages";
+  const PYDIR = window.BW_PYDIR ?? "pyodide/";   // the live site keeps every file in one folder (easy upload)
+  let py = null, engine = null, persistent = false, pendingAudio = null;
+  const status = (text, kind) => {
+    const el = document.getElementById("engine-status");
+    if (!el) return;
+    el.hidden = !text; el.textContent = text || ""; el.dataset.kind = kind || "";
+  };
+  const abs = (p) => new URL(p, location.href).href;
+  async function bytesOf(path) {   // archives are published as base64 text
+    const r = await fetch(abs(path));
+    if (!r.ok) throw new Error(path + " not found (" + r.status + ")");
+    const bin = atob((await r.text()).trim());
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  async function boot() {
+    status("Loading Be Whole on this phone (about 25 MB the first time, then it opens faster)...");
+    if (typeof loadPyodide !== "function") throw new Error("the engine files did not load");
+    const stdlib = URL.createObjectURL(new Blob([await bytesOf(PYDIR + "python_stdlib.b64.txt")]));
+    py = await loadPyodide({ indexURL: abs(PYDIR || "./"), stdLibURL: stdlib, stdout: () => {}, stderr: () => {} });
+    URL.revokeObjectURL(stdlib);
+    status("Loading the maths library...");
+    py.unpackArchive(await bytesOf(PYDIR + "numpy.b64.txt"), "wheel", { extractDir: SITE });
+    status("Loading Be Whole's rules and agents...");
+    py.unpackArchive(await bytesOf("bewhole.b64.txt"), "zip", { extractDir: "/home/pyodide/app" });
+    try {   // keep the profile between visits, in this browser's own storage
+      py.FS.mkdirTree("/persist");
+      py.FS.mount(py.FS.filesystems.IDBFS, {}, "/persist");
+      await sync(true);
+      persistent = true;
+    } catch { persistent = false; }
+    py.runPython(`
+import os, sys
+os.environ["BEWHOLE_DATA_DIR"] = "${persistent ? "/persist/data" : "/tmp/bewhole-data"}"
+sys.path.insert(0, "/home/pyodide/app")
+from bewhole import browser`);
+    engine = py.pyimport("bewhole.browser");
+    status(persistent ? "" : "Ready. This browser won't keep your history after you close it.", persistent ? "" : "note");
+  }
+  function sync(populate) {
+    return new Promise((res, rej) => py.FS.syncfs(populate, (err) => err ? rej(err) : res()));
+  }
+  const ready = boot().catch((e) => {
+    status("Be Whole couldn't start in this browser (" + (e && e.message || e) + "). " +
+           "Try Safari on iPhone with iOS 16 or newer, or use the computer version.", "error");
+    throw e;
+  });
+
+  async function decode(blob) {
+    // Voice memo -> 16 kHz mono samples, analysed in memory only (never stored).
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const data = await blob.arrayBuffer();
+    const buf = await new Promise((res, rej) => { const p = ctx.decodeAudioData(data, res, rej); if (p && p.catch) p.catch(rej); });
+    try { ctx.close(); } catch {}
+    const seconds = Math.min(buf.duration, 60);
+    const off = new OfflineAudioContext(1, Math.max(1, Math.ceil(seconds * 16000)), 16000);
+    const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start();
+    const out = await off.startRendering();
+    return out.getChannelData(0);
+  }
+
+  async function melOf(chunk, nMels) {
+    const b = engine.mel(chunk, nMels);
+    const u = b.toJs(); if (b.destroy) b.destroy();
+    return new Float32Array(u.slice().buffer);
+  }
+
+  async function deepen(userText, out, language) {
+    // Deeper replies: Claude writes the reply from the engine's draft (never for crisis or safety replies).
+    if (!window.BW_DEEP) return;
+    out.reply = await window.BW_DEEP.rewrite(userText, out, language || "en");
+    window.BW_DEEP.record("Person", userText);
+    window.BW_DEEP.record("Be Whole", out.reply);
+  }
+
+  async function api(path, body, raw) {
+    await ready;
+    if (path === "/api/voice") {
+      let pcm;
+      try { pcm = await decode(body); }
+      catch { return { said: "", reply: "I couldn't open that recording. Voice memos from the Voice Memos app or Files work best." }; }
+      const stt = window.BW_STT;
+      if (stt && (stt.ready || await stt.isDownloaded())) {
+        try {
+          if (!stt.ready) { status("Starting the voice engine..."); await stt.load(); status(""); }
+          status("Listening to what you said...");
+          const heard = await stt.transcribe(pcm, melOf);
+          status("");
+          if (!heard.text) return { said: "", reply: "Sorry, I couldn't quite hear that. Could you say it again?" };
+          const out = JSON.parse(engine.handle("/api/text", JSON.stringify({ text: heard.text, language: heard.language }), pcm, 16000));
+          if (persistent) { try { await sync(false); } catch {} }
+          if (out.error) throw new Error(out.error === "no_session" ? "Session ended. Tap Talk again." : out.error);
+          await deepen(heard.text, out, heard.language);
+          return { ...out, said: heard.text, language: heard.language };
+        } catch (e) {
+          status("");
+          if (String(e.message).startsWith("Session ended")) throw e;
+          pendingAudio = pcm;
+          return { said: "", reply: "My voice engine had a problem (" + e.message + "). Please type what you said, and I'll still read your tone of voice." };
+        }
+      }
+      pendingAudio = pcm;
+      return { said: "", reply: "Thank you, I have your recording. Now type what you said, and I'll read your tone of voice together with your words. (Download the voice model on the start screen and I'll understand speech too.)" };
+    }
+    await new Promise((r) => setTimeout(r, 30));   // let the screen show "thinking" first
+    let audio = null;
+    if (path === "/api/text" && pendingAudio) { audio = pendingAudio; pendingAudio = null; }
+    const out = JSON.parse(engine.handle(path, JSON.stringify(body || {}), audio, 16000));
+    if (persistent && path !== "/api/feedback-list") { try { await sync(false); } catch {} }
+    if (out.error) throw new Error(out.error === "no_session" ? "Session ended. Tap Talk again." : out.error);
+    if (path === "/api/start" && window.BW_DEEP) window.BW_DEEP.reset(out.reply);
+    if (path === "/api/text") await deepen(body.text, out, body.language);
+    return out;
+  }
+  return { api, ready };
+})();
+</script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+let token = store.get("bw-token");
+let speakOn = store.get("bw-speak") !== "off";
+let baselineHz = null;
+
+function show(id) {
+  for (const s of document.querySelectorAll(".screen")) s.hidden = s.id !== id;
+}
+
+async function api(path, body, raw) {
+  if (window.BW_LOCAL) return window.BW_LOCAL.api(path, body, raw);   // iPhone demo: the engine runs on this phone
+  const headers = { "X-Token": token || "" };
+  let payload = body;
+  if (raw) headers["Content-Type"] = raw;
+  else { headers["Content-Type"] = "application/json"; payload = JSON.stringify(body || {}); }
+  const r = await fetch(path, { method: "POST", headers, body: payload });
+  const data = await r.json().catch(() => ({ error: "The computer sent an unreadable answer." }));
+  if (r.status === 401) { token = null; store.del("bw-token"); show("s-pair"); throw new Error("Please connect again."); }
+  if (!r.ok) throw new Error(data.error === "no_session" ? "Session ended. Tap Talk again." : (data.error || "Something went wrong."));
+  return data;
+}
+
+/* ---------- read-aloud switch ---------- */
+function paintToggle() {
+  $("voice-toggle").textContent = "Voice: " + (speakOn ? "on" : "off");
+  $("voice-toggle").setAttribute("aria-pressed", String(speakOn));
+}
+$("voice-toggle").onclick = () => {
+  speakOn = !speakOn; store.set("bw-speak", speakOn ? "on" : "off");
+  if (!speakOn) try { speechSynthesis.cancel(); } catch {}
+  paintToggle();
+};
+paintToggle();
+
+/* ---------- quick exit (safety) ---------- */
+$("exit").onclick = () => {
+  try { speechSynthesis.cancel(); } catch {}
+  $("log").innerHTML = "";
+  for (const sc of document.querySelectorAll(".screen")) sc.hidden = true;   // if the page can't navigate away, it still goes blank
+  try { location.replace("https://www.bbc.co.uk/weather"); } catch {}
+};
+
+/* ---------- pairing ---------- */
+$("pair-btn").onclick = async () => {
+  $("pair-err").textContent = "";
+  try {
+    const r = await fetch("/api/pair", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pin: $("pin").value }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    token = d.token; store.set("bw-token", token);
+    $("name").value = store.get("bw-name") || "";
+    show("s-welcome");
+  } catch (e) { $("pair-err").textContent = e.message + ". Check the PIN in the window on your computer."; }
+};
+
+/* ---------- start ---------- */
+$("start-btn").onclick = startSession;
+async function startSession() {
+  $("start-err").textContent = "";
+  const consents = {};
+  for (const c of document.querySelectorAll("[data-c]")) consents[c.dataset.c] = c.checked;
+  const name = $("name").value.trim();
+  store.set("bw-name", name);
+  try {
+    const d = await api("/api/start", { name, consents: store.get("bw-consented") ? null : consents });
+    store.set("bw-consented", "1");
+    baselineHz = d.baseline_hz;
+    $("log").innerHTML = "";
+    show("s-talk");
+    say(d.reply);
+  } catch (e) { $("start-err").textContent = e.message; }
+}
+
+/* ---------- conversation log ---------- */
+const MOOD = { baseline: "calm", low: "low", high_positive: "high, lively", high_negative: "high, heated" };
+function addMe(text, turn) {
+  const div = document.createElement("div");
+  div.className = "me";
+  div.textContent = text;
+  if (turn) {
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const label = turn.calibrating ? "learning your calm voice" :
+      (MOOD[turn.tonality] || "") + (turn.note === "heated_words" ? ", steady voice" : "") +
+      (turn.note === "masked" ? ", voice lower than words" : "") +
+      (turn.musical_note ? ` (${turn.musical_note}` + (turn.tone && turn.tone.key ? `, reply in ${turn.tone.key})` : turn.tone && turn.tone.next_note && turn.tone.next_note !== turn.musical_note ? `, reply on ${turn.tone.next_note})` : ")") : "");
+    meta.innerHTML = `<span class="dot ${turn.tonality}"></span>`;
+    meta.append(label);
+    div.append(document.createElement("br"), meta);
+  }
+  $("log").append(div);
+  div.scrollIntoView({ block: "end" });
+}
+function say(text, alert, pitch, melody, rate) {
+  const p = document.createElement("p");
+  p.className = "bw" + (alert ? " alert" : "");
+  p.textContent = text;
+  $("log").append(p);
+  p.scrollIntoView({ block: "end" });
+  speak(text, pitch, melody, rate);
+}
+function thinking(on) {
+  let t = document.querySelector(".thinking");
+  if (on && !t) { t = document.createElement("p"); t.className = "bw thinking"; t.textContent = "Listening…"; $("log").append(t); t.scrollIntoView({ block: "end" }); }
+  if (!on && t) t.remove();
+}
+function speak(text, pitch = 1, melody, rate = 0.96) {
+  if (!speakOn || !("speechSynthesis" in window)) return;
+  if (/[āčēģīķļņšūž]/i.test(text)) return; // no Latvian voice on most iPhones
+  speechSynthesis.cancel();
+  // Value 10: in major tonality each phrase is spoken on the next note of the pi melody.
+  // Value 9: in minor tonality the whole reply uses the golden-ratio lift pitch.
+  const parts = melody && melody.length ? melody : [{ text, pitch: pitch || 1 }];
+  for (const seg of parts) {
+    const u = new SpeechSynthesisUtterance(seg.text);
+    u.lang = "en-GB"; u.rate = seg.rate || rate || 0.96; u.pitch = Math.max(0.5, Math.min(2, seg.pitch || 1));
+    speechSynthesis.speak(u);
+  }
+}
+
+/* ---------- typing ---------- */
+$("to-type").onclick = () => { $("dock").hidden = true; $("typebar").hidden = false; $("msg").focus(); };
+$("to-talk").onclick = () => { $("typebar").hidden = true; $("dock").hidden = false; };
+$("typebar").onsubmit = async (e) => {
+  e.preventDefault();
+  const text = $("msg").value.trim();
+  if (!text) return;
+  $("msg").value = "";
+  addMe(text);
+  thinking(true);
+  try { const d = await api("/api/text", { text }); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
+  catch (err) { thinking(false); say(err.message, true); }
+};
+
+/* ---------- voice: record, live calm ring, send ---------- */
+let rec = null, chunks = [], stream = null, ctx = null, raf = 0, stopTimer = 0;
+function pickType() {
+  for (const t of ["audio/mp4", "audio/webm;codecs=opus", "audio/webm"]) {
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) return t;
+  }
+  return "";
+}
+function pitchOf(buf, sr) {
+  // autocorrelation pitch estimate, 70-400 Hz
+  let rms = 0; for (const v of buf) rms += v * v;
+  rms = Math.sqrt(rms / buf.length);
+  if (rms < 0.01) return [0, rms];
+  let best = 0, bestLag = 0;
+  for (let lag = Math.floor(sr / 400); lag <= Math.floor(sr / 70); lag++) {
+    let c = 0; for (let i = 0; i < buf.length - lag; i++) c += buf[i] * buf[i + lag];
+    if (c > best) { best = c; bestLag = lag; }
+  }
+  return [bestLag ? sr / bestLag : 0, rms];
+}
+function live(analyser) {
+  const buf = new Float32Array(analyser.fftSize);
+  const tick = () => {
+    analyser.getFloatTimeDomainData(buf);
+    const [hz, rms] = pitchOf(buf, ctx.sampleRate);
+    $("core").setAttribute("r", String(30 + Math.min(10, rms * 60)));
+    if (hz && baselineHz) {
+      // marker angle: 0 = calm centre; the band edges (±1/5) sit at ±60 degrees
+      const dev = Math.max(-0.4, Math.min(0.4, hz / baselineHz - 1));
+      $("marker").setAttribute("opacity", "1");
+      $("marker-g").style.transform = `rotate(${dev / 0.2 * 60}deg)`;
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  tick();
+}
+async function startRec() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: {
+      echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+  } catch (e) {
+    if (window.BW_LOCAL) { $("memo").click(); return; }   // demo: pick a voice memo instead
+    say("I can't use the microphone. On iPhone: Settings > Safari > Microphone > Allow. You can also tap Type instead.", true);
+    return;
+  }
+  const type = pickType();
+  rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+  chunks = [];
+  rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+  rec.onstop = sendRec;
+  rec.start();
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const analyser = ctx.createAnalyser(); analyser.fftSize = 2048;
+  ctx.createMediaStreamSource(stream).connect(analyser);
+  live(analyser);
+  $("talk").classList.toggle("known", !!baselineHz);
+  $("talk").classList.add("rec"); $("talk-label").textContent = "Done"; $("talk").setAttribute("aria-label", "Tap to stop");
+  try { speechSynthesis.cancel(); } catch {}
+  stopTimer = setTimeout(stopRec, 60000);
+}
+function stopRec() {
+  clearTimeout(stopTimer);
+  if (rec && rec.state !== "inactive") rec.stop();
+  cancelAnimationFrame(raf);
+  if (stream) stream.getTracks().forEach((t) => t.stop());
+  if (ctx) ctx.close();
+  $("talk").classList.remove("rec"); $("talk-label").textContent = "Talk"; $("talk").setAttribute("aria-label", "Tap to talk");
+  $("marker").setAttribute("opacity", "0"); $("core").setAttribute("r", "34");
+}
+async function sendRec() {
+  const blob = new Blob(chunks, { type: (rec && rec.mimeType) || "audio/mp4" });
+  if (blob.size < 2000) return;
+  return sendBlob(blob);
+}
+async function sendBlob(blob) {
+  $("talk").disabled = true;
+  thinking(true);
+  try {
+    const d = await api("/api/voice", blob, blob.type.split(";")[0]);
+    thinking(false);
+    if (d.said) addMe(d.said, d.turn);
+    say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate);
+  } catch (e) { thinking(false); say(e.message, true); }
+  $("talk").disabled = false;
+}
+$("talk").onclick = () => (rec && rec.state === "recording") ? stopRec() : startRec();
+$("memo").onchange = (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ""; if (f) sendBlob(f); };
+
+/* ---------- finish and report ---------- */
+$("end-btn").onclick = async () => {
+  try {
+    const d = await api("/api/end");
+    say(d.message, false, 1 + (d.voice_style ? d.voice_style.pitch_shift * 2 : 0), d.melody);
+    setTimeout(() => report(d), 400);
+  } catch (e) { say(e.message, true); }
+};
+function report(d) {
+  const layers = ["Self-actualisation", "Esteem", "Love and belonging", "Safety", "Physiological"];
+  const lowest = d.recommendation && d.recommendation.layer;
+  const svg = $("pyramid");
+  const H = 52, W = 410, top = 4;
+  let out = "";
+  layers.forEach((name, i) => {
+    const score = d.maslow[name] || 0;
+    const wTop = W * (i / 5), wBot = W * ((i + 1) / 5);
+    const y = top + i * H, cx = 210;
+    const pts = (a, b) => `${cx - a / 2},${y} ${cx + a / 2},${y} ${cx + b / 2},${y + H - 3} ${cx - b / 2},${y + H - 3}`;
+    const f = score / 5;
+    out += `<polygon class="back" points="${pts(wTop, wBot)}"/>`;
+    out += `<clipPath id="c${i}"><polygon points="${pts(wTop, wBot)}"/></clipPath>`;
+    out += `<rect class="fill${name === lowest ? " lowest" : ""}" clip-path="url(#c${i})" x="${cx - wBot / 2}" y="${y}" width="${wBot * f}" height="${H}"/>`;
+    out += `<text x="${cx}" y="${y + H / 2 + 4}" text-anchor="middle">${i === 0 ? score.toFixed(1) : name + "  " + score.toFixed(1)}</text>`;
+  });
+  svg.innerHTML = out;
+  drawSpiral(d.cycle, d.vortex, d.aura);
+  $("vortex-text").textContent = (d.vortex ? d.vortex.text : "") + (d.aura && d.aura.kind !== "forming" ? " " + d.aura.text : "");
+  drawVision(d.vision);
+  const r = d.recommendation || {};
+  $("report-lede").textContent = r.layer
+    ? `Your ${r.layer.toLowerCase()} needs scored lowest today (amber), so the suggestions below aim there. Top of the pyramid: self-actualisation.`
+    : "Please reach out to one of the support lines today.";
+  const recs = $("recs"); recs.innerHTML = "";
+  const item = (label, html) => { const li = document.createElement("li"); li.innerHTML = `<b>${label}</b>`; const s = document.createElement("span"); s.innerHTML = html; li.append(s); recs.append(li); };
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  if (d.coherence && d.coherence.process !== "listen") {
+    const names = { feel_first: "Feel first", check_thought: "Check the thought", trust: "Trust the process", steady_hope: "Steady hope" };
+    item("Think", `<b style="display:inline;color:var(--ink)">${names[d.coherence.process]}.</b> ` + esc(d.coherence.say) +
+      (d.harmony ? `<br>${esc(d.harmony.say)} <small style="color:var(--ink-soft)">(${esc(d.harmony.interval)}${d.harmony.your_note ? ", " + esc(d.harmony.your_note) + " → " + esc(d.harmony.reply_note) : ""})</small>` : "") +
+      `<br><small style="color:var(--ink-soft)">In step (−1 to 1): thought–feeling ${d.coherence.align_tf.toFixed(2)}, thought–action ${d.coherence.align_ta.toFixed(2)}. Coherence: thought–feeling ${d.coherence.thought_feeling.toFixed(2)}, thought–action ${d.coherence.thought_action.toFixed(2)}, feeling–action ${d.coherence.feeling_action.toFixed(2)}</small>`);
+  }
+  if (d.path) item("Path", `Towards your <b style="display:inline;color:var(--ink)">${esc(d.path.towards.toLowerCase())}</b> (${esc(d.path.colour)}). ` + esc(d.path.step) +
+    (d.path.sequence.length ? "<br>" + d.path.sequence.map((st) => `<b style="display:inline;color:var(--ink)">${esc(st.when[0].toUpperCase() + st.when.slice(1))}</b>: ${esc(st.step)}`).join("<br>") : "") +
+    `<br><small style="color:var(--ink-soft)">From ${Math.round(d.path.here_r * 100)}% out towards ${Math.round(d.path.target_r * 100)}%` +
+    (d.path.steps_needed ? `, about ${d.path.steps_needed} step${d.path.steps_needed > 1 ? "s" : ""} like this` : "") +
+    ` · star point ${esc(d.path.direction)}, on course ${Math.round(d.path.aim * 100)}%</small>`);
+  if (d.ascent) item("Next step", esc(d.ascent.next_step) + `<br><small style="color:var(--ink-soft)">Resource ${d.ascent.x_resource.toFixed(2)} · action ${d.ascent.y_action.toFixed(2)} · information ${d.ascent.z_information.toFixed(2)}: incline ${d.ascent.angle_deg}° → ${d.ascent.angle_after}°, rising about ${d.ascent.h_gain.toFixed(2)}</small>`);
+  if (d.timing && d.timing.sequence && d.timing.sequence.length) item("When", d.timing.sequence.map((st) =>
+    `<b style="display:inline;color:var(--ink)">${esc(st.when[0].toUpperCase() + st.when.slice(1))}</b>, ${esc(st.at.slice(11, 16))}: ${esc(st.step)}` +
+    (st.cell === "1111" ? "" : st.cell === "shared" ? ` <small style="color:var(--ink-soft)">(together)</small>` : ` <small style="color:var(--ink-soft)">(keep it small)</small>`)).join("<br>"));
+  if (d.fair_choice) item("Fair to both", esc(d.fair_choice.action[0].toUpperCase() + d.fair_choice.action.slice(1)) + "." +
+    `<br><small style="color:var(--ink-soft)">Intuition ${d.fair_choice.intuition.toFixed(2)} · fairness ${d.fair_choice.fairness.toFixed(2)} · ` +
+    `doing it alone: fairness 0, because only one of you gains</small>`);
+  if (d.combined) item("Together", esc(d.combined.action[0].toUpperCase() + d.combined.action.slice(1)) + `.<br><small style="color:var(--ink-soft)">You rise ${d.combined.your_gain.toFixed(2)}, they gain ${esc(d.combined.why_them)}. Alone: ${d.combined.alone_gain.toFixed(2)} for you, nothing for them.</small>`);
+  if (d.kindness) item("Give", esc(d.kindness.act[0].toUpperCase() + d.kindness.act.slice(1)) + ". Treat them the way you'd like to be treated.");
+  if (r.video) item("Watch", `<a href="${esc(r.video.url)}" target="_blank" rel="noopener">${esc(r.video.title)}</a>`);
+  if (r.music) item("Listen", esc(r.music));
+  if (r.podcast) item("Podcast topic", esc(r.podcast));
+  show("s-report");
+}
+function drawVision(v) {
+  // Value 16: the light broken into Maslow colours (bars = reality, dashed = Planck potential),
+  // and the hexagram of two pyramids with the position of the best direction.
+  const svg = $("vision");
+  if (!v) { svg.setAttribute("hidden", ""); $("vision-text").textContent = ""; return; }
+  const cols = { red: "#e5484d", orange: "#f08c2e", yellow: "#e8c21c", green: "#3fa45b", blue: "#3d7be0" };
+  const names = Object.keys(cols), base = 140, Hh = 110, bw = 34;
+  let out = "", pts = [];
+  names.forEach((n, i) => {
+    const x = 14 + i * 44;
+    out += `<rect class="slot" x="${x}" y="${base - Hh}" width="${bw}" height="${Hh}" rx="4"/>`;
+    out += `<rect x="${x}" y="${(base - Hh * v.reality[n]).toFixed(1)}" width="${bw}" height="${(Hh * v.reality[n]).toFixed(1)}" rx="4" fill="${cols[n]}" fill-opacity="${n === v.vision_colour ? 1 : 0.7}"/>`;
+    out += `<text x="${x + bw / 2}" y="${base + 14}" text-anchor="middle">${n}</text>`;
+    pts.push(`${x + bw / 2},${(base - Hh * v.potential[n]).toFixed(1)}`);
+  });
+  out += `<polyline class="pot" points="${pts.join(" ")}"/>`;
+  out += `<text x="118" y="176" text-anchor="middle">bars: now · dashed: potential</text><text x="330" y="176" text-anchor="middle">best direction</text>`;
+  // hexagram: upward triangle +Z 90, +X 210, +Y 330; downward -Z 270, -X 30, -Y 150 (y flipped for SVG)
+  const cx = 330, cy = 82, R = 60, P = (a, r) => [cx + r * Math.cos(a * Math.PI / 180), cy - r * Math.sin(a * Math.PI / 180)];
+  const tri = (as) => as.map((a) => P(a, R).map((n) => n.toFixed(1)).join(",")).join(" ");
+  out += `<polygon class="star${v.star.triangle === "up" ? " lit" : ""}" points="${tri([90, 210, 330])}"/>`;
+  out += `<polygon class="star${v.star.triangle === "down" ? " lit" : ""}" points="${tri([270, 30, 150])}"/>`;
+  const label = { "+Z": [90, "grow"], "+X": [210, "base"], "+Y": [330, "people"], "-Z": [270, "draw: purpose"], "-X": [30, "draw: base"], "-Y": [150, "draw: people"] };
+  for (const k in label) { const [a, t] = label[k], [x, y] = P(a, R + 11); out += `<text x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle" style="font-size:9px">${t}</text>`; }
+  if (v.star.direction !== "up") {
+    const [x, y] = P(label[v.star.direction][0], R);
+    out += `<line class="dir-line" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/><circle class="dir" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5"/>`;
+  }
+  out += `<circle cx="${cx}" cy="${cy}" r="7" fill="${v.mix}"/>`;
+  svg.innerHTML = out; svg.removeAttribute("hidden");   // SVG elements have no .hidden property
+  $("vision-text").textContent = v.text;
+}
+function drawSpiral(c, v, aura) {
+  // Values 9 and 10: one turn per conversation. Outward (value 9) = distance from the negative centre;
+  // upward (value 10) = positive development built up. Drawn as a widening, rising spiral.
+  const svg = $("spiral");
+  if (!c || !c.points || !c.points.length) { svg.innerHTML = ""; $("cycle-line").textContent = ""; return; }
+  const pts = c.points, cx = 120, base = 226;
+  const maxUp = Math.max(1, ...pts.map((p) => p.up));
+  const R = (o) => 10 + o * 92;                       // outward
+  const H = (u) => (u / maxUp) * 145;                 // upward
+  const at = (o, u, a) => [cx + R(o) * Math.cos(a), base - H(u) + R(o) * 0.32 * Math.sin(a)];
+  let out = `<ellipse class="guide" cx="${cx}" cy="${base}" rx="${R(1)}" ry="${R(1) * 0.32}"/>` +
+            `<circle class="core-dot" cx="${cx}" cy="${base}" r="3"/>`;
+  const turn = (p0, p1, cls) => {
+    let d = "";
+    for (let i = 0; i <= 72; i++) {
+      const t = i / 72, a = t * 2 * Math.PI;   // each turn ends on the right, where "now" is marked
+      const [x, y] = at(p0.out + (p1.out - p0.out) * t, p0.up + (p1.up - p0.up) * t, a);
+      d += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+    }
+    return `<path class="${cls}" d="${d}"/>`;
+  };
+  const first = { out: 0, up: 0, w: 1 };
+  pts.forEach((p, i) => { out += turn(i ? pts[i - 1] : first, p, i === pts.length - 1 ? "" : "past"); });
+  const last = pts[pts.length - 1];
+  const [nx, ny] = at(last.out, last.up, 0);
+  if (v && v.Y_identity && v.Y_identity.home_r != null) {
+    // Value 11, Y (who you are): your usual place, drawn as a dashed ring at today's height.
+    const hr = R(v.Y_identity.home_r);
+    out += `<ellipse class="home" cx="${cx}" cy="${(base - H(last.up)).toFixed(1)}" rx="${hr.toFixed(1)}" ry="${(hr * 0.32).toFixed(1)}"/>`;
+  }
+  if (v && v.x_heading) {
+    // Value 11, x (direction): right = outward from the low notes, up = positive development.
+    const dx = v.x_heading.dr, dy = v.x_heading.dh, len = Math.hypot(dx, dy);
+    if (len > 0.004) {
+      const ux = dx / len * 26, uy = -dy / len * 26, ex = nx + ux, ey = ny + uy;
+      const hx = ex - ux * 0.35, hy = ey - uy * 0.35, px = -uy * 0.25, py = ux * 0.25;
+      out += `<path class="arrow" d="M${nx.toFixed(1)} ${ny.toFixed(1)}L${ex.toFixed(1)} ${ey.toFixed(1)}M${(hx + px).toFixed(1)} ${(hy + py).toFixed(1)}L${ex.toFixed(1)} ${ey.toFixed(1)}L${(hx - px).toFixed(1)} ${(hy - py).toFixed(1)}"/>`;
+    }
+  }
+  if (aura && aura.kind !== "forming") {
+    // Value 15: the aura torus around the axis at today's height. Outer ring R + r, inner ring R - r.
+    const cy0 = base - H(last.up), Ro = R(Math.min(1, aura.R + aura.r)), Ri = R(Math.max(0, aura.R - aura.r));
+    const op = (0.15 + 0.5 * aura.brightness).toFixed(2);
+    out = `<ellipse class="torus" cx="${cx}" cy="${cy0.toFixed(1)}" rx="${Ro.toFixed(1)}" ry="${(Ro * 0.32).toFixed(1)}" style="opacity:${op}"/>` +
+          (aura.kind === "ring" ? `<ellipse class="torus-hole" cx="${cx}" cy="${cy0.toFixed(1)}" rx="${Ri.toFixed(1)}" ry="${(Ri * 0.32).toFixed(1)}"/>` : "") + out;
+  }
+  out += `<circle class="now" cx="${nx.toFixed(1)}" cy="${ny.toFixed(1)}" r="5"/>`;
+  svg.innerHTML = out;
+  const ch = c.change;
+  $("cycle-line").textContent = (ch == null ? "Turn 1 of your spiral." :
+    `Turn ${c.cycle} of your spiral: ${ch > 0 ? "further out and higher up" : ch < 0 ? "pulled in a little, height kept" : "steady and rising"}.`) +
+    " Outward is distance from the low notes; upward is the good you've built.";
+}
+$("again-btn").onclick = startSession;
+$("fb-btn").onclick = async () => {
+  const t = $("fb-text").value.trim();
+  if (!t) return;
+  try {
+    await api("/api/feedback", { text: t }); $("fb-text").value = "";
+    if (window.BW_LOCAL) {
+      const all = await api("/api/feedback-list");
+      $("fb-note").textContent = "Thank you, saved on this phone. To send it, copy your notes below.";
+      $("fb-all").textContent = all.text; $("fb-all").hidden = false;
+    } else $("fb-note").textContent = "Thank you, saved on your computer in feedback.txt.";
+  }
+  catch (e) { $("fb-note").textContent = e.message; }
+};
+let deleteArmed = 0;
+$("delete-btn").onclick = async () => {
+  const b = $("delete-btn");
+  if (!deleteArmed) {   // two taps instead of a pop-up, so it works in every browser
+    b.textContent = "Tap again to delete everything. This can't be undone.";
+    deleteArmed = setTimeout(() => { deleteArmed = 0; b.textContent = "Delete everything Be Whole knows about me"; }, 6000);
+    return;
+  }
+  clearTimeout(deleteArmed); deleteArmed = 0;
+  b.textContent = "Delete everything Be Whole knows about me";
+  try { await api("/api/delete", { name: store.get("bw-name") || "" }); } catch {}
+  ["bw-token", "bw-name", "bw-consented"].forEach(store.del);
+  token = null;
+  if (window.BW_LOCAL) { $("name").value = ""; $("consent-box").hidden = false; show("s-welcome"); }
+  else show("s-pair");
+};
+
+/* ---------- boot ---------- */
+$("demo-btn").onclick = async () => {
+  $("start-err").textContent = "";
+  $("demo-btn").disabled = true; $("demo-btn").textContent = "Preparing Tester's history...";
+  try {
+    await api("/api/demo");
+    $("name").value = "Tester";
+    for (const c of document.querySelectorAll("[data-c]")) c.checked = true;
+    store.del("bw-consented");
+    await startSession();
+  } catch (e) { $("start-err").textContent = e.message; }
+  $("demo-btn").disabled = false; $("demo-btn").textContent = 'Use the demo person "Tester" (3 past conversations)';
+};
+/* ---------- start screen: the 3710 Symphony, a slow major triad made in the browser ---------- */
+const symphony = { ctx: null, master: null, on: false };
+function engageSymphony() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return false;
+  if (!symphony.ctx) {
+    const ctx = new AC(), master = ctx.createGain();
+    master.gain.value = 0; master.connect(ctx.destination);
+    // C major triad (C3 E3 G3) plus a soft octave, each voice breathing on the 2-second pulse
+    [130.81, 164.81, 196.0, 261.63].forEach((f, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), depth = ctx.createGain();
+      o.type = i === 3 ? "sine" : "triangle"; o.frequency.value = f;
+      g.gain.value = i === 3 ? 0.05 : 0.09;
+      lfo.frequency.value = 0.5; depth.gain.value = g.gain.value * 0.6;   // 0.5 Hz = one swell every 2 seconds
+      lfo.connect(depth); depth.connect(g.gain); o.connect(g); g.connect(master); o.start(); lfo.start(ctx.currentTime + i * 0.25);
+    });
+    Object.assign(symphony, { ctx, master });
+  }
+  symphony.ctx.resume();
+  symphony.master.gain.setTargetAtTime(0.5, symphony.ctx.currentTime, 0.8);   // fade in
+  return true;
+}
+function muteSymphony() {
+  if (symphony.ctx) symphony.master.gain.setTargetAtTime(0, symphony.ctx.currentTime, 0.4);
+}
+$("audio-btn").onclick = () => {
+  if (!symphony.on) {
+    if (!engageSymphony()) { $("audio-btn").textContent = "Sound isn't available here"; return; }
+    symphony.on = true;
+    $("audio-btn").textContent = "⏸ Symphony: active"; $("audio-btn").setAttribute("aria-pressed", "true");
+    $("core-visualizer").classList.add("active");
+  } else {
+    muteSymphony(); symphony.on = false;
+    $("audio-btn").textContent = "▶ Engage 3710 Symphony"; $("audio-btn").setAttribute("aria-pressed", "false");
+    $("core-visualizer").classList.remove("active");
+  }
+};
+$("begin-btn").onclick = () => { if (symphony.on) $("audio-btn").click(); enterApp(); };
+
+function enterApp() {
+if (window.BW_LOCAL) {
+  $("demo-btn").hidden = false;
+  if (!window.BW_LIVE) {
+    // no live microphone here: the round button picks a voice memo for the tone of voice
+    $("talk-label").textContent = "Memo"; $("talk").setAttribute("aria-label", "Add a voice memo for your tone of voice");
+    $("talk").onclick = () => $("memo").click();
+    $("to-talk").textContent = "Memo";
+  }
+  $("name").value = store.get("bw-name") || "";
+  $("consent-box").hidden = !!store.get("bw-consented");
+  show("s-welcome");
+} else if (!token) show("s-pair");
+else {
+  $("name").value = store.get("bw-name") || "";
+  $("consent-box").hidden = !!store.get("bw-consented");
+  show("s-welcome");
+}
+}
+show("s-start");
+</script>
+<script>
+// Be Whole iPhone: the "Voice on this phone" panel on the start screen (model download and settings).
+(() => {
+  "use strict";
+  const stt = window.BW_STT;
+  const welcome = document.getElementById("s-welcome");
+  const start = document.getElementById("start-btn");
+  if (!stt || !welcome || !start) return;
+  const box = document.createElement("div");
+  box.className = "voice-box";
+  box.innerHTML = `
+    <p class="voice-title">Voice on this phone</p>
+    <p class="note" id="vb-note">To understand speech, Be Whole downloads a speech model once. It then works offline, and your voice never leaves this phone.</p>
+    <div class="voice-row">
+      <label class="voice-pick"><span>Model</span><select id="vb-model"></select></label>
+      <label class="voice-pick"><span>Language</span><select id="vb-lang">
+        <option value="auto">English or Latvian</option><option value="en">English</option><option value="lv">Latvian</option></select></label>
+    </div>
+    <button class="secondary" id="vb-btn" type="button" style="margin-top:6px">Download voice</button>
+    <div class="voice-bar" id="vb-bar" hidden><div id="vb-fill"></div></div>`;
+  start.before(box);
+  const $ = (id) => document.getElementById(id);
+  for (const [k, m] of Object.entries(stt.MODELS)) {
+    const o = document.createElement("option"); o.value = k; o.textContent = `${m.label} (${m.mb} MB)`; $("vb-model").append(o);
+  }
+  $("vb-model").value = stt.settings.model;
+  $("vb-lang").value = stt.settings.language;
+  $("vb-lang").onchange = () => { stt.settings.language = $("vb-lang").value; };
+  async function paint() {
+    const have = await stt.isDownloaded();
+    const mb = stt.MODELS[stt.settings.model].mb;
+    $("vb-btn").textContent = have ? (stt.ready ? "Voice is ready" : "Start voice") : `Download voice (${mb} MB, Wi-Fi recommended)`;
+    $("vb-btn").disabled = stt.ready;
+    if (have && !stt.ready) $("vb-note").textContent = "The speech model is on this phone. Tap Start voice, or just tap Talk.";
+  }
+  $("vb-model").onchange = async () => { stt.settings.model = $("vb-model").value; await paint(); };
+  $("vb-btn").onclick = async () => {
+    $("vb-btn").disabled = true; $("vb-bar").hidden = false;
+    try {
+      await stt.load((pct, msg) => {
+        $("vb-fill").style.width = pct + "%";
+        $("vb-btn").textContent = msg || `Downloading... ${pct}%`;
+      });
+      $("vb-note").textContent = "Voice is ready. Tap Talk, speak, then tap Done.";
+      try { await navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
+    } catch (e) {
+      $("vb-note").textContent = "The download didn't finish (" + e.message + "). Check the connection and tap again; it continues from the files already saved.";
+      $("vb-btn").disabled = false;
+    }
+    $("vb-bar").hidden = true;
+    await paint();
+  };
+  paint();
+})();
+</script>
+</body>
+</html>
