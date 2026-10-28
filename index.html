@@ -107,6 +107,8 @@ input.text, textarea.text, select.text {
 }
 .side { background: none; border: none; color: var(--ink-soft); font-size: 15px; padding: 10px 4px; justify-self: start; }
 .side.right { justify-self: end; }
+.quiet-btn { grid-column: 1 / -1; justify-self: center; font-size: 13px; padding: 4px 10px; }
+.quiet-btn[aria-pressed="true"] { color: var(--calm); font-weight: 600; }
 .talk { position: relative; width: 108px; height: 108px; border: none; background: none; padding: 0; }
 .talk svg { width: 100%; height: 100%; overflow: visible; }
 .talk .core { fill: var(--calm); transition: r .08s linear; }
@@ -426,6 +428,7 @@ body { padding-top: 0 !important; }
         <span class="label" id="talk-label">Talk</span>
       </button>
       <button class="side right" id="end-btn">Finish</button>
+      <button class="side quiet-btn" id="quiet-btn" aria-pressed="false">🌙 Quiet mode: off</button>
       <input type="file" id="memo" accept="audio/*" hidden>
     </div>
     <form class="typebar" id="typebar" hidden>
@@ -512,6 +515,8 @@ body { padding-top: 0 !important; }
       <label class="field" style="margin:10px 0 6px"><span>Pause before I stop listening</span>
         <select class="text" id="pf-pause" style="font-size:16px;padding:10px 12px">
           <option value="1800">Short (about 2 seconds)</option><option value="2600">Normal (about 2½ seconds)</option><option value="3600">Long (about 3½ seconds, for thinking pauses)</option></select></label>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:15px;margin-bottom:8px"><input type="checkbox" id="pf-quiet" style="width:20px;height:20px;accent-color:var(--calm);flex:none;margin-top:2px">
+        <span>Quiet mode<small style="display:block;color:var(--ink-soft);font-size:13px">For talking softly (at night, others nearby): I listen for a soft voice, don't read quietness as a low mood, and speak softly myself. Also under the Talk button.</small></span></label>
       <label style="display:flex;gap:10px;align-items:flex-start;font-size:15px"><input type="checkbox" id="pf-confirm" style="width:20px;height:20px;accent-color:var(--calm);flex:none;margin-top:2px">
         <span>Let me check what you heard before it's sent<small style="display:block;color:var(--ink-soft);font-size:13px">Your words appear in the typing box to correct; your tone of voice is still read.</small></span></label>
       <p id="pf-voice-tip">For a much more natural voice on iPhone: Settings → Accessibility → Spoken Content (Read &amp; Speak on newer iPhones) → Voices → English, and download a voice marked Enhanced or Premium, such as Serena or Daniel. Then restart Be Whole and choose it here.</p></div>
@@ -845,7 +850,8 @@ from bewhole import browser`);
             pendingAudio = pcm;
             return { draft: heard.text, language: heard.language, heard_ms: heard.ms };
           }
-          const out = JSON.parse(engine.handle("/api/text", JSON.stringify({ text: heard.text, language: heard.language }), pcm, 16000));
+          const out = JSON.parse(engine.handle("/api/text", JSON.stringify({ text: heard.text, language: heard.language,
+                                                                          quiet: path.includes("quiet=1") }), pcm, 16000));
           if (persistent) { try { await sync(false); } catch {} }
           if (out.error) throw new Error(out.error === "no_session" ? "Session ended. Tap Talk again." : out.error);
           await deepen(heard.text, out, heard.language);
@@ -946,6 +952,7 @@ window.BW_DEEP = (() => {
       "- On a hard day you may remind them of a good memory or someone who believed in them, if they shared one.",
       "- Interests: when the moment is light, you may connect to something they enjoy (a shared reference, an example from their hobby). Never bring up faith, romance, health, food and body, work or politics unless THEY raised it or it is listed as theirs; never give opinions on faith or politics; never give numbers, targets or diet plans about food or the body.",
       "- Sound like a person, not a form: never start two replies the same way; don't repeat their whole sentence back (a few of their own words at most, and not every time); name a feeling back only once; pick up something specific they said (a day, a place, a person) and ask about that; once in a while, connect to something they said earlier in this conversation. A short message gets a short reply.",
+      "- Think in bigger steps every few turns: sum up the whole picture in one sentence and check it, connect two things they said (two people pulling different ways), gently name a contradiction, or offer a careful hunch as a question (\"I wonder if...\"). Never at high distress, and never \"both sides\" talk about someone who may be harming them.",
       "- Not every reply needs a question. When you ask one, ask only one, and make it open and specific to them.",
       "- Do not ask about basic needs (food, warmth, sleep, money, safety at home) unless they raised it or the draft is about safety.",
       `- Never repeat or rephrase a question already asked: ${asked.slice(-8).map((q) => '"' + q.trim() + '"').join(", ") || "none yet"}.`,
@@ -1243,6 +1250,7 @@ function speak(text, pitch = 1, melody, rate = 0.96, force) {
       u.lang = voice ? voice.lang : (latvian ? "lv-LV" : "en-GB");
       u.rate = Math.max(0.7, Math.min(1.4, (seg.rate || rate || 0.96) * speed));
       u.pitch = softPitch(seg.pitch);
+      if (quietOn()) u.volume = 0.35;   // quiet mode: Be Whole speaks softly too
       try { speechSynthesis.speak(u); } catch {}
     }
   }
@@ -1264,17 +1272,25 @@ $("msg").addEventListener("keydown", (e) => {
 });
 $("to-type").onclick = () => { $("dock").hidden = true; $("typebar").hidden = false; growMsg(); $("msg").focus(); };
 $("to-talk").onclick = () => { $("typebar").hidden = true; $("dock").hidden = false; };
-let heardLang = null, heardMs = null;
+let heardLang = null, heardMs = null, heardQuiet = false;
+const quietOn = () => store.get("bw-quiet") === "on";
+function paintQuiet() {
+  const on = quietOn();
+  $("quiet-btn").textContent = "🌙 Quiet mode: " + (on ? "on" : "off");
+  $("quiet-btn").setAttribute("aria-pressed", String(on));
+  if ($("pf-quiet")) $("pf-quiet").checked = on;
+}
+$("quiet-btn").onclick = () => { store.set("bw-quiet", quietOn() ? "off" : "on"); paintQuiet(); };
 $("typebar").onsubmit = async (e) => {
   e.preventDefault();
   const text = $("msg").value.trim();
   if (!text) return;
   $("msg").value = ""; growMsg();
-  const lang = heardLang, ms = heardMs; heardLang = heardMs = null;
+  const lang = heardLang, ms = heardMs, quietMsg = heardQuiet; heardLang = heardMs = null; heardQuiet = false;
   if (lang !== null || ms !== null) { $("type-hint").textContent = touch ? "" : "Shift + Enter for a new line"; $("typebar").hidden = true; $("dock").hidden = false; }
   addMe(text, null, ms);
   thinking(true);
-  try { const d = await api("/api/text", lang ? { text, language: lang } : { text }); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
+  try { const d = await api("/api/text", Object.assign({ text }, lang ? { language: lang } : {}, quietMsg ? { quiet: true } : {})); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
   catch (err) { thinking(false); say(err.message, true); }
 };
 
@@ -1303,7 +1319,7 @@ function live(analyser) {
   const buf = new Float32Array(analyser.fftSize);
   // Auto-stop: learn the room's quiet level for the first moment, then stop after a pause once they've spoken.
   const vad = { t0: performance.now(), last: performance.now(), floor: [], speech: 0, quiet: 0 };
-  const PAUSE = +(store.get("bw-pause") || 2600);   // how long a pause ends your turn (profile setting)
+  const PAUSE = +(store.get("bw-pause") || 2600) + (quietOn() ? 600 : 0);   // how long a pause ends your turn (profile setting)
   const tick = () => {
     analyser.getFloatTimeDomainData(buf);
     const [hz, rms] = pitchOf(buf, ctx.sampleRate);
@@ -1311,7 +1327,7 @@ function live(analyser) {
     if (now - vad.t0 < 350) vad.floor.push(rms);
     else if (autoStop()) {
       const floor = vad.floor.length ? vad.floor.sort((a, b) => a - b)[vad.floor.length >> 1] : 0.003;
-      const thr = Math.max(0.006, floor * 2.5);
+      const thr = quietOn() ? Math.max(0.0015, floor * 1.8) : Math.max(0.006, floor * 2.5);   // quiet mode hears a soft voice
       if (rms > thr) { vad.speech += dt; vad.quiet = 0; } else if (vad.speech > 600) vad.quiet += dt;
       if (vad.speech > 600 && vad.quiet > PAUSE) { stopRec(); return; }
     }
@@ -1369,10 +1385,11 @@ async function sendBlob(blob) {
   thinking(true);
   try {
     const check = store.get("bw-confirm") !== "off";
-    const d = await api("/api/voice" + (check ? "?confirm=1" : ""), blob, blob.type.split(";")[0]);
+    const q = [check ? "confirm=1" : "", quietOn() ? "quiet=1" : ""].filter(Boolean).join("&");
+    const d = await api("/api/voice" + (q ? "?" + q : ""), blob, blob.type.split(";")[0]);
     thinking(false);
     if (d.draft !== undefined) {   // check what I heard: fix anything, then Send (your tone of voice is kept)
-      heardLang = d.language || null; heardMs = d.heard_ms || null;
+      heardLang = d.language || null; heardMs = d.heard_ms || null; heardQuiet = quietOn();
       $("dock").hidden = true; $("typebar").hidden = false;
       $("msg").value = d.draft; growMsg(); $("msg").focus();
       $("type-hint").textContent = d.draft ? "Is this what you said? Fix anything, then Send." : "I couldn't make that out. Type it, or tap Talk.";
@@ -1909,6 +1926,7 @@ function paintVoice() {
   $("pf-autostop").checked = autoStop();
   $("pf-pause").value = store.get("bw-pause") || "2600";
   $("pf-confirm").checked = store.get("bw-confirm") !== "off";
+  paintQuiet();
   $("pf-voice-tip").hidden = en.some((v) => voiceScore(v) >= 18);   // already has a premium/enhanced voice
 }
 $("pf-voice").onchange = () => { $("pf-voice").value ? store.set("bw-voice", $("pf-voice").value) : store.del("bw-voice"); speak("Hello, this is how I'll sound.", 1, null, 0.96, true); };
@@ -1916,6 +1934,7 @@ $("pf-rate").oninput = () => { store.set("bw-rate", $("pf-rate").value); paintVo
 $("pf-rate").onchange = () => speak("Hello, this is how I'll sound.", 1, null, 0.96, true);
 $("pf-hear").onclick = () => speak("Hello. I'm here to listen, not to judge. Samaritans are on 116 123, any time.", 1, null, 0.96, true);
 $("pf-exit").onchange = () => store.set("bw-exit-url", $("pf-exit").value);
+$("pf-quiet").onchange = () => { store.set("bw-quiet", $("pf-quiet").checked ? "on" : "off"); paintQuiet(); };
 $("pf-pause").onchange = () => store.set("bw-pause", $("pf-pause").value);
 $("pf-confirm").onchange = () => store.set("bw-confirm", $("pf-confirm").checked ? "on" : "off");
 $("pf-autostop").onchange = () => store.set("bw-autostop", $("pf-autostop").checked ? "on" : "off");
@@ -2015,6 +2034,7 @@ else {
   show("s-welcome");
 }
 }
+paintQuiet();
 show("s-start");
 </script>
 <script>
