@@ -35,6 +35,33 @@ which stay on your phone).
    model safely there (Safari may clear website storage that isn't used for a few weeks).
 5. Tap **Talk**, allow the microphone, speak, tap **Done**.
 
+## Faster and more natural voice
+
+- **Faster understanding**: Be Whole uses several processor cores when it can. `coi-sw.js` makes that possible
+  on GitHub Pages and Netlify, so keep it in the folder. If the phone ever closes the page while starting voice,
+  Be Whole switches back to one core by itself. **Base** is about 3 times faster than Small; Small is better for Latvian.
+- **Auto-stop**: Be Whole notices when you pause (about 2 seconds) and starts understanding straight away.
+  Turn it off in your profile (the round button with your initial) → Voice and listening.
+- **A more natural reading voice**: on the iPhone, Settings → Accessibility → Spoken Content (called Read & Speak
+  on newer iPhones) → Voices → English, and download a voice marked **Enhanced** or **Premium** (for example Serena
+  or Daniel). Then choose it in your profile → Voice and listening, and set the speed you like.
+
+## Deeper replies with Claude (your own API key)
+
+1. On a computer, go to https://console.anthropic.com, sign in, add a payment method under **Billing**, then
+   **API keys** → **Create key**. Copy the key (it starts with `sk-ant-`). Set a monthly spend limit in the Console.
+2. In Be Whole on the iPhone, on the start screen, paste it into **Deeper replies with Claude**, choose
+   Sonnet 5.5 (best) or Haiku 5.5 (cheapest), and tap **Save and test**. "Connected" means it works.
+3. The key stays only on this phone. It is not in the website files, so the public site never shows it.
+   Tap **Forget key** to remove it. Each message (with the conversation so far) goes to Claude to write the
+   reply; crisis and safety replies never do.
+
+## Updating to a new version
+
+Upload the new files over the old ones (same names). Usually only `index.html`, `bewhole.b64.txt` and
+`coi-sw.js` change. Then close Be Whole on the iPhone (swipe it away) and open it again. The voice model and your
+conversations stay on the phone.
+
 ## If something doesn't work
 
 - **"Voice engine did not load"**: the first visit needs internet to fetch the voice engine.

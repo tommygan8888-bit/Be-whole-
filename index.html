@@ -46,7 +46,7 @@ body {
   display: flex; flex-direction: column;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
-button, input { font: inherit; color: inherit; }
+button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--calm); outline-offset: 3px; }
 [hidden] { display: none !important; }
@@ -72,7 +72,7 @@ h1 { font-family: var(--serif); font-weight: 500; font-size: 30px; line-height: 
 .lede { color: var(--ink-soft); margin: 0 0 24px; }
 label.field { display: block; margin: 0 0 18px; }
 label.field span { display: block; font-size: 15px; color: var(--ink-soft); margin-bottom: 6px; }
-input.text, textarea.text {
+input.text, textarea.text, select.text {
   width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line);
   background: var(--bg-raise); font-size: 18px;
 }
@@ -127,8 +127,12 @@ input.text, textarea.text {
 .typebar .send:disabled { opacity: .45; }
 
 /* header icon buttons */
-.head-actions { display: flex; gap: 6px; align-items: center; }
-.icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: none; padding: 0;
+.head-actions { display: flex; gap: 5px; align-items: center; flex: none; }
+#exit { padding: 6px 10px; font-size: 14px; }
+.mark { min-width: 0; overflow: hidden; }
+header { gap: 8px; }
+@media (max-width: 420px) { header { padding: 10px 12px; } .test-badge { display: none; } }
+.icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: none; padding: 0;
   display: grid; place-items: center; color: var(--ink-soft); flex: none; }
 .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .icon-btn[aria-pressed="false"] { opacity: .6; }
@@ -181,6 +185,13 @@ input.text, textarea.text {
 .int-chip .seen { font-size: 11px; color: var(--calm); }
 .int-chip[data-state="yes"] .seen { color: var(--bg); }
 .int-chip .lock { font-size: 11px; opacity: .7; }
+.reso { width: 100%; max-width: 360px; display: block; margin: 4px auto; }
+.reso .ring { fill: none; stroke: var(--line); }
+.reso .core { fill: var(--bg-raise); stroke: var(--line); }
+.reso text { font-family: var(--round); font-size: 9px; fill: var(--ink-soft); }
+.reso .lbl { font-size: 10px; fill: var(--ink); }
+.reso-key { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft); justify-content: center; }
+.reso-key i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
 .empty { color: var(--ink-soft); font-size: 15px; text-align: center; padding: 24px 8px; }
 
 /* start screen (Logozzz Omni-Studio) */
@@ -214,7 +225,8 @@ input.text, textarea.text {
 .know-scale button { border: 1px solid var(--line); background: var(--bg-raise); border-radius: 12px; padding: 10px 2px;
   font-size: 20px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .know-scale button small { font-size: 11px; font-weight: 400; color: var(--ink-soft); }
-.know-scale button:active { background: var(--calm); color: var(--bg); }
+.know-scale button:active, .know-scale button.picked { background: var(--calm); color: var(--bg); }
+.know-scale button.picked small { color: var(--bg); }
 .know-h2 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin: 8px 0 12px; }
 .trait { margin: 0 0 16px; }
 .trait b { display: block; font-size: 15px; }
@@ -287,7 +299,7 @@ body { padding-top: 0 !important; }
 .voice-pick select { font: inherit; font-size: 16px; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
 .voice-bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 8px; }
 .deep-switch { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg-raise); }
-.deep-switch input { margin-top: 4px; width: 20px; height: 20px; accent-color: var(--calm); flex: none; }
+.deep-switch input[type=checkbox] { margin-top: 4px; width: 20px; height: 20px; accent-color: var(--calm); flex: none; }
 .deep-switch small { display: block; color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
 .voice-bar > div { height: 100%; width: 0; background: var(--calm); transition: width .2s; }
 </style>
@@ -303,7 +315,7 @@ body { padding-top: 0 !important; }
     <button class="icon-btn" id="options-btn" aria-label="Options: saved conversations and insights" title="Options" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <button class="icon-btn" id="profile-btn" aria-label="My profile" title="My profile" hidden></button>
-    <button class="exit" id="exit" title="Leave quickly">Exit</button>
+    <button class="exit" id="exit" title="Quick exit: instantly switch to an ordinary page" aria-label="Quick exit">Quick exit</button>
   </div>
 </header>
 
@@ -391,6 +403,7 @@ body { padding-top: 0 !important; }
       </ul>
     </div>
     <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
+    <p class="note"><b>Quick exit</b> (top right): if someone comes in, one tap switches to an ordinary page. Your conversations stay saved on this phone; open Be Whole again to come back. You can choose the page in your profile.</p>
     <button class="primary" id="start-btn">Start talking</button>
     <button class="secondary" id="story-btn">Tell me about you (optional)</button>
     <button class="secondary" id="know-btn">Get to know me first (optional, 3 minutes)</button>
@@ -429,6 +442,13 @@ body { padding-top: 0 !important; }
   <section class="screen" id="s-report" hidden>
     <h1>Today's picture</h1>
     <p class="lede" id="report-lede"></p>
+    <div class="card" id="rate-card">
+      <h3>How do you feel right now?</h3>
+      <div class="know-scale" role="group" aria-label="How do you feel right now, 1 to 5">
+        <button data-rate="1">1<small>Very low</small></button><button data-rate="2">2<small>Low</small></button><button data-rate="3">3<small>OK</small></button><button data-rate="4">4<small>Good</small></button><button data-rate="5">5<small>Very good</small></button>
+      </div>
+      <p id="rate-note">Your answer helps me learn to read you more accurately. Optional.</p>
+    </div>
     <svg class="pyramid" id="pyramid" viewBox="0 0 420 266" role="img" aria-label="Your Maslow scores"></svg>
     <p class="lede" id="cycle-line" style="margin:14px 0 4px"></p>
     <svg class="spiral" id="spiral" viewBox="0 0 240 264" role="img" aria-label="Your progress spiral"></svg>
@@ -459,7 +479,7 @@ body { padding-top: 0 !important; }
       <div id="conv-list"></div>
       <div id="conv-detail" hidden>
         <button class="secondary" id="conv-back" style="margin:0 0 10px">← All conversations</button>
-        <p class="note" id="conv-when"></p>
+        <div class="note" id="conv-when"></div>
         <div id="conv-lines"></div>
         <div class="card" id="conv-next" hidden></div>
       </div>
@@ -481,17 +501,49 @@ body { padding-top: 0 !important; }
       <p style="margin:0 0 8px">Tap once for "yes, I'm into this", twice for "not for me", three times to clear. A small number means I noticed you talking about it.
       Ones marked ◦ are personal: I only bring them up if you tick them.</p>
       <div class="int-grid" id="pf-interests"></div></div>
+    <div class="card"><h3>Voice and listening</h3>
+      <label class="field" style="margin:0 0 10px"><span>My reading voice</span>
+        <select class="text" id="pf-voice" style="font-size:16px;padding:10px 12px"></select></label>
+      <label class="field" style="margin:0 0 10px"><span>Speaking speed: <b id="pf-rate-v">normal</b></span>
+        <input type="range" id="pf-rate" min="0.8" max="1.25" step="0.05" style="width:100%;accent-color:var(--calm)"></label>
+      <button class="secondary" id="pf-hear" type="button" style="margin:0 0 10px">Hear it</button>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:15px"><input type="checkbox" id="pf-autostop" style="width:20px;height:20px;accent-color:var(--calm);flex:none;margin-top:2px">
+        <span>Stop listening by itself when I pause<small style="display:block;color:var(--ink-soft);font-size:13px">About 2 seconds of quiet after you've spoken. You can still tap Done.</small></span></label>
+      <label class="field" style="margin:10px 0 6px"><span>Pause before I stop listening</span>
+        <select class="text" id="pf-pause" style="font-size:16px;padding:10px 12px">
+          <option value="1800">Short (about 2 seconds)</option><option value="2600">Normal (about 2½ seconds)</option><option value="3600">Long (about 3½ seconds, for thinking pauses)</option></select></label>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:15px"><input type="checkbox" id="pf-confirm" style="width:20px;height:20px;accent-color:var(--calm);flex:none;margin-top:2px">
+        <span>Let me check what you heard before it's sent<small style="display:block;color:var(--ink-soft);font-size:13px">Your words appear in the typing box to correct; your tone of voice is still read.</small></span></label>
+      <p id="pf-voice-tip">For a much more natural voice on iPhone: Settings → Accessibility → Spoken Content (Read &amp; Speak on newer iPhones) → Voices → English, and download a voice marked Enhanced or Premium, such as Serena or Daniel. Then restart Be Whole and choose it here.</p></div>
     <div class="card"><h3>Your choices</h3><ul class="consents" id="pf-consents" style="margin:0;border-top:none"></ul>
       <button class="primary" id="pf-save">Save changes</button><p class="note" id="pf-note" style="margin:8px 0 0"></p></div>
     <button class="secondary" id="pf-story">My story</button>
     <button class="secondary" id="pf-know">How I see you (personality)</button>
     <button class="secondary" id="pf-forget-mem">Forget our conversations</button>
     <button class="secondary" id="pf-delete" style="color:var(--alert);border-color:var(--alert)">Delete everything Be Whole knows about me</button>
+    <div class="card"><h3>Quick exit</h3>
+      <label class="field" style="margin:0"><span>One tap on "Quick exit" switches to:</span>
+        <select class="text" id="pf-exit" style="font-size:16px;padding:10px 12px"></select></label>
+      <p>Choose a page that looks ordinary for you. Your conversations stay saved; open Be Whole again to come back.</p></div>
     <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
     <p class="error" id="pf-err" role="alert"></p>
   </section>
 </main>
 
+<script>
+(() => {
+  try {
+    if (self.crossOriginIsolated || !window.isSecureContext || !("serviceWorker" in navigator)) return;
+    if (localStorage.getItem("bw-stt-threads") === "off") return;
+    navigator.serviceWorker.register("coi-sw.js").then(() => navigator.serviceWorker.ready).then(() => {
+      if (!self.crossOriginIsolated && !sessionStorage.getItem("bw-coi-reloaded")) {
+        sessionStorage.setItem("bw-coi-reloaded", "1");
+        location.reload();
+      }
+    }).catch(() => {});
+  } catch (e) {}
+})();
+</script>
 <script src="pyodide.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
 <script>window.BW_LIVE = true;
@@ -509,10 +561,25 @@ window.BW_STT = (() => {
     base: { label: "Base: faster, best for English", mb: 160 },
   };
   const CACHE = "bewhole-voice-v1";
-  const MAX_TOKENS = 224, CHUNK = 30 * 16000;
-  let enc = null, dec = null, meta = null, vocab = null, loadedModel = null;
+  const MAX_TOKENS = 224, CHUNK = 30 * 16000, HOP = 160;
+  // Speed: encode only the speech (plus 1 s), not the whole 30-second window; cap decoding by the length.
+  const framesFor = (n) => { const f = Math.floor(n / HOP) + 100; return Math.min(3000, Math.max(300, f + (f % 2))); };
+  const maxTokensFor = (n) => Math.floor(Math.min(MAX_TOKENS, 12 + 10 * n / 16000));
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
+  // Several processor cores when the page allows it (needs the cross-origin-isolation helper, coi-sw.js).
+  // If the phone ever closed the page while starting voice with several cores, use one core from then on.
+  const crashed = store.get("bw-stt-starting");
+  if (crashed === "threads") store.set("bw-stt-threads", "off");
+  // (and if even one core was too much for this phone, don't start voice by itself in the background again)
+  if (crashed === "one") store.set("bw-stt-nowarm", "1");
+  const threads = () => (self.crossOriginIsolated && store.get("bw-stt-threads") !== "off")
+    ? Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1)) : 1;
+  let enc = null, dec = null, meta = null, vocab = null, loadedModel = null, cores = 1, loading = null;
   const settings = {
-    get model() { try { return localStorage.getItem("bw-stt-model") || "small"; } catch { return "small"; } },
+    get model() { try { return localStorage.getItem("bw-stt-model") || ((navigator.language || "").startsWith("lv") ? "small" : "base"); } catch { return "base"; } },
     set model(v) { try { localStorage.setItem("bw-stt-model", v); } catch {} },
     get language() { try { return localStorage.getItem("bw-stt-lang") || "auto"; } catch { return "auto"; } },
     set language(v) { try { localStorage.setItem("bw-stt-lang", v); } catch {} },
@@ -538,11 +605,16 @@ window.BW_STT = (() => {
   }
   async function forget(m) { try { const c = await caches.open(CACHE); for (const f of files(m)) await c.delete(urlFor(m, f)); } catch {} }
 
-  async function load(onProgress) {
+  function load(onProgress) {   // one start at a time (the background warm-up and a tap can't both load it)
+    if (!loading) loading = _load(onProgress).finally(() => { loading = null; });
+    return loading;
+  }
+  async function _load(onProgress) {
     const m = settings.model;
     if (loadedModel === m && enc) return;
     if (!window.ort) throw new Error("the voice engine (onnxruntime) did not load: check the internet connection once");
-    ort.env.wasm.numThreads = 1;
+    let n = threads();
+    ort.env.wasm.numThreads = n;
     meta = window.BW_STT_META[m];
     let done = 0; const want = MODELS[m].mb * 1e6;
     const tick = (n) => { done += n; onProgress && onProgress(Math.min(99, Math.round(done / want * 100))); };
@@ -551,8 +623,20 @@ window.BW_STT = (() => {
     const tb = await cached(urlFor(m, files(m)[2]), tick);
     onProgress && onProgress(100, "Starting the voice engine...");
     const opts = { executionProviders: ["wasm"], graphOptimizationLevel: "all" };
-    enc = await ort.InferenceSession.create(eb, opts);
-    dec = await ort.InferenceSession.create(db, opts);
+    store.set("bw-stt-starting", n > 1 ? "threads" : "one");
+    try {
+      enc = await ort.InferenceSession.create(eb, opts);
+      dec = await ort.InferenceSession.create(db, opts);
+    } catch (e) {
+      if (n === 1) { store.set("bw-stt-starting", ""); throw e; }
+      store.set("bw-stt-threads", "off");   // several cores didn't work here: one core it is
+      ort.env.wasm.numThreads = 1; n = 1;
+      store.set("bw-stt-starting", "one");
+      enc = await ort.InferenceSession.create(eb, opts);
+      dec = await ort.InferenceSession.create(db, opts);
+    }
+    store.set("bw-stt-starting", "");
+    cores = n;
     vocab = new Map();
     for (const line of new TextDecoder().decode(tb).split("\n")) {
       const i = line.lastIndexOf(" "); if (i < 0) continue;
@@ -583,14 +667,20 @@ window.BW_STT = (() => {
   function lastRow(logits) {
     const [, T, V] = logits.dims; return logits.data.subarray((T - 1) * V, T * V);
   }
-  function looping(t, n = 4, r = 3) {
-    if (t.length < n * r) return false;
-    const tail = t.slice(-n).join(",");
-    for (let k = 1; k < r; k++) if (t.slice(t.length - n * (k + 1), t.length - n * k).join(",") !== tail) return false;
-    return true;
+  function looping(t) {
+    // A short phrase repeated 3 times, or a phrase of 6+ tokens repeated twice: returns how many tokens to drop.
+    for (let n = 1; n < 16; n++) {
+      const r = n < 6 ? 3 : 2;
+      if (t.length < n * r) continue;
+      const tail = t.slice(-n).join(",");
+      let same = true;
+      for (let k = 1; k < r && same; k++) same = t.slice(t.length - n * (k + 1), t.length - n * k).join(",") === tail;
+      if (same) return n * (r - 1);
+    }
+    return 0;
   }
 
-  async function decodeChunk(mel, langChoice) {
+  async function decodeChunk(mel, langChoice, maxTokens) {
     const eo = await enc.run({ mel: new ort.Tensor("float32", mel, [1, meta.n_mels, mel.length / meta.n_mels]) });
     const crossK = eo.n_layer_cross_k, crossV = eo.n_layer_cross_v;
     let lang = langChoice;
@@ -598,10 +688,14 @@ window.BW_STT = (() => {
       const [logits] = await step([meta.sot], zeros(), zeros(), crossK, crossV, 0);
       const row = lastRow(logits);
       lang = Object.keys(meta.langs).reduce((a, b) => (row[meta.langs[a]] >= row[meta.langs[b]] ? a : b));
+      // steadiness: stay with the language you were just speaking unless the other one is clearly ahead
+      const last = store.get("bw-stt-last-lang");
+      if (last && last !== lang && meta.langs[last] !== undefined && row[meta.langs[lang]] - row[meta.langs[last]] < 2.0) lang = last;
+      store.set("bw-stt-last-lang", lang);
     }
     let feed = [meta.sot, meta.langs[lang], meta.transcribe, meta.no_timestamps];
     let selfK = zeros(), selfV = zeros(), offset = 0; const out = [];
-    for (let i = 0; i < MAX_TOKENS; i++) {
+    for (let i = 0; i < maxTokens; i++) {
       const [logits, k, v] = await step(feed, selfK, selfV, crossK, crossV, offset);
       selfK = k; selfV = v; offset += feed.length;
       const row = lastRow(logits);
@@ -609,7 +703,8 @@ window.BW_STT = (() => {
       for (let j = 0; j <= meta.eot; j++) if (row[j] > bestV) { bestV = row[j]; best = j; }   // text tokens only
       if (best === meta.eot || offset >= meta.n_text_ctx - 1) break;
       out.push(best);
-      if (looping(out)) { out.splice(-8); break; }
+      const drop = looping(out);
+      if (drop) { out.splice(-drop); break; }
       feed = [best];
     }
     const parts = out.map((t) => vocab.get(t) || new Uint8Array());
@@ -618,19 +713,28 @@ window.BW_STT = (() => {
     return { text: new TextDecoder().decode(all).trim(), language: lang };
   }
 
-  // pcm: Float32Array at 16 kHz. melOf(chunk) -> Float32Array (n_mels x 3000), computed by Be Whole's Python.
+  // pcm: Float32Array at 16 kHz. melOf(chunk, n_mels, frames) -> Float32Array (n_mels x frames), from Be Whole's Python.
   async function transcribe(pcm, melOf) {
+    const t0 = performance.now();
     let peak = 0; for (const x of pcm) peak = Math.max(peak, Math.abs(x));
     if (!peak) return { text: "", language: "en" };
     const norm = new Float32Array(pcm.length); for (let i = 0; i < pcm.length; i++) norm[i] = pcm[i] / peak * 0.9;
     const texts = []; let language = "en";
     for (let s = 0; s < norm.length; s += CHUNK) {
-      const r = await decodeChunk(await melOf(norm.subarray(s, s + CHUNK), meta.n_mels), settings.language);
+      const part = norm.subarray(s, s + CHUNK), frames = framesFor(part.length);
+      const r = await decodeChunk(await melOf(part, meta.n_mels, frames), settings.language, maxTokensFor(part.length));
       if (r.text) texts.push(r.text); language = r.language;
     }
-    return { text: texts.join(" "), language };
+    return { text: texts.join(" "), language, ms: Math.round(performance.now() - t0), cores };
   }
-  return { MODELS, settings, load, isDownloaded, forget, transcribe, get ready() { return !!enc && loadedModel === settings.model; } };
+  // Start the engine in the background once the model is on the phone, so the first Talk is quick.
+  async function warm() {
+    if (store.get("bw-stt-nowarm") || (enc && loadedModel === settings.model)) return loading;
+    if (loading) return loading.catch(() => null);
+    if (await isDownloaded()) return load().catch(() => null);
+  }
+  return { MODELS, settings, load, warm, isDownloaded, forget, transcribe, framesFor, maxTokensFor, looping,
+           get cores() { return cores; }, get ready() { return !!enc && loadedModel === settings.model; } };
 })();
 </script>
 <script>
@@ -683,7 +787,10 @@ from bewhole import browser`);
   function sync(populate) {
     return new Promise((res, rej) => py.FS.syncfs(populate, (err) => err ? rej(err) : res()));
   }
-  const ready = boot().catch((e) => {
+  const ready = boot().then(() => {
+    // the speech model is already on this phone: start it quietly in the background
+    if (window.BW_STT && window.BW_STT.warm) setTimeout(() => window.BW_STT.warm(), 1200);
+  }, (e) => {
     status("Be Whole couldn't start in this browser (" + (e && e.message || e) + "). " +
            "Try Safari on iPhone with iOS 16 or newer, or use the computer version.", "error");
     throw e;
@@ -703,8 +810,8 @@ from bewhole import browser`);
     return out.getChannelData(0);
   }
 
-  async function melOf(chunk, nMels) {
-    const b = engine.mel(chunk, nMels);
+  async function melOf(chunk, nMels, frames) {
+    const b = engine.mel(chunk, nMels, frames || 3000);
     const u = b.toJs(); if (b.destroy) b.destroy();
     return new Float32Array(u.slice().buffer);
   }
@@ -721,23 +828,28 @@ from bewhole import browser`);
 
   async function api(path, body, raw) {
     await ready;
-    if (path === "/api/voice") {
+    if (path.startsWith("/api/voice")) {
+      const confirm = path.includes("confirm=1");
       let pcm;
       try { pcm = await decode(body); }
       catch { return { said: "", reply: "I couldn't open that recording. Voice memos from the Voice Memos app or Files work best." }; }
       const stt = window.BW_STT;
       if (stt && (stt.ready || await stt.isDownloaded())) {
         try {
-          if (!stt.ready) { status("Starting the voice engine..."); await stt.load(); status(""); }
+          if (!stt.ready) { status("Starting the voice engine..."); await (stt.warm ? stt.warm() : null); if (!stt.ready) await stt.load(); status(""); }
           status("Listening to what you said...");
           const heard = await stt.transcribe(pcm, melOf);
           status("");
           if (!heard.text) return { said: "", reply: "Sorry, I couldn't quite hear that. Could you say it again?" };
+          if (confirm) {   // check what I heard: the words go to the typing box; the voice tone is kept for the reply
+            pendingAudio = pcm;
+            return { draft: heard.text, language: heard.language, heard_ms: heard.ms };
+          }
           const out = JSON.parse(engine.handle("/api/text", JSON.stringify({ text: heard.text, language: heard.language }), pcm, 16000));
           if (persistent) { try { await sync(false); } catch {} }
           if (out.error) throw new Error(out.error === "no_session" ? "Session ended. Tap Talk again." : out.error);
           await deepen(heard.text, out, heard.language);
-          return { ...out, said: heard.text, language: heard.language };
+          return { ...out, said: heard.text, language: heard.language, heard_ms: heard.ms };
         } catch (e) {
           status("");
           if (String(e.message).startsWith("Session ended")) throw e;
@@ -759,6 +871,176 @@ from bewhole import browser`);
     return out;
   }
   return { api, ready };
+})();
+</script>
+<script>window.BW_RULES = "# Response playbook\n\nThe goal is to guide the voice back to the person's calm baseline (within +/-1/5 = 20%).\n\n| Tonality | How to respond |\n| --- | --- |\n| Low (sad) | Slow, warm, supportive words. Praise effort. End by appreciating one quality. |\n| Baseline | Open exploring questions, goal-setting, reflection. |\n| High negative (anger) | Ask about the situation. Acknowledge and respect the frustration. No advice until the voice settles. |\n| High positive (excitement / overwhelm) | Let them talk through tasks and feelings, then help sort and prioritise. |\n\n## Style\n- Mirror one key word the person used, once or twice per topic. Never copy whole sentences.\n- Short replies: 1-3 sentences, then one question.\n- Check, don't assume: \"You sound a bit low today, is that right?\" Their answer overrides the voice reading.\n- Guide towards expressing emotion: \"What did you feel in that moment?\"\n\n## Humour rule\nGentle humour only once the voice has moved back towards baseline, never at distress level 3 or above.\n\n## Conversation arc\n- Start: warm greeting, ask about music taste, short mood check-in.\n- Middle: listen, mirror, find Maslow layers, share research insights when the topic comes up.\n- End: name a strength, purpose proposal (lively voice), new activity, a way to connect with\n  people or a community, one video, appreciation.\n\n## Listening habits (follow the person, not the list)\n1. **Loss first.** When someone says a person is gone, left, died, or they split up, stay with it:\n   acknowledge the loss and ask about that person. No lists, no next topic. Never ask about \"your partner\"\n   after a break-up.\n2. **Say their answer back** in their own words (I becomes you) before the next question.\n3. **Follow the person they name.** If they mention their dad, the next questions are about their dad,\n   for up to three turns, before going back to the needs list.\n4. **Never repeat** an opener or a question in the same conversation.\n\n\n# Safety rules (override everything else)\n\n- At distress level 4, or any mention of suicide, self-harm, or being in danger: stop guiding and\n  hand over. UK: Samaritans 116 123 (24/7), NHS 111, emergency 999.\n- Domestic abuse signs: offer Refuge's National Domestic Abuse Helpline 0808 2000 247 and a\n  safety plan. Never reveal anything to the partner. Switch off joint mode quietly.\n- Sudden incoherence or confused beliefs: stay calm and simple, gently suggest seeing a GP.\n- Never diagnose (including ADHD, autism, depression). Never claim to be a psychologist.\n- Questions about parents can open painful memories. Slow down, do not push for detail.\n- Users must be 18+.\n";</script>
+<script>
+// Be Whole: "deeper replies" with Claude. Be Whole's engine still reads the voice, the needs, safety and
+// the skills; Claude then writes the reply itself, following the engine's draft and Be Whole's rules,
+// so the conversation can follow the person and grow in depth instead of working down a list.
+// Two ways to reach Claude:
+//   - inside the Claude app (the demo page): Claude on the viewer's own account, with their consent;
+//   - on your own site (the live-voice app): YOUR OWN Claude API key, typed into the app once and kept only in
+//     this phone's storage. It is never part of the website files, so publishing the site doesn't publish the key.
+window.BW_DEEP = (() => {
+  "use strict";
+  const RULES = window.BW_RULES || "";
+  const API = "https://api.anthropic.com/v1/messages";
+  const MODELS = { "claude-sonnet-5-5": "Sonnet 5.5 (best)", "claude-haiku-5-5": "Haiku 5.5 (cheapest)" };
+  const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+               set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+  let samplePromise = null, transcript = [], blocked = false;
+  const inClaudeApp = () => !!(window.claude && typeof window.claude.use === "function");
+  const keySample = () => {
+    const key = ls.get("bw-claude-key");
+    if (!key) return null;
+    return async (prompt) => {
+      const r = await fetch(API, { method: "POST", headers: {
+          "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true" },
+        body: JSON.stringify({ model: ls.get("bw-claude-model") || "claude-sonnet-5-5", max_tokens: 350,
+                               messages: [{ role: "user", content: prompt }] }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { const e = new Error((d.error && d.error.message) || `Claude answered ${r.status}`); e.status = r.status; throw e; }
+      return { text: (d.content || []).filter((b) => b.type === "text").map((b) => b.text).join("") };
+    };
+  };
+  const getSample = () => inClaudeApp()
+    ? (samplePromise || (samplePromise = window.claude.use("sample").catch(() => null)))
+    : Promise.resolve(keySample());
+  const on = () => { try { return localStorage.getItem("bw-deep") !== "off"; } catch { return true; } };
+  const setOn = (v) => { try { localStorage.setItem("bw-deep", v ? "on" : "off"); } catch {} };
+
+  function reset(greeting) { transcript = greeting ? [{ who: "Be Whole", text: greeting }] : []; }
+  function record(who, text) { if (text) { transcript.push({ who, text }); transcript = transcript.slice(-24); } }
+
+  function prompt(userText, out, language) {
+    const t = out.turn || {};
+    const asked = transcript.filter((x) => x.who === "Be Whole").map((x) => (x.text.match(/[^.!?]*\?/g) || []).pop()).filter(Boolean);
+    return [
+      "You are Be Whole, a warm, voice-first self-help companion (not a therapist) for people going through family breakdown.",
+      "Write Be Whole's next reply to the conversation at the end.",
+      "",
+      "BE WHOLE'S RULES:", RULES,
+      "",
+      "WHAT BE WHOLE'S ENGINE NOTICED THIS TURN (private, do not mention the numbers):",
+      `- tone of voice: ${t.tonality || "unknown"}${t.note ? " (" + t.note + ")" : ""}; distress ${t.distress ?? "?"} of 4`,
+      `- needs under pressure: ${(t.layers || []).join(", ") || "none named"}`,
+      `- the rule engine's draft reply: "${out.reply}"`,
+      `- how this person likes to be spoken to (from their own Big Five answers): ${Object.values(t.style || {}).join("; ") || "not known yet"}`,
+      `- Be Whole's thinking this turn (five steps + intuition): ${t.thought ? `the topic the person started: ${t.thought.topic || "not clear yet"}; they have reached the "${t.thought.level_name}" stage of it; this reply should ${{stay: "stay with the feeling", follow: "follow the person they named", deepen: "go one stage deeper on their topic", open: "gently open a new area"}[t.thought.intent] || "listen"}; pace: ${t.thought.pace}` : "listening"}`,
+      `- what they told you about this in earlier conversations: ${(t.recall || []).join(" | ") || "nothing yet"}`,
+      `- what they enjoy (build rapport around it when the moment is light; never during distress): ${Object.entries(t.interests || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not known yet"}`,
+      `- their situation as they've described it (value 8: elements by role, support / dual / drain): ${Object.entries(t.resonance || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not clear yet"}. Lean on the nearest support; for a dual element, acknowledge both sides and never tell them how to feel about it.`,
+      `- light humour: ${t.humour === false ? "they don't want jokes, keep it sincere" : "a gentle touch is fine on good days only, never about their pain"}`,
+      `- their background and life story, IN THEIR OWN WORDS (only what they chose to share): ${Object.entries(t.story || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not shared yet"}`,
+      "",
+      "HOW TO WRITE IT:",
+      "- Keep the draft's intent, and keep any concrete step, time, person or safety information in it, but write it as a real, thoughtful person would.",
+      "- Respond to the specific things the person just said, and connect them with what they told you earlier when it fits.",
+      "- Stay on the topic the person started. Base your question on THEIR topic, in their own words.",
+      "- Weave Be Whole's narrative and goal through it: what happened, then how it feels, then what it means, then what they want, then one small step up their spiral towards feeling whole. Move one stage at a time; never jump to advice early.",
+      "- If they told you something related in an earlier conversation, you may connect to it gently (\"Last time you mentioned...\").",
+      "- If the draft asks a 1 to 5 'how true is this of you' statement, end with that exact question, word for word.",
+      "- Use their background only to understand their frame of reference (their culture, era, upbringing, how they like to learn). Never assume anything from age, gender, culture or ethnicity; if unsure, ask. Match their vocabulary and level of explanation to how they speak.",
+      "- On a hard day you may remind them of a good memory or someone who believed in them, if they shared one.",
+      "- Interests: when the moment is light, you may connect to something they enjoy (a shared reference, an example from their hobby). Never bring up faith, romance, health, food and body, work or politics unless THEY raised it or it is listed as theirs; never give opinions on faith or politics; never give numbers, targets or diet plans about food or the body.",
+      "- Sound like a person, not a form: never start two replies the same way; don't repeat their whole sentence back (a few of their own words at most, and not every time); name a feeling back only once; pick up something specific they said (a day, a place, a person) and ask about that; once in a while, connect to something they said earlier in this conversation. A short message gets a short reply.",
+      "- Not every reply needs a question. When you ask one, ask only one, and make it open and specific to them.",
+      "- Do not ask about basic needs (food, warmth, sleep, money, safety at home) unless they raised it or the draft is about safety.",
+      `- Never repeat or rephrase a question already asked: ${asked.slice(-8).map((q) => '"' + q.trim() + '"').join(", ") || "none yet"}.`,
+      "- 1 to 3 short sentences. Plain spoken English (or the person's language), no lists, no headings, no quotation marks, no emojis.",
+      `- Reply in this language: ${language === "lv" ? "Latvian" : "English"}.`,
+      "- Output only the reply.",
+      "",
+      "CONVERSATION:",
+      ...transcript.map((x) => `${x.who}: ${x.text}`),
+      `Person: ${userText}`,
+      "Be Whole:",
+    ].join("\n");
+  }
+
+  async function rewrite(userText, out, language) {
+    const t = out.turn || {};
+    // Safety first: crisis, abuse and high distress keep the engine's exact words (support lines included).
+    if (!on() || blocked || !out.reply || out.handover || (t.distress || 0) >= 3) return out.reply;
+    const sample = await getSample();
+    if (!sample) return out.reply;
+    try {
+      const { text } = await sample(prompt(userText, out, language), { cache: false });
+      const reply = String(text || "").replace(/^\s*Be Whole:\s*/i, "").replace(/^["“]|["”]$/g, "").trim();
+      return reply.length > 3 && reply.length < 900 ? reply : out.reply;
+    } catch (e) {
+      if (e && (e.code === "not_granted" || e.status === 401)) blocked = true;   // no consent, or the key was refused
+      return out.reply;
+    }
+  }
+
+  // On your own site: a place to add your own key (kept only on this phone).
+  function mountKey(start) {
+    const box = document.createElement("div");
+    box.className = "deep-switch";
+    box.style.flexDirection = "column";
+    box.innerHTML = `<label style="display:flex;gap:12px;align-items:flex-start"><input type="checkbox" id="deep-on">
+        <span>Deeper replies with Claude<small>Uses your own Claude API key. Each message, with this conversation so far, is sent to Claude
+        to write Be Whole's reply; your profile stays on this phone. Crisis and safety replies never go to Claude.</small></span></label>
+      <div id="key-row" style="width:100%">
+        <input class="text" id="key-in" type="password" autocomplete="off" placeholder="Paste your key (sk-ant-…)" style="font-size:15px;padding:10px 12px;margin-top:4px">
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <select class="text" id="key-model" style="flex:1 1 160px;font-size:15px;padding:8px 10px"></select>
+          <button type="button" class="secondary" id="key-save" style="flex:1 1 120px;margin:0">Save and test</button>
+        </div>
+        <small id="key-note" style="display:block;margin-top:6px;color:var(--ink-soft)"></small>
+      </div>`;
+    start.before(box);
+    const $ = (id) => document.getElementById(id);
+    for (const [k, v] of Object.entries(MODELS)) { const o = document.createElement("option"); o.value = k; o.textContent = v; $("key-model").append(o); }
+    $("key-model").value = ls.get("bw-claude-model") || "claude-sonnet-5-5";
+    $("key-model").onchange = () => ls.set("bw-claude-model", $("key-model").value);
+    const paint = () => {
+      const has = !!ls.get("bw-claude-key");
+      $("deep-on").disabled = !has; $("deep-on").checked = has && on();
+      $("key-in").placeholder = has ? "Key saved on this phone (paste a new one to replace it)" : "Paste your key (sk-ant-…)";
+      $("key-save").textContent = has && !$("key-in").value ? "Forget key" : "Save and test";
+    };
+    $("key-in").oninput = paint;
+    $("deep-on").onchange = () => setOn($("deep-on").checked);
+    $("key-save").onclick = async () => {
+      const v = $("key-in").value.trim();
+      if (!v) { ls.set("bw-claude-key", null); $("key-note").textContent = "Key removed from this phone."; blocked = false; paint(); return; }
+      ls.set("bw-claude-key", v); $("key-in").value = ""; blocked = false;
+      $("key-note").textContent = "Testing...";
+      try {
+        const s = keySample();
+        const { text } = await s("Reply with just the word: ready");
+        $("key-note").textContent = text ? "Connected. Deeper replies are on." : "Saved.";
+        setOn(true);
+      } catch (e) {
+        $("key-note").textContent = "That key didn't work (" + e.message + "). Check it and try again.";
+        if (e.status === 401) ls.set("bw-claude-key", null);
+      }
+      paint();
+    };
+    paint();
+  }
+
+  // The switch on the start screen (only where Claude can be asked).
+  async function mountSwitch() {
+    const start = document.getElementById("start-btn");
+    if (!start) return;
+    if (!inClaudeApp()) { if (window.BW_LIVE) mountKey(start); return; }
+    if (!(await getSample())) return;
+    const lab = document.createElement("label");
+    lab.className = "deep-switch";
+    lab.innerHTML = `<input type="checkbox" id="deep-on"><span>Deeper replies with Claude<small>Each message, with this conversation so far, is sent to Claude to write Be Whole's reply. Your profile stays on this phone. Crisis and safety replies never go to Claude.</small></span>`;
+    start.before(lab);
+    const box = document.getElementById("deep-on");
+    box.checked = on();
+    box.onchange = () => setOn(box.checked);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountSwitch); else mountSwitch();
+
+  return { reset, record, rewrite };
 })();
 </script>
 <script>
@@ -819,11 +1101,21 @@ $("voice-toggle").onclick = () => {
 paintToggle();
 
 /* ---------- quick exit (safety) ---------- */
+const EXIT_PAGES = [
+  ["https://www.bbc.co.uk/weather", "BBC Weather"], ["https://www.bbc.co.uk/news", "BBC News"],
+  ["https://www.bbc.co.uk/sport", "BBC Sport"], ["https://www.google.com", "Google"],
+  ["https://www.delfi.lv", "Delfi (Latvia)"], ["https://www.lsm.lv", "LSM (Latvia)"],
+  ["https://www.tvnet.lv", "TVNET (Latvia)"], ["https://www.metoffice.gov.uk", "Met Office weather"],
+];
+function exitUrl() {
+  const u = store.get("bw-exit-url");
+  return EXIT_PAGES.some(([x]) => x === u) ? u : EXIT_PAGES[0][0];
+}
 $("exit").onclick = () => {
   try { speechSynthesis.cancel(); } catch {}
   $("log").innerHTML = "";
   for (const sc of document.querySelectorAll(".screen")) sc.hidden = true;   // if the page can't navigate away, it still goes blank
-  try { location.replace("https://www.bbc.co.uk/weather"); } catch {}
+  try { location.replace(exitUrl()); } catch {}
 };
 
 /* ---------- pairing ---------- */
@@ -860,7 +1152,7 @@ async function startSession() {
 
 /* ---------- conversation log ---------- */
 const MOOD = { baseline: "calm", low: "low", high_positive: "high, lively", high_negative: "high, heated" };
-function addMe(text, turn) {
+function addMe(text, turn, heardMs) {
   const div = document.createElement("div");
   div.className = "me";
   div.textContent = text;
@@ -872,7 +1164,7 @@ function addMe(text, turn) {
       (turn.note === "masked" ? ", voice lower than words" : "") +
       (turn.musical_note ? ` (${turn.musical_note}` + (turn.tone && turn.tone.key ? `, reply in ${turn.tone.key})` : turn.tone && turn.tone.next_note && turn.tone.next_note !== turn.musical_note ? `, reply on ${turn.tone.next_note})` : ")") : "");
     meta.innerHTML = `<span class="dot ${turn.tonality}"></span>`;
-    meta.append(label);
+    meta.append(label + (heardMs ? ` · understood in ${(heardMs / 1000).toFixed(1)} s` : ""));
     div.append(document.createElement("br"), meta);
   }
   $("log").append(div);
@@ -896,16 +1188,34 @@ function thinking(on) {
 let voices = [];
 function loadVoices() { try { voices = speechSynthesis.getVoices() || []; } catch { voices = []; } }
 if ("speechSynthesis" in window) { loadVoices(); try { speechSynthesis.onvoiceschanged = loadVoices; } catch {} }
-function pickVoice(lang) {
-  // The most natural installed voice for the language: enhanced/premium voices first, British English first.
-  const want = lang === "lv" ? ["lv"] : ["en-GB", "en-IE", "en-AU", "en-US", "en"];
-  const score = (v) => (/(premium|enhanced|natural|neural|siri)/i.test(v.name) ? 10 : 0) + (v.localService ? 1 : 0);
-  for (const w of want) {
-    const list = voices.filter((v) => v.lang && v.lang.replace("_", "-").toLowerCase().startsWith(w.toLowerCase()));
-    if (list.length) return list.sort((a, b) => score(b) - score(a))[0];
-  }
-  return null;
+// ---- speech output: the most natural voice on this device, or the one the person chose ----
+const NOVELTY = /^(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Junior|Organ|Pipe Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Ralph|Fred|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley)\b/i;
+const NICE = /\b(Serena|Daniel|Kate|Stephanie|Arthur|Martha|Oliver|Jamie|Moira|Karen|Samantha|Ava|Evan|Zoe|Nathan|Sonia|Libby|Ryan|Maisie|Thomas|Google UK English)\b/i;
+function voiceScore(v) {
+  const n = v.name || "";
+  return (/premium/i.test(n) ? 30 : 0) + (/enhanced/i.test(n) ? 20 : 0) + (/natural|neural|online/i.test(n) ? 18 : 0)
+    + (NICE.test(n) ? 8 : 0) + (/^en[-_]GB/i.test(v.lang) ? 5 : /^en[-_](IE|AU)/i.test(v.lang) ? 2 : 0)
+    + (v.localService ? 1 : 0) - (NOVELTY.test(n) ? 60 : 0);
 }
+function voicesFor(lang) {
+  return voices.filter((v) => v.lang && v.lang.replace("_", "-").toLowerCase().startsWith(lang)).sort((a, b) => voiceScore(b) - voiceScore(a));
+}
+function pickVoice(lang) {
+  if (lang === "en") {
+    const chosen = store.get("bw-voice");
+    const v = chosen && voices.find((x) => x.voiceURI === chosen);
+    if (v) return v;
+  }
+  return voicesFor(lang === "lv" ? "lv" : "en")[0] || null;
+}
+function speechText(t) {
+  // Say things the way a person would: phone numbers digit by digit, no symbols read out.
+  return String(t)
+    .replace(/\b\d{3,5}(?: \d{3,5})+\b/g, (m) => m.split(" ").map((g) => g.split("").join(" ")).join(", "))
+    .replace(/\be\.g\./gi, "for example").replace(/&/g, " and ").replace(/[→·•|]/g, ", ").replace(/[()"“”]/g, "")
+    .replace(/\s+/g, " ").replace(/\s+([,.!?])/g, "$1").replace(/,\s*,/g, ",").trim();
+}
+const softPitch = (p) => Math.max(0.92, Math.min(1.12, 1 + ((p || 1) - 1) * 0.5));   // gentle, not sing-song
 let speechUnlocked = false;
 function unlockSpeech() {
   // iPhone only lets a page speak after a tap: say nothing once, inside the first tap.
@@ -914,21 +1224,27 @@ function unlockSpeech() {
 }
 document.addEventListener("click", unlockSpeech, { capture: true });
 document.addEventListener("touchend", unlockSpeech, { capture: true });
-function speak(text, pitch = 1, melody, rate = 0.96) {
-  if (!speakOn || !("speechSynthesis" in window)) return;
+function speak(text, pitch = 1, melody, rate = 0.96, force) {
+  if ((!speakOn && !force) || !("speechSynthesis" in window)) return;
   const latvian = /[āčēģīķļņšūž]/i.test(text);
   const voice = pickVoice(latvian ? "lv" : "en");
   if (latvian && !voice) return;   // no Latvian voice installed on this phone
   try { speechSynthesis.cancel(); } catch {}
+  const speed = +(store.get("bw-rate") || 1);
   // Value 10: in major tonality each phrase is spoken on the next note of the pi melody.
   // Value 9: in minor tonality the whole reply uses the golden-ratio lift pitch.
+  // Spoken sentence by sentence (iPhone can cut off long speech), with the pitch kept gentle.
   const parts = melody && melody.length ? melody : [{ text, pitch: pitch || 1 }];
   for (const seg of parts) {
-    const u = new SpeechSynthesisUtterance(seg.text);
-    if (voice) u.voice = voice;
-    u.lang = voice ? voice.lang : (latvian ? "lv-LV" : "en-GB");
-    u.rate = seg.rate || rate || 0.96; u.pitch = Math.max(0.5, Math.min(2, seg.pitch || 1));
-    try { speechSynthesis.speak(u); } catch {}
+    for (const sentence of speechText(seg.text).match(/[^.!?]+[.!?]*/g) || []) {
+      if (!sentence.trim()) continue;
+      const u = new SpeechSynthesisUtterance(sentence.trim());
+      if (voice) u.voice = voice;
+      u.lang = voice ? voice.lang : (latvian ? "lv-LV" : "en-GB");
+      u.rate = Math.max(0.7, Math.min(1.4, (seg.rate || rate || 0.96) * speed));
+      u.pitch = softPitch(seg.pitch);
+      try { speechSynthesis.speak(u); } catch {}
+    }
   }
 }
 
@@ -948,14 +1264,17 @@ $("msg").addEventListener("keydown", (e) => {
 });
 $("to-type").onclick = () => { $("dock").hidden = true; $("typebar").hidden = false; growMsg(); $("msg").focus(); };
 $("to-talk").onclick = () => { $("typebar").hidden = true; $("dock").hidden = false; };
+let heardLang = null, heardMs = null;
 $("typebar").onsubmit = async (e) => {
   e.preventDefault();
   const text = $("msg").value.trim();
   if (!text) return;
   $("msg").value = ""; growMsg();
-  addMe(text);
+  const lang = heardLang, ms = heardMs; heardLang = heardMs = null;
+  if (lang !== null || ms !== null) { $("type-hint").textContent = touch ? "" : "Shift + Enter for a new line"; $("typebar").hidden = true; $("dock").hidden = false; }
+  addMe(text, null, ms);
   thinking(true);
-  try { const d = await api("/api/text", { text }); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
+  try { const d = await api("/api/text", lang ? { text, language: lang } : { text }); thinking(false); say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate); }
   catch (err) { thinking(false); say(err.message, true); }
 };
 
@@ -979,11 +1298,23 @@ function pitchOf(buf, sr) {
   }
   return [bestLag ? sr / bestLag : 0, rms];
 }
+const autoStop = () => store.get("bw-autostop") !== "off";
 function live(analyser) {
   const buf = new Float32Array(analyser.fftSize);
+  // Auto-stop: learn the room's quiet level for the first moment, then stop after a pause once they've spoken.
+  const vad = { t0: performance.now(), last: performance.now(), floor: [], speech: 0, quiet: 0 };
+  const PAUSE = +(store.get("bw-pause") || 2600);   // how long a pause ends your turn (profile setting)
   const tick = () => {
     analyser.getFloatTimeDomainData(buf);
     const [hz, rms] = pitchOf(buf, ctx.sampleRate);
+    const now = performance.now(), dt = now - vad.last; vad.last = now;
+    if (now - vad.t0 < 350) vad.floor.push(rms);
+    else if (autoStop()) {
+      const floor = vad.floor.length ? vad.floor.sort((a, b) => a - b)[vad.floor.length >> 1] : 0.003;
+      const thr = Math.max(0.006, floor * 2.5);
+      if (rms > thr) { vad.speech += dt; vad.quiet = 0; } else if (vad.speech > 600) vad.quiet += dt;
+      if (vad.speech > 600 && vad.quiet > PAUSE) { stopRec(); return; }
+    }
     $("core").setAttribute("r", String(30 + Math.min(10, rms * 60)));
     if (hz && baselineHz) {
       // marker angle: 0 = calm centre; the band edges (±1/5) sit at ±60 degrees
@@ -1037,9 +1368,18 @@ async function sendBlob(blob) {
   $("talk").disabled = true;
   thinking(true);
   try {
-    const d = await api("/api/voice", blob, blob.type.split(";")[0]);
+    const check = store.get("bw-confirm") !== "off";
+    const d = await api("/api/voice" + (check ? "?confirm=1" : ""), blob, blob.type.split(";")[0]);
     thinking(false);
-    if (d.said) addMe(d.said, d.turn);
+    if (d.draft !== undefined) {   // check what I heard: fix anything, then Send (your tone of voice is kept)
+      heardLang = d.language || null; heardMs = d.heard_ms || null;
+      $("dock").hidden = true; $("typebar").hidden = false;
+      $("msg").value = d.draft; growMsg(); $("msg").focus();
+      $("type-hint").textContent = d.draft ? "Is this what you said? Fix anything, then Send." : "I couldn't make that out. Type it, or tap Talk.";
+      $("talk").disabled = false;
+      return;
+    }
+    if (d.said) addMe(d.said, d.turn, d.heard_ms);
     say(d.reply, d.handover, d.turn && d.turn.reply_pitch, d.turn && d.turn.melody, d.turn && d.turn.tone && d.turn.tone.rate);
   } catch (e) { thinking(false); say(e.message, true); }
   $("talk").disabled = false;
@@ -1056,6 +1396,8 @@ $("end-btn").onclick = async () => {
   } catch (e) { say(e.message, true); }
 };
 function report(d) {
+  for (const x of document.querySelectorAll("[data-rate]")) { x.disabled = false; x.classList.remove("picked"); }
+  $("rate-note").textContent = "Your answer helps me learn to read you more accurately. Optional.";
   const layers = ["Self-actualisation", "Esteem", "Love and belonging", "Safety", "Physiological"];
   const lowest = d.recommendation && d.recommendation.layer;
   const svg = $("pyramid");
@@ -1081,6 +1423,7 @@ function report(d) {
     ? `Your ${r.layer.toLowerCase()} needs scored lowest today (amber), so the suggestions below aim there. Top of the pyramid: self-actualisation.`
     : "Please reach out to one of the support lines today.";
   const recs = $("recs"); recs.innerHTML = "";
+  if (d.breakdown) { const li = document.createElement("li"); li.innerHTML = `<b>What we talked about</b>` + breakdownHTML(d.breakdown); recs.append(li); }
   const item = (label, html) => { const li = document.createElement("li"); li.innerHTML = `<b>${label}</b>`; const s = document.createElement("span"); s.innerHTML = html; li.append(s); recs.append(li); };
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   if (d.coherence && d.coherence.process !== "listen") {
@@ -1117,6 +1460,14 @@ function report(d) {
       try { await api("/api/memory/forget", { name: store.get("bw-name") || "" }); b.textContent = "Forgotten"; b.disabled = true; } catch (err) { b.textContent = err.message; }
     };
   }
+  if (d.resonance && d.resonance.elements && d.resonance.elements.length) item("Your circles", resonanceText(d.resonance) + resonanceSVG(d.resonance));
+  if (d.skeleton && d.skeleton["17_choice"] && d.skeleton["17_choice"].action) {
+    const k = d.skeleton, top = k["17_choice"].ranked[0], n = top.settled;
+    item("What all your values agree on", esc(k["17_choice"].action[0].toUpperCase() + k["17_choice"].action.slice(1)) + "." +
+      (k.gate.presence.heavy ? " " + esc(k.gate.presence.say) : "") +
+      `<br><small style="color:var(--ink-soft)">Intuition ${top.intuition.toFixed(2)}: sense ${n.sense.toFixed(2)} · locate ${n.locate.toFixed(2)} · direction ${n.direction.toFixed(2)} · step ${n.step.toFixed(2)} · time ${n.time.toFixed(2)}` +
+      (k["16_vision"] ? ` · ${esc(k["16_vision"].name.split(":")[0])}: ${esc(k["16_vision"].hexagram.say)}` : "") + `</small>`);
+  }
   if (d.ascent) item("Next step", esc(d.ascent.next_step) + `<br><small style="color:var(--ink-soft)">Resource ${d.ascent.x_resource.toFixed(2)} · action ${d.ascent.y_action.toFixed(2)} · information ${d.ascent.z_information.toFixed(2)}: incline ${d.ascent.angle_deg}° → ${d.ascent.angle_after}°, rising about ${d.ascent.h_gain.toFixed(2)}</small>`);
   if (d.timing && d.timing.sequence && d.timing.sequence.length) item("When", d.timing.sequence.map((st) =>
     `<b style="display:inline;color:var(--ink)">${esc(st.when[0].toUpperCase() + st.when.slice(1))}</b>, ${esc(st.at.slice(11, 16))}: ${esc(st.step)}` +
@@ -1130,6 +1481,66 @@ function report(d) {
   if (r.music) item("Listen", esc(r.music));
   if (r.podcast) item("Podcast topic", esc(r.podcast));
   show("s-report");
+}
+function resonanceSVG(rz) {
+  // Value 8: the person's circles of life (golden-ratio rings), each element a dot on its circle.
+  // Green = support, amber = drain, half and half = two-sided (dual). Bigger = stronger.
+  const C = 150, R = [0, 0.382, 0.618, 0.764, 0.854].map((r) => 26 + r * 140);
+  const names = ["you", "closest people", "home", "work & community", "wider world"];
+  let out = "";
+  for (let k = 4; k >= 1; k--) out += `<circle class="ring" cx="${C}" cy="${C}" r="${R[k].toFixed(1)}"/>`;
+  out += `<circle class="core" cx="${C}" cy="${C}" r="24"/>`;
+  for (let k = 1; k < 5; k++) out += `<text x="${C}" y="${(C - R[k] + 10).toFixed(1)}" text-anchor="middle">${names[k]}</text>`;
+  const byRing = {};
+  for (const e of rz.elements) (byRing[e.ring] = byRing[e.ring] || []).push(e);
+  for (const [k, list] of Object.entries(byRing)) {
+    list.forEach((e, i) => {
+      const a = (k == 0 ? Math.PI / 2 : 0.35) + (i + 0.5) * (2 * Math.PI / list.length) + k * 0.6;
+      const rad = k == 0 ? (list.length > 1 ? 12 : 0) : R[k];
+      const x = C + rad * Math.cos(a), y = C + rad * Math.sin(a), size = 4 + 9 * Math.min(1, e.support + e.drain);
+      const ok = "var(--calm)", bad = "var(--high)";
+      if (e.balance === "dual") out += `<path d="M${x - size} ${y}A${size} ${size} 0 0 1 ${x + size} ${y}Z" fill="${ok}"/><path d="M${x - size} ${y}A${size} ${size} 0 0 0 ${x + size} ${y}Z" fill="${bad}"/>`;
+      else out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${size.toFixed(1)}" fill="${e.balance === "support" ? ok : e.balance === "drain" ? bad : "var(--line)"}"/>`;
+      const anchor = x < C - 5 ? "end" : x > C + 5 ? "start" : "middle";
+      out += `<text class="lbl" x="${(x + (anchor === "start" ? size + 3 : anchor === "end" ? -size - 3 : 0)).toFixed(1)}" y="${(y + (anchor === "middle" ? size + 11 : 3)).toFixed(1)}" text-anchor="${anchor}">${escT(e.label.replace(/^your /, ""))}</text>`;
+    });
+  }
+  return `<svg class="reso" viewBox="0 0 300 300" role="img" aria-label="Your circles of life">${out}</svg>` +
+    `<div class="reso-key"><span><i style="background:var(--calm)"></i>helps</span><span><i style="background:var(--high)"></i>weighs on you</span>` +
+    `<span><i style="background:linear-gradient(90deg,var(--calm) 50%,var(--high) 50%)"></i>both</span></div>`;
+}
+function resonanceText(rz) {
+  const core = rz.elements.find((e) => e.label === rz.joint_point);
+  return (rz.joint_point ? `At the centre right now: <b style="display:inline;color:var(--ink)">${escT(rz.joint_point)}</b>` +
+    (core && core.balance === "dual" ? " (both helps and weighs on you)" : "") + ". " : "") +
+    (rz.nearest_support ? `Nearest support: <b style="display:inline;color:var(--ink)">${escT(rz.nearest_support)}</b>. ` : "") +
+    (rz.level !== null ? `<br><small style="color:var(--ink-soft)">Balance of support: ${Math.round(rz.level * 100)}% · built only from what you've told me, by role, never by name</small>` : "");
+}
+for (const b of document.querySelectorAll("[data-rate]")) b.onclick = async () => {
+  try {
+    const r = await api("/api/insights/rate", { name: who(), rating: +b.dataset.rate });
+    if (r.error) { $("rate-note").textContent = r.error; return; }
+    for (const x of document.querySelectorAll("[data-rate]")) x.disabled = true;
+    b.classList.add("picked");
+    $("rate-note").textContent = "Thank you." + (r.predicted ? ` From what you told me I'd have guessed about ${r.predicted}.` : "") +
+      (r.personal && r.fit ? ` I've tuned how I read you from ${r.fit.n} answers (my error went from ${r.fit.error_before} to ${r.fit.error_after} points).`
+        : ` ${Math.max(0, 5 - r.ratings)} more answer${5 - r.ratings === 1 ? "" : "s"} and I'll start tuning myself to you.`);
+  } catch (e) { $("rate-note").textContent = e.message; }
+};
+function breakdownHTML(b) {
+  // the main idea of the talk, and how it unfolded (all from the person's own words)
+  if (!b) return "";
+  const li = (k, v) => v ? `<li><span>${k}</span><b style="font-weight:500;text-align:right;max-width:65%">${v}</b></li>` : "";
+  return `<p style="font-family:var(--serif);font-size:18px;color:var(--ink);margin:2px 0 8px">${escT(b.main_idea)}</p>` +
+    (b.quote ? `<p style="margin:0 0 8px;font-style:italic">“${escT(b.quote)}”</p>` : "") +
+    (b.key_points && b.key_points.length ? `<ul style="margin:0 0 8px;padding-left:18px;font-size:14px">${b.key_points.map((x) => `<li>${escT(x)}</li>`).join("")}</ul>` : "") +
+    `<ul class="kept">` +
+    li("Who and what", (b.who_and_what || []).map((e) => escT(e.label.replace(/^your /, "")) + (e.balance === "dual" ? " (both)" : e.balance === "support" ? " (helps)" : e.balance === "drain" ? " (weighs)" : "")).join(", ")) +
+    li("Feelings", escT((b.feelings || []).join(", "))) +
+    li("Mood", escT(b.arc)) +
+    li("How far we went", escT(b.depth)) +
+    li("Your step", b.step ? escT(b.step) + (b.when ? " (" + escT(b.when) + ")" : "") : "") +
+    li("Still open", b.open_thread ? escT(b.open_thread) : "") + `</ul>`;
 }
 function drawVision(v) {
   // Value 16: the light broken into Maslow colours (bars = reality, dashed = Planck potential),
@@ -1293,7 +1704,7 @@ $("know-btn").onclick = () => {
   store.set("bw-name", $("name").value.trim());
   openKnow("s-welcome");
 };
-for (const b of document.querySelectorAll(".know-scale button")) b.onclick = async () => {
+for (const b of document.querySelectorAll("#know-q .know-scale button")) b.onclick = async () => {
   if (!know.cur) return;
   try { paintKnow(await api("/api/personality/answer", { name: who(), id: know.cur.id, score: +b.dataset.s, skip: know.skip })); }
   catch (e) { $("know-err").textContent = e.message; }
@@ -1388,6 +1799,7 @@ async function openConversation(i) {
     $("conv-when").textContent = niceDate(c.started);
     $("conv-lines").innerHTML = c.lines.map((l) => `<div class="line ${l.who}">${escT(l.text)}` +
       (l.who === "person" && l.mood ? `<small>${escT(l.time)} · ${escT(l.mood)}</small>` : l.time ? `<small>${escT(l.time)}</small>` : "") + `</div>`).join("");
+    $("conv-when").innerHTML = escT(niceDate(c.started)) + (c.end && c.end.breakdown ? `<div class="card" style="margin-top:8px"><h3>What we talked about</h3>${breakdownHTML(c.end.breakdown)}</div>` : "");
     const n = c.end && c.end.next;
     $("conv-next").hidden = !(n && n.question);
     if (n && n.question) $("conv-next").innerHTML = `<h3>Note for next time</h3>${n.note ? `<p>${escT(n.note)}</p>` : ""}<p><i>${escT(n.question)}</i></p>`;
@@ -1415,6 +1827,22 @@ async function loadInsights() {
     let html = "";
     html += card("At a glance", `<ul class="kept"><li><span>Conversations</span><b>${d.conversations}</b></li>` +
       (d.history.length ? `<li><span>Wellbeing now</span><b>${d.history[d.history.length - 1].wellbeing.toFixed(1)} of 5</b></li>` : "") + `</ul>`);
+    try {
+      const t = await api("/api/insights/tuning", { name: who() });
+      if (t.ratings) {
+        const names = { lambda: "Weight of hard things (λ)", sigma: "How far the circles reach (σ)", k_drain: "Steadiness effect", k_support: "Personality effect on support" };
+        html += card("How well I read you", `<ul class="kept"><li><span>Your answers (1 to 5)</span><b>${t.ratings}</b></li>` +
+          (t.rmse !== null ? `<li><span>My average error</span><b>${t.rmse} points</b></li>` : "") +
+          Object.entries(t.weights).map(([k, v]) => `<li><span>${names[k]}</span><b>${v}</b></li>`).join("") + `</ul>` +
+          (t.recent.length ? lineChart(t.recent.map((x) => x.rating), 1, 5, t.recent.map((x) => x.date.slice(5)), (v) => v.toFixed(0)) : ""),
+          t.personal ? "Tuned to you from your own answers." : `${t.needed} more answers and I'll tune these to you. Until then I use everyone's starting weights.`);
+      }
+    } catch {}
+    if (d.resonance && d.resonance.elements && d.resonance.elements.length) html += card("Your circles", resonanceSVG(d.resonance) + `<p>${resonanceText(d.resonance)}</p>`,
+      "Each dot is something in your life you've talked about, on the circle where it sits. It changes as you tell me more.");
+    if (d.interests && d.interests.length) html += card("What you enjoy", `<ul class="kept">${d.interests.map((i) =>
+      `<li><span>${escT(i.label)}${i.said ? `<br><small style="color:var(--ink-soft)">"${escT(i.said)}"</small>` : ""}</span><b>${i.state === "yes" ? "chosen" : "noticed " + i.noticed + "×"}</b></li>`).join("")}</ul>`,
+      "I use these to make our chats about things you like, on good days. Change them in your profile.");
     if (d.history.length) html += card("Wellbeing over time", lineChart(d.history.map((h) => h.wellbeing), 1, 5, d.history.map((h) => h.date.slice(5)), (v) => v.toFixed(0)),
       "The average of your five needs after each conversation (1 to 5).");
     const mood = d.mood.filter((m) => m.valence !== null && m.valence !== undefined);
@@ -1426,9 +1854,6 @@ async function loadInsights() {
       html += card("Your needs today", order.filter((k) => k in d.maslow).map((k) => `<div class="layer-row${k === low ? " lowest" : ""}"><span>${escT(k)}</span>` +
         `<span class="bar"><span style="width:${(d.maslow[k] / 5 * 100).toFixed(0)}%"></span></span><span>${d.maslow[k].toFixed(1)}</span></div>`).join(""), "Amber is the need that needs the most care right now.");
     }
-    if (d.interests && d.interests.length) html += card("What you enjoy", `<ul class="kept">${d.interests.map((i) =>
-      `<li><span>${escT(i.label)}${i.said ? `<br><small style="color:var(--ink-soft)">"${escT(i.said)}"</small>` : ""}</span><b>${i.state === "yes" ? "chosen" : "noticed " + i.noticed + "×"}</b></li>`).join("")}</ul>`,
-      "I use these to make our chats about things you like, on good days. Change them in your profile.");
     if (d.topics.length) html += card("What we talk about", chips(d.topics));
     if (d.feelings.length) html += card("Feelings you named", chips(d.feelings));
     if (d.needs.length) html += card("Needs that came up", chips(d.needs));
@@ -1465,7 +1890,37 @@ function paintInterests(list) {
     catch (e) { $("pf-err").textContent = e.message; }
   };
 }
+function paintExit() {
+  $("pf-exit").innerHTML = EXIT_PAGES.map(([u, n]) => `<option value="${u}">${n}</option>`).join("");
+  $("pf-exit").value = exitUrl();
+}
+function paintVoice() {
+  paintExit();
+  loadVoices();
+  const en = voicesFor("en"), chosen = store.get("bw-voice") || "";
+  const best = en[0];
+  $("pf-voice").innerHTML = `<option value="">Automatic${best ? ": " + escT(best.name) : ""}</option>` +
+    en.filter((v) => !NOVELTY.test(v.name)).map((v) => `<option value="${escT(v.voiceURI)}">${escT(v.name)} (${escT(v.lang)})${voiceScore(v) >= 18 ? " ★" : ""}</option>`).join("");
+  $("pf-voice").value = en.some((v) => v.voiceURI === chosen) ? chosen : "";
+  if (!en.length) $("pf-voice").innerHTML = `<option value="">No English voices found on this device</option>`;
+  const r = +(store.get("bw-rate") || 1);
+  $("pf-rate").value = String(r);
+  $("pf-rate-v").textContent = r === 1 ? "normal" : r < 1 ? "slower" : "faster";
+  $("pf-autostop").checked = autoStop();
+  $("pf-pause").value = store.get("bw-pause") || "2600";
+  $("pf-confirm").checked = store.get("bw-confirm") !== "off";
+  $("pf-voice-tip").hidden = en.some((v) => voiceScore(v) >= 18);   // already has a premium/enhanced voice
+}
+$("pf-voice").onchange = () => { $("pf-voice").value ? store.set("bw-voice", $("pf-voice").value) : store.del("bw-voice"); speak("Hello, this is how I'll sound.", 1, null, 0.96, true); };
+$("pf-rate").oninput = () => { store.set("bw-rate", $("pf-rate").value); paintVoice(); };
+$("pf-rate").onchange = () => speak("Hello, this is how I'll sound.", 1, null, 0.96, true);
+$("pf-hear").onclick = () => speak("Hello. I'm here to listen, not to judge. Samaritans are on 116 123, any time.", 1, null, 0.96, true);
+$("pf-exit").onchange = () => store.set("bw-exit-url", $("pf-exit").value);
+$("pf-pause").onchange = () => store.set("bw-pause", $("pf-pause").value);
+$("pf-confirm").onchange = () => store.set("bw-confirm", $("pf-confirm").checked ? "on" : "off");
+$("pf-autostop").onchange = () => store.set("bw-autostop", $("pf-autostop").checked ? "on" : "off");
 $("profile-btn").onclick = async () => {
+  paintVoice();
   $("pf-err").textContent = ""; $("pf-note").textContent = "";
   try { paintProfile(await api("/api/insights/profile", { name: who() })); show("s-profile"); }
   catch (e) { $("pf-err").textContent = e.message; show("s-profile"); }
@@ -1605,7 +2060,8 @@ show("s-start");
         $("vb-fill").style.width = pct + "%";
         $("vb-btn").textContent = msg || `Downloading... ${pct}%`;
       });
-      $("vb-note").textContent = "Voice is ready. Tap Talk, speak, then tap Done.";
+      $("vb-note").textContent = "Voice is ready" + (stt.cores > 1 ? ` (fast mode: ${stt.cores} processor cores)` : "") +
+        ". Tap Talk and speak; I'll notice when you pause, or tap Done.";
       try { await navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
     } catch (e) {
       $("vb-note").textContent = "The download didn't finish (" + e.message + "). Check the connection and tap again; it continues from the files already saved.";
