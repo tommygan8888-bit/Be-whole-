@@ -6,11 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Be Whole 46">
+<meta name="apple-mobile-web-app-title" content="Be Whole 48">
 <meta name="theme-color" content="#14231f">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>Be Whole 46</title>
+<title>Be Whole 48</title>
 <style>
 :root {
   --bg: #14231f;
@@ -197,6 +197,8 @@ header { gap: 8px; }
 .reso .lbl { font-size: 10px; fill: var(--ink); }
 .reso-key { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft); justify-content: center; }
 .reso-key i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.level-note { font-size: 12px; color: var(--calm); text-align: center; margin: 2px 0 10px; }
+.level-note.off { color: var(--high); }
 .why-btn { display: inline-block; margin-top: 6px; border: 1px solid var(--line); background: none; border-radius: 999px;
   padding: 3px 10px; font-size: 12px; color: var(--calm); font-family: var(--round); }
 .why { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-raise);
@@ -322,7 +324,7 @@ body { padding-top: 0 !important; }
 <header>
   <div class="mark">
     <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="var(--calm)" stroke-width="2.5"/><circle cx="13" cy="13" r="5" fill="var(--calm)"/></svg>
-    Be Whole 46<span class="test-badge">TEST</span>
+    Be Whole 48<span class="test-badge">TEST</span>
   </div>
   <div class="head-actions">
     <button class="icon-btn" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud: on" title="Read replies aloud"></button>
@@ -425,7 +427,7 @@ body { padding-top: 0 !important; }
     <button class="secondary" id="know-btn">Get to know me first (optional, 3 minutes)</button>
     <button class="secondary" id="demo-btn" hidden>Use the demo person "Tester" (3 past conversations)</button>
     <p class="error" id="start-err" role="alert"></p>
-    <p class="note" style="text-align:center;margin-top:8px">Be Whole version 0.46.0-test</p>
+    <p class="note" style="text-align:center;margin-top:8px">Be Whole version 0.48.0-test</p>
   </section>
 
   <!-- 3. conversation -->
@@ -554,7 +556,7 @@ body { padding-top: 0 !important; }
         <select class="text" id="pf-exit" style="font-size:16px;padding:10px 12px"></select></label>
       <p>Choose a page that looks ordinary for you. Your conversations stay saved; open Be Whole again to come back.</p></div>
     <p class="note">Services (♡ at the top) lists people you can talk to, whenever you choose.</p>
-    <p class="note" style="text-align:center">Be Whole version 0.46.0-test</p>
+    <p class="note" style="text-align:center">Be Whole version 0.48.0-test</p>
     <p class="error" id="pf-err" role="alert"></p>
   </section>
 </main>
@@ -1019,9 +1021,15 @@ window.BW_DEEP = (() => {
   async function rewrite(userText, out, language) {
     const t = out.turn || {};
     // Safety first: crisis, abuse and high distress keep the engine's exact words (support lines included).
-    if (!on() || blocked || !out.reply || out.handover || (t.distress || 0) >= 3) return out.reply;
-    const sample = await getSample();
-    if (!sample) return out.reply;
+    if (!out.reply || out.handover || (t.distress || 0) >= 3) return out.reply;
+    const sample = on() && !blocked ? await getSample() : null;
+    if (!sample) {
+      // no Claude: the reply model on this phone (beta) writes it, if it's switched on and loaded
+      const L = window.BW_PHONE_LLM;
+      const factual = t.truth && ["solution", "fact", "cloud", "guidance", "chain", "self", "app"].includes(t.truth.kind);
+      if (!L || !L.ready() || factual) return out.reply;   // answers with facts and options keep the engine's exact words
+      try { return (await L.write(userText, out, transcript)) || out.reply; } catch { return out.reply; }
+    }
     try {
       const q = !!(t.infinity);   // value 20: a posed question gets room for a full answer
       const { text } = await sample(prompt(userText, out, language), { cache: false, maxTokens: q ? 800 : 350, search: q });
@@ -1052,6 +1060,7 @@ window.BW_DEEP = (() => {
         <small id="key-note" style="display:block;margin-top:6px;color:var(--ink-soft)"></small>
       </div>`;
     start.before(box);
+    if (window.BW_PHONE_LLM) mountLocal(start);
     const $ = (id) => document.getElementById(id);
     for (const [k, v] of Object.entries(MODELS)) { const o = document.createElement("option"); o.value = k; o.textContent = v; $("key-model").append(o); }
     $("key-model").value = ls.get("bw-claude-model") || "claude-sonnet-5-5";
@@ -1083,6 +1092,50 @@ window.BW_DEEP = (() => {
     paint();
   }
 
+  // On your own site: the reply model on this phone (beta), for replies without a Claude key.
+  function mountLocal(start) {
+    const L = window.BW_PHONE_LLM;
+    const box = document.createElement("div");
+    box.className = "deep-switch";
+    box.style.flexDirection = "column";
+    box.innerHTML = `<span><b style="font-weight:600">Replies written on this phone (beta)</b><small>A small language model downloads once
+        (about 0.7 to 0.9 GB, best on Wi-Fi) and then writes Be Whole's replies on this phone: no key, no cost per message, and your
+        words never leave the phone. Weaker and slower than Claude. If a Claude key is saved, Claude is used instead.</small></span>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;width:100%">
+        <button type="button" class="secondary" id="local-go" style="flex:1 1 160px;margin:0"></button>
+      </div>
+      <div class="voice-bar" id="local-bar" hidden><div id="local-fill"></div></div>
+      <small id="local-note" style="display:block;margin-top:6px;color:var(--ink-soft)"></small>`;
+    start.before(box);
+    const $ = (id) => document.getElementById(id);
+    const paint = (msg) => {
+      $("local-go").textContent = L.ready() ? "Remove the model from this phone" : L.wanted() ? "Load the reply model" : "Download the reply model";
+      if (msg !== undefined) $("local-note").textContent = msg;
+      else if (!L.supported()) $("local-note").textContent = "This browser can't run it yet. It needs Safari on iOS 26 or newer (or a recent desktop browser).";
+      else if (L.ready()) $("local-note").textContent = "Ready: replies are written on this phone (" + L.model() + ").";
+      else $("local-note").textContent = "";
+      $("local-go").disabled = !L.supported();
+    };
+    $("local-go").onclick = async () => {
+      if (L.ready()) { await L.forget(); paint("Removed from this phone."); return; }
+      $("local-go").disabled = true; $("local-bar").hidden = false;
+      try {
+        await L.load((r) => {
+          $("local-fill").style.width = Math.round(100 * (r.progress || 0)) + "%";
+          $("local-note").textContent = (r.text || "Loading...").replace(/\[.*?\]\s*/g, "").slice(0, 140);
+        });
+        $("local-bar").hidden = true; paint();
+      } catch (e) {
+        $("local-bar").hidden = true;
+        paint(String(e && e.message) === "no-webgpu" ? undefined :
+              "It didn't load on this phone (" + String(e && e.message || e).slice(0, 80) + "). It may need more memory: close other apps and try again.");
+      }
+    };
+    paint();
+    const wait = setInterval(() => { if (L.ready()) { paint(); clearInterval(wait); } }, 2000);
+    setTimeout(() => clearInterval(wait), 120000);
+  }
+
   // The switch on the start screen (only where Claude can be asked).
   async function mountSwitch() {
     const start = document.getElementById("start-btn");
@@ -1100,8 +1153,101 @@ window.BW_DEEP = (() => {
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountSwitch); else mountSwitch();
 
   // Value 20: which level this app runs at (2.0 when Claude can be reached and deeper replies are on)
-  async function level() { return on() && !blocked && (await getSample()) ? "2.0" : "1.0"; }
+  async function level() {
+    if (on() && !blocked && (await getSample())) return "2.0";
+    return window.BW_PHONE_LLM && window.BW_PHONE_LLM.ready() ? "phone" : "1.0";
+  }
   return { reset, record, rewrite, level };
+})();
+</script>
+<script>
+// Be Whole: replies written on this phone (beta). A small language model runs inside the app with WebGPU
+// (WebLLM), so Be Whole can write its own replies with no Claude key, no cost per message, and no words leaving
+// the phone. It downloads once (about 0.7-0.9 GB, best on Wi-Fi) and is then kept in the browser's storage.
+// Needs WebGPU: Safari on iOS 26 or newer, or a recent desktop browser. Weaker and slower than Claude.
+// The engine still reads everything (values 1-21); this model only turns the engine's draft into natural speech.
+window.BW_PHONE_LLM = (() => {
+  "use strict";
+  const LIB = window.BW_WEBLLM_URL || "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.83/+esm";
+  // best first: Llama 3.2 1B (about 880 MB of GPU memory), then Qwen2.5 0.5B
+  const PREFS = ["Llama-3.2-1B-Instruct-q4f16_1-MLC", "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Qwen2.5-0.5B-Instruct-q4f32_1-MLC"];
+  const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+               set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+  let engine = null, loading = null, model = null, failed = null;
+
+  const supported = () => !!(navigator.gpu);
+  const wanted = () => ls.get("bw-local") === "on";
+  const ready = () => !!engine;
+
+  async function load(progress) {
+    if (engine) return engine;
+    if (loading) return loading;
+    if (!supported()) { failed = "no-webgpu"; throw new Error("no-webgpu"); }
+    loading = (async () => {
+      const lib = await import(LIB);
+      const ids = new Set(((lib.prebuiltAppConfig || {}).model_list || []).map((m) => m.model_id));
+      const order = ids.size ? PREFS.filter((id) => ids.has(id)) : PREFS;
+      let lastErr = null;
+      for (const id of order) {
+        try {
+          engine = await lib.CreateMLCEngine(id, { initProgressCallback: (r) => progress && progress(r) });
+          model = id; failed = null; ls.set("bw-local", "on");
+          return engine;
+        } catch (e) { lastErr = e; engine = null; }   // too big for this phone: try the next, smaller one
+      }
+      failed = String(lastErr && lastErr.message || lastErr || "load failed");
+      throw lastErr || new Error("load failed");
+    })();
+    try { return await loading; } finally { loading = null; }
+  }
+
+  async function forget() {
+    try { if (engine && engine.unload) await engine.unload(); } catch {}
+    engine = null; model = null; ls.set("bw-local", null);
+    try {   // remove the downloaded model from this phone
+      for (const k of await caches.keys()) if (/webllm|mlc/i.test(k)) await caches.delete(k);
+    } catch {}
+  }
+
+  const SYSTEM = "You are Be Whole, a warm, caring self-help companion (not a therapist) for people going through family " +
+    "breakdown. You rewrite Be Whole's DRAFT reply so it sounds like a real, thoughtful person who has listened. " +
+    "Respond to what the person just said, in their own terms. Keep the draft's meaning, and keep any step, time, " +
+    "person, number or safety line in it. End with the draft's question, or one open question like it. " +
+    "2 to 4 short spoken sentences. Never repeat their words back word for word. Never invent facts. " +
+    "Never mention being an AI, a model, a draft, notes or numbers. Output only the reply.";
+
+  function compact(userText, out, transcript) {
+    const t = out.turn || {};
+    const r = t.rasa || {}, v = t.vector || {};
+    const notes = [
+      r.name ? `They sound: ${r.name.split(" ")[0].toLowerCase()}.` : "",
+      v.say ? `What helps now: ${v.say}.` : "",
+      t.thought && t.thought.topic ? `Topic: ${t.thought.topic}.` : "",
+    ].filter(Boolean).join(" ");
+    const recent = transcript.slice(-6).map((x) => `${x.who}: ${x.text}`).join("\n");
+    return `${notes}\n\nConversation so far:\n${recent}\nPerson: ${userText}\n\nDRAFT: ${out.reply}\n\nBe Whole's reply:`;
+  }
+
+  async function write(userText, out, transcript) {
+    if (!engine) return null;
+    const r = await engine.chat.completions.create({
+      messages: [{ role: "system", content: SYSTEM }, { role: "user", content: compact(userText, out, transcript) }],
+      max_tokens: 160, temperature: 0.7, top_p: 0.9,
+    });
+    let text = String((((r || {}).choices || [])[0] || {}).message ? r.choices[0].message.content : "").trim();
+    text = text.replace(/^\s*(Be Whole'?s reply|Be Whole|Reply)\s*:\s*/i, "").replace(/^["“]|["”]$/g, "").trim();
+    // checks: a whole, sensible reply, or the engine's own words
+    if (text.length < 20 || text.length > 700 || !/[.!?…)"”']$/.test(text)) return null;
+    if (/\b(as an ai|language model|i'?m an ai|the draft|draft reply|as a model)\b/i.test(text)) return null;
+    const dq = (out.reply.match(/[^.!?]*\?\s*$/) || [""])[0].trim();
+    if (dq && !text.includes("?")) text += " " + dq;   // keep the question
+    return text;
+  }
+
+  // start loading in the background if it was switched on before (from the phone's storage, no new download)
+  if (wanted() && supported()) setTimeout(() => load().catch(() => {}), 4000);
+
+  return { supported, wanted, ready, load, forget, write, model: () => model, failed: () => failed };
 })();
 </script>
 <script>
@@ -1209,6 +1355,19 @@ async function startSession(resumeId) {
     baselineHz = d.baseline_hz;
     talking = true;
     $("log").innerHTML = "";
+    // Value 20: show plainly which level is writing the replies, so nobody has to guess
+    (async () => {
+      let lvl = "1.0";
+      try { if (window.BW_DEEP && window.BW_DEEP.level) lvl = await window.BW_DEEP.level(); } catch {}
+      const n = document.createElement("p");
+      n.className = "level-note"; n.id = "level-note";
+      n.textContent = lvl === "2.0" ? "Be Whole 2.0: Claude is writing the replies." :
+        lvl === "phone" ? "Replies written on this phone by the reply model (beta)." :
+        (window.claude && window.claude.use ? "Basic replies (1.0): Claude isn't on. Tick \"Deeper replies with Claude\" on the first screen for real conversation."
+          : "Basic replies (1.0): Claude isn't connected. Add your Claude key on the first screen for real conversation.");
+      if (lvl !== "2.0") n.classList.add("off");
+      $("log").prepend(n);
+    })();
     show("s-talk");
     say(d.reply);
   } catch (e) { $("start-err").textContent = e.message; }
@@ -2050,6 +2209,7 @@ async function loadInsights() {
       try { if (window.BW_DEEP && window.BW_DEEP.level) lvl = await window.BW_DEEP.level(); } catch {}
       const inf = d.infinity;
       const mode = lvl === "2.0" ? "<b>Be Whole 2.0 is on.</b> Claude is connected, so any question you ask is answered in full, through what you've told me about your life."
+        : lvl === "phone" ? "<b>Replies are written on this phone</b> by the reply model (beta). Add a Claude key for 2.0, where any question is answered in full."
         : "<b>Be Whole is at 1.0.</b> It answers from its own rules and facts. Add your Claude key in the start screen for 2.0, where any question is answered in full.";
       const bar = (v) => `<div class="layer-row"><span>${v.toFixed(2)}</span><div class="bar"><span style="width:${Math.round((v - 1) * 100)}%"></span></div><span>2.0</span></div>`;
       html += card("Towards 2.0", `<p style="color:var(--ink);font-size:14px;margin:0 0 8px">${mode}</p>` +

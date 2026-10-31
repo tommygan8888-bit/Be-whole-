@@ -71,6 +71,13 @@ conversations stay on the phone.
 - **Speech comes out wrong**: set Language to English or Latvian instead of automatic.
 - You can always type, or use the keyboard's own dictation microphone in the typing box.
 
+## Replies written on this phone (beta)
+On the first screen, "Download the reply model" puts a small language model on the phone (about 0.7 to 0.9 GB, use
+Wi-Fi). After that Be Whole writes its own replies with no Claude key and nothing leaving the phone. It needs Safari on
+iOS 26 or newer. It's weaker and slower than Claude; if a Claude key is saved, Claude is used instead. If it doesn't
+load, close other apps (it needs about 1 GB of memory) and try again. "Remove the model from this phone" frees the space.
+The first line of every conversation says who is writing the replies.
+
 ## Check which version your phone is running
 - The name at the top of the app counts up with every version: **Be Whole 41**, then 42, and so on.
 - The exact version (for example 0.41.0-test) is at the bottom of the welcome screen and of My profile.
