@@ -70,3 +70,11 @@ conversations stay on the phone.
   Choose **Base** instead.
 - **Speech comes out wrong**: set Language to English or Latvian instead of automatic.
 - You can always type, or use the keyboard's own dictation microphone in the typing box.
+
+## Check which version your phone is running
+- The name at the top of the app counts up with every version: **Be Whole 41**, then 42, and so on.
+- The exact version (for example 0.41.0-test) is at the bottom of the welcome screen and of My profile.
+- After uploading a new version, close Be Whole fully (swipe it away) and open it again. If the old number
+  still shows, open the address in Safari once, pull down to refresh, then open the app again.
+- The label under the icon on your home screen is fixed when you add it. To see the new number there too,
+  delete the home-screen icon (your conversations stay), then in Safari tap Share → Add to Home Screen again.

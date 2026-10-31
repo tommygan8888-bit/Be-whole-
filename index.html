@@ -6,11 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Be Whole">
+<meta name="apple-mobile-web-app-title" content="Be Whole 46">
 <meta name="theme-color" content="#14231f">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>Be Whole</title>
+<title>Be Whole 46</title>
 <style>
 :root {
   --bg: #14231f;
@@ -133,7 +133,10 @@ input.text, textarea.text, select.text {
 #exit { padding: 6px 10px; font-size: 14px; }
 .mark { min-width: 0; overflow: hidden; }
 header { gap: 8px; }
-@media (max-width: 420px) { header { padding: 10px 12px; } .test-badge { display: none; } }
+@media (max-width: 420px) { header { padding: 10px 12px; } .test-badge { display: none; } .mark svg { display: none; }
+  .head-actions { gap: 4px; } #exit { padding: 6px 8px; } }
+@media (max-width: 400px) { .icon-btn { width: 32px; height: 32px; } .icon-btn svg { width: 18px; height: 18px; }
+  .mark { font-size: 15px; } #exit { font-size: 13px; padding: 5px 7px; } header { gap: 6px; padding: 10px 10px; } }
 .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: none; padding: 0;
   display: grid; place-items: center; color: var(--ink-soft); flex: none; }
 .icon-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -194,6 +197,15 @@ header { gap: 8px; }
 .reso .lbl { font-size: 10px; fill: var(--ink); }
 .reso-key { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft); justify-content: center; }
 .reso-key i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.why-btn { display: inline-block; margin-top: 6px; border: 1px solid var(--line); background: none; border-radius: 999px;
+  padding: 3px 10px; font-size: 12px; color: var(--calm); font-family: var(--round); }
+.why { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-raise);
+  font-family: var(--round); font-size: 13px; line-height: 1.45; }
+.why-part { margin: 0 0 8px; } .why-part:last-child { margin-bottom: 0; }
+.why-part b { display: block; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 2px; }
+.why-part p { margin: 3px 0; color: var(--ink); }
+.why-v { display: inline-block; min-width: 2.2em; font-size: 11px; font-weight: 600; color: var(--calm); }
+.why-t { font-weight: 600; }
 .empty { color: var(--ink-soft); font-size: 15px; text-align: center; padding: 24px 8px; }
 
 /* start screen (Logozzz Omni-Studio) */
@@ -310,10 +322,12 @@ body { padding-top: 0 !important; }
 <header>
   <div class="mark">
     <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="var(--calm)" stroke-width="2.5"/><circle cx="13" cy="13" r="5" fill="var(--calm)"/></svg>
-    Be Whole<span class="test-badge">TEST</span>
+    Be Whole 46<span class="test-badge">TEST</span>
   </div>
   <div class="head-actions">
     <button class="icon-btn" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud: on" title="Read replies aloud"></button>
+    <button class="icon-btn" id="services-btn" aria-label="Services: people you can talk to, whenever you choose" title="Services">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
     <button class="icon-btn" id="options-btn" aria-label="Options: saved conversations and insights" title="Options" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <button class="icon-btn" id="profile-btn" aria-label="My profile" title="My profile" hidden></button>
@@ -404,13 +418,14 @@ body { padding-top: 0 !important; }
         <li><label><input type="checkbox" data-c="video_suggestions" checked><span>Suggest videos and music after a session</span></label></li>
       </ul>
     </div>
-    <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
+    <p class="note"><b>Services</b> (♡ at the top): people you can talk to, whenever you choose. Be Whole will never push you to call anyone.</p>
     <p class="note"><b>Quick exit</b> (top right): if someone comes in, one tap switches to an ordinary page. Your conversations stay saved on this phone; open Be Whole again to come back. You can choose the page in your profile.</p>
     <button class="primary" id="start-btn">Start talking</button>
     <button class="secondary" id="story-btn">Tell me about you (optional)</button>
     <button class="secondary" id="know-btn">Get to know me first (optional, 3 minutes)</button>
     <button class="secondary" id="demo-btn" hidden>Use the demo person "Tester" (3 past conversations)</button>
     <p class="error" id="start-err" role="alert"></p>
+    <p class="note" style="text-align:center;margin-top:8px">Be Whole version 0.46.0-test</p>
   </section>
 
   <!-- 3. conversation -->
@@ -471,6 +486,13 @@ body { padding-top: 0 !important; }
     <button class="secondary" id="delete-btn">Delete everything Be Whole knows about me</button>
   </section>
   <!-- 5. options: saved conversations and insights -->
+  <section class="screen" id="s-services" hidden>
+    <div class="sheet-head"><h1>Services</h1><button class="exit" data-close>Close</button></div>
+    <p class="lede" style="margin:0 0 14px">People you can talk to, whenever you choose. Nothing here is sent anywhere, and Be Whole will never push you to call. It's your decision, at your pace.</p>
+    <div id="svc-list"></div>
+    <p class="note">Numbers checked October 2026. If a number has changed, the service's own website has the current one.</p>
+  </section>
+
   <section class="screen" id="s-options" hidden>
     <div class="sheet-head"><h1>Options</h1><button class="exit" data-close>Close</button></div>
     <div class="tabs" role="tablist">
@@ -483,6 +505,7 @@ body { padding-top: 0 !important; }
       <div id="conv-detail" hidden>
         <button class="secondary" id="conv-back" style="margin:0 0 10px">← All conversations</button>
         <div class="note" id="conv-when"></div>
+        <div id="conv-actions" style="margin:0 0 12px"></div>
         <div id="conv-lines"></div>
         <div class="card" id="conv-next" hidden></div>
       </div>
@@ -530,7 +553,8 @@ body { padding-top: 0 !important; }
       <label class="field" style="margin:0"><span>One tap on "Quick exit" switches to:</span>
         <select class="text" id="pf-exit" style="font-size:16px;padding:10px 12px"></select></label>
       <p>Choose a page that looks ordinary for you. Your conversations stay saved; open Be Whole again to come back.</p></div>
-    <p class="note">In danger right now? Call 999 (UK) or 112 (Latvia). Samaritans and Skalbes: 116 123.</p>
+    <p class="note">Services (♡ at the top) lists people you can talk to, whenever you choose.</p>
+    <p class="note" style="text-align:center">Be Whole version 0.46.0-test</p>
     <p class="error" id="pf-err" role="alert"></p>
   </section>
 </main>
@@ -879,7 +903,7 @@ from bewhole import browser`);
   return { api, ready };
 })();
 </script>
-<script>window.BW_RULES = "# Response playbook\n\nThe goal is to guide the voice back to the person's calm baseline (within +/-1/5 = 20%).\n\n| Tonality | How to respond |\n| --- | --- |\n| Low (sad) | Slow, warm, supportive words. Praise effort. End by appreciating one quality. |\n| Baseline | Open exploring questions, goal-setting, reflection. |\n| High negative (anger) | Ask about the situation. Acknowledge and respect the frustration. No advice until the voice settles. |\n| High positive (excitement / overwhelm) | Let them talk through tasks and feelings, then help sort and prioritise. |\n\n## Style\n- Mirror one key word the person used, once or twice per topic. Never copy whole sentences.\n- Short replies: 1-3 sentences, then one question.\n- Check, don't assume: \"You sound a bit low today, is that right?\" Their answer overrides the voice reading.\n- Guide towards expressing emotion: \"What did you feel in that moment?\"\n\n## Humour rule\nGentle humour only once the voice has moved back towards baseline, never at distress level 3 or above.\n\n## Conversation arc\n- Start: warm greeting, ask about music taste, short mood check-in.\n- Middle: listen, mirror, find Maslow layers, share research insights when the topic comes up.\n- End: name a strength, purpose proposal (lively voice), new activity, a way to connect with\n  people or a community, one video, appreciation.\n\n## Listening habits (follow the person, not the list)\n1. **Loss first.** When someone says a person is gone, left, died, or they split up, stay with it:\n   acknowledge the loss and ask about that person. No lists, no next topic. Never ask about \"your partner\"\n   after a break-up.\n2. **Say their answer back** in their own words (I becomes you) before the next question.\n3. **Follow the person they name.** If they mention their dad, the next questions are about their dad,\n   for up to three turns, before going back to the needs list.\n4. **Never repeat** an opener or a question in the same conversation.\n\n\n# Safety rules (override everything else)\n\n- At distress level 4, or any mention of suicide, self-harm, or being in danger: stop guiding and\n  hand over. UK: Samaritans 116 123 (24/7), NHS 111, emergency 999.\n- Domestic abuse signs: offer Refuge's National Domestic Abuse Helpline 0808 2000 247 and a\n  safety plan. Never reveal anything to the partner. Switch off joint mode quietly.\n- Sudden incoherence or confused beliefs: stay calm and simple, gently suggest seeing a GP.\n- Never diagnose (including ADHD, autism, depression). Never claim to be a psychologist.\n- Questions about parents can open painful memories. Slow down, do not push for detail.\n- Users must be 18+.\n";</script>
+<script>window.BW_RULES = "# Response playbook\n\n## Answer first\nWhen the person asks a question, answer it first, truthfully and practically: two or three options known to help,\na first step, where it comes from, then \"Which of these could you try first?\". Then carry it through: their step,\nwhen, and whether it helped. Once the practical problem eases, go one layer deeper: what it means to them, what they\nwant. Solving the problem as asked is what opens the door to trust and to the deeper resolution.\n\nThe goal is to guide the voice back to the person's calm baseline (within +/-1/5 = 20%).\n\n| Tonality | How to respond |\n| --- | --- |\n| Low (sad) | Slow, warm, supportive words. Praise effort. End by appreciating one quality. |\n| Baseline | Open exploring questions, goal-setting, reflection. |\n| High negative (anger) | Ask about the situation. Acknowledge and respect the frustration. No advice until the voice settles. |\n| High positive (excitement / overwhelm) | Let them talk through tasks and feelings, then help sort and prioritise. |\n\n## Style\n- Mirror one key word the person used, once or twice per topic. Never copy whole sentences.\n- Short replies: 1-3 sentences, then one question.\n- Check, don't assume: \"You sound a bit low today, is that right?\" Their answer overrides the voice reading.\n- Guide towards expressing emotion: \"What did you feel in that moment?\"\n\n## Humour rule\nGentle humour only once the voice has moved back towards baseline, never at distress level 3 or above.\n\n## Conversation arc\n- Start: warm greeting, ask about music taste, short mood check-in.\n- Middle: listen, mirror, find Maslow layers, share research insights when the topic comes up.\n- End: name a strength, purpose proposal (lively voice), new activity, a way to connect with\n  people or a community, one video, appreciation.\n\n## Listening habits (follow the person, not the list)\n1. **Loss first.** When someone says a person is gone, left, died, or they split up, stay with it:\n   acknowledge the loss and ask about that person. No lists, no next topic. Never ask about \"your partner\"\n   after a break-up.\n2. **Say their answer back** in their own words (I becomes you) before the next question.\n3. **Follow the person they name.** If they mention their dad, the next questions are about their dad,\n   for up to three turns, before going back to the needs list.\n4. **Never repeat** an opener or a question in the same conversation.\n\n\n# Support: offered, never imposed\n\nThe person makes their own decisions. Be Whole never hands them over, never locks the conversation, and never\npushes them to call anyone. Support services live behind the Services button (\u2661), which they open when they choose.\n\n- If someone says they want to end their life, hurt themselves or are in danger: stay with them, calmly, and keep\n  talking. Mention once, as a choice, that a person is there any time (UK: Samaritans 116 123; Latvia: Skalbes\n  116 123) and that Services has more. Never repeat it, never list numbers again, never end the conversation.\n  For the rest of that conversation: no steps, plans or analysis; just presence and gentle, open questions.\n- Signs of domestic abuse: acknowledge once (\"No one deserves to be hurt or controlled at home\"), mention Services\n  and Quick exit once, then follow the person. Quietly: never reveal anything to a partner, switch joint mode off,\n  never present the person causing harm as a support.\n- Never tell someone their thoughts seem jumbled or that they should see a doctor unless they ask.\n- Never diagnose (including ADHD, autism, depression). Never claim to be a psychologist.\n- Questions about parents can open painful memories. Slow down, do not push for detail.\n- Users must be 18+.\n";</script>
 <script>
 // Be Whole: "deeper replies" with Claude. Be Whole's engine still reads the voice, the needs, safety and
 // the skills; Claude then writes the reply itself, following the engine's draft and Be Whole's rules,
@@ -900,15 +924,26 @@ window.BW_DEEP = (() => {
   const keySample = () => {
     const key = ls.get("bw-claude-key");
     if (!key) return null;
-    return async (prompt) => {
+    const call = async (prompt, opts, search) => {
+      const body = { model: ls.get("bw-claude-model") || "claude-sonnet-5-5", max_tokens: (opts && opts.maxTokens) || 350,
+                     messages: [{ role: "user", content: prompt }] };
+      // value 20: a posed question may use web search (at most 2 searches) for current facts
+      if (search) body.tools = [{ type: "web_search_20250305", name: "web_search", max_uses: 2 }];
       const r = await fetch(API, { method: "POST", headers: {
           "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: ls.get("bw-claude-model") || "claude-sonnet-5-5", max_tokens: 350,
-                               messages: [{ role: "user", content: prompt }] }) });
+          "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify(body) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { const e = new Error((d.error && d.error.message) || `Claude answered ${r.status}`); e.status = r.status; throw e; }
-      return { text: (d.content || []).filter((b) => b.type === "text").map((b) => b.text).join("") };
+      const blocks = d.content || [];
+      let last = -1; blocks.forEach((b, i) => { if (b.type === "web_search_tool_result") last = i; });
+      return { text: blocks.slice(last + 1).filter((b) => b.type === "text").map((b) => b.text).join("") };
+    };
+    return async (prompt, opts) => {
+      if (opts && opts.search) {
+        try { return await call(prompt, opts, true); }
+        catch (e) { if (e.status === 401) throw e; }   // web search not available on this key: answer without it
+      }
+      return call(prompt, opts, false);
     };
   };
   const getSample = () => inClaudeApp()
@@ -939,6 +974,13 @@ window.BW_DEEP = (() => {
       `- what they enjoy (build rapport around it when the moment is light; never during distress): ${Object.entries(t.interests || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not known yet"}`,
       `- their situation as they've described it (value 8: elements by role, support / dual / drain): ${Object.entries(t.resonance || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not clear yet"}. Lean on the nearest support; for a dual element, acknowledge both sides and never tell them how to feel about it.`,
       `- light humour: ${t.humour === false ? "they don't want jokes, keep it sincere" : "a gentle touch is fine on good days only, never about their pain"}`,
+      `- this conversation continues a saved topic: ${t.resume ? `"${t.resume.title || "untitled"}" (${t.resume.conversations} earlier conversation(s)). Last main idea: ${t.resume.main_idea || "?"}. Key points so far: ${(t.resume.key_points || []).join(" | ")}. Perspectives already explored: ${(t.resume.insights || []).join(" | ") || "none yet"}. Their planned step: ${t.resume.step || "none"}. Build on this: look for a new angle instead of repeating earlier ones.` : "no (a new conversation)"}`,
+      `- value 7, the mood of speech: ${t.rasa ? `they are in ${t.rasa.name} (mood ${t.rasa.number} of 9, note ${t.rasa.note}, ${t.rasa.contour}); from their own pattern the next mood is most likely ${t.rasa.predicted.map((x) => x.mood + " " + Math.round(x.p * 100) + "%").join(", ")}. Meet them in their mood first, then let the reply move towards ${t.rasa.bridge} (note ${t.rasa.bridge_note}), on the way to ${t.rasa.target}. Never force it: if they sink further, stay with them. Don't mention moods, notes or numbers.` : "not read"}`,
+      `- the Conversation Vector: ${t.vector ? `from their voice and words the conversation is ${t.vector.alignment === null ? "just starting" : t.vector.alignment > 0.2 ? "moving towards a better place" : t.vector.alignment < -0.2 ? "moving away from a better place" : "holding steady"}; the move that helps most now: ${t.vector.move}: ${t.vector.say}. Let that shape the reply.` : "not read"}`,
+      `- value 19, the field of meaning: ${t.field ? `this statement settled on "${t.field.label}" (focus ${t.field.focus}) at the ${t.field.layer} layer, depth ${t.field.depth} (${t.field.tower}). ${t.field.layer === "knowledge" ? "It is already deep: don't push further, honour it." : t.field.layer === "information" ? "Take it one layer deeper, towards knowledge: what they'd want, what it tells them." : "Take it one layer deeper, towards meaning: what it means to them, how it felt."} One layer at a time, never at high distress.` : "not placed"}`,
+      `- the Truth Cloud (values 18 + 8), what is true about their situation from their own words, with how sure (T, 0 to 1): ${(t.cloud || []).join(" | ") || "nothing yet"}. Never say anything about their situation that contradicts it: never present someone as a help who weighs on them; say "it seems" when T is under 0.55, and don't claim anything under 0.35. If they ask about their own situation, answer from it and say it comes from their own words.`,
+      `- value 18's solution spiral: ${t.truth && t.truth.chain ? `their question "${t.truth.chain.question}" is ${t.truth.chain.P}% of the way to an answer; they've given: ${Object.entries(t.truth.chain.answered || {}).map(([k, v]) => k + " = " + v).join(" | ") || "nothing yet"}; this turn's link: ${t.truth.event}. Keep the draft's next link question (one link per turn on a low day; you may cover two on a good day). If they said they don't know, pass the answer one level up the chain of command (someone they trust, someone who knows the subject, a professional), never leave them empty-handed.` : "no open question"}`,
+      `- value 18 (truth) this turn: ${t.truth ? `${t.truth.kind} answer, T = ${t.truth.truth}${t.truth.parts && t.truth.parts.step ? `; the step that holds in every outcome: ${t.truth.parts.step}` : ""}${t.truth.source ? `; basis: ${t.truth.source}` : ""}` : "no question to answer"}`,
       `- their background and life story, IN THEIR OWN WORDS (only what they chose to share): ${Object.entries(t.story || {}).map(([k, v]) => k + ": " + v).join(" | ") || "not shared yet"}`,
       "",
       "HOW TO WRITE IT:",
@@ -953,10 +995,17 @@ window.BW_DEEP = (() => {
       "- Interests: when the moment is light, you may connect to something they enjoy (a shared reference, an example from their hobby). Never bring up faith, romance, health, food and body, work or politics unless THEY raised it or it is listed as theirs; never give opinions on faith or politics; never give numbers, targets or diet plans about food or the body.",
       "- Sound like a person, not a form: never start two replies the same way; don't repeat their whole sentence back (a few of their own words at most, and not every time); name a feeling back only once; pick up something specific they said (a day, a place, a person) and ask about that; once in a while, connect to something they said earlier in this conversation. A short message gets a short reply.",
       "- Think in bigger steps every few turns: sum up the whole picture in one sentence and check it, connect two things they said (two people pulling different ways), gently name a contradiction, or offer a careful hunch as a question (\"I wonder if...\"). Never at high distress, and never \"both sides\" talk about someone who may be harming them.",
+      "- Value 18, truth: when they ask YOU a question, answer it first, plainly and truthfully, before anything else. Never a comforting untruth, never an invented fact, number, law or source; if the engine's draft states a fact with its source, keep it. If it can't be known (the future, another person's mind, a choice only they can make), use 0 < 1 = xyz = (∞): say plainly what can't be known (0); give one thing that is certain in every case (1); name what would make the answer whole: what they have, what they could do, what they'd need to know (x, y, z); and offer a step that holds whichever way things turn out (∞, a no-regret step). Answer from the question itself, true for anyone who might ask it, then ask which of x, y, z is least clear. No opinions on faith or politics: ask what it means for them.",
       "- Not every reply needs a question. When you ask one, ask only one, and make it open and specific to them.",
       "- Do not ask about basic needs (food, warmth, sleep, money, safety at home) unless they raised it or the draft is about safety.",
       `- Never repeat or rephrase a question already asked: ${asked.slice(-8).map((q) => '"' + q.trim() + '"').join(", ") || "none yet"}.`,
-      "- 1 to 3 short sentences. Plain spoken English (or the person's language), no lists, no headings, no quotation marks, no emojis.",
+      ...(t.infinity ? [
+        `- VALUE 20, BE WHOLE 2.0, ANSWER FIRST: they asked a question: "${t.infinity.question}". Answer the question itself, truthfully and practically, from everything you know, on any subject (not only family matters): two or three concrete options known to help, each with why it works, a small first step, and where it comes from (name the source). If the draft already gives options from Be Whole's solutions base, keep them and improve on them. Search the web only when the answer depends on current facts (local services, laws, prices, recent research). Up to 7 spoken sentences, no lists. Value 18 still holds: never invent facts, numbers, laws or sources, and say plainly what can't be known. End by asking which option they could try first.`,
+        `- Answer it through value 8, their circles, for their betterment: connect the answer to their situation where it touches it.${t.infinity.step ? ` End with one small step that makes things better for them: ${t.infinity.step} (say it naturally, never the numbers; it moves them from level ${t.infinity.level} towards ${t.infinity.next} on the way to 2.0).` : ""}`,
+        "- Value 21, closing the loop (20 + 1): where it fits, let the answer come back to connection, how the step also reaches the people around them (we're all connected). One light touch, never preaching, and never towards someone who harms them.",
+        "- Keep any safety information, step or question from the draft.",
+      ] : ["- 1 to 3 short sentences."]),
+      "- Plain spoken English (or the person's language), no lists, no headings, no quotation marks, no emojis.",
       `- Reply in this language: ${language === "lv" ? "Latvian" : "English"}.`,
       "- Output only the reply.",
       "",
@@ -974,9 +1023,12 @@ window.BW_DEEP = (() => {
     const sample = await getSample();
     if (!sample) return out.reply;
     try {
-      const { text } = await sample(prompt(userText, out, language), { cache: false });
+      const q = !!(t.infinity);   // value 20: a posed question gets room for a full answer
+      const { text } = await sample(prompt(userText, out, language), { cache: false, maxTokens: q ? 800 : 350, search: q });
       const reply = String(text || "").replace(/^\s*Be Whole:\s*/i, "").replace(/^["“]|["”]$/g, "").trim();
-      return reply.length > 3 && reply.length < 900 ? reply : out.reply;
+      // a cut-off reply ("It's") is never shown: it must be a whole sentence
+      const whole = reply.length >= 12 && /[.!?…)"”']$/.test(reply);
+      return whole && reply.length < (q ? 2000 : 900) ? reply : out.reply;
     } catch (e) {
       if (e && (e.code === "not_granted" || e.status === 401)) blocked = true;   // no consent, or the key was refused
       return out.reply;
@@ -1020,7 +1072,7 @@ window.BW_DEEP = (() => {
       try {
         const s = keySample();
         const { text } = await s("Reply with just the word: ready");
-        $("key-note").textContent = text ? "Connected. Deeper replies are on." : "Saved.";
+        $("key-note").textContent = text ? "Connected. Be Whole 2.0 is on: deeper replies, and any question answered in full." : "Saved.";
         setOn(true);
       } catch (e) {
         $("key-note").textContent = "That key didn't work (" + e.message + "). Check it and try again.";
@@ -1047,7 +1099,9 @@ window.BW_DEEP = (() => {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountSwitch); else mountSwitch();
 
-  return { reset, record, rewrite };
+  // Value 20: which level this app runs at (2.0 when Claude can be reached and deeper replies are on)
+  async function level() { return on() && !blocked && (await getSample()) ? "2.0" : "1.0"; }
+  return { reset, record, rewrite, level };
 })();
 </script>
 <script>
@@ -1063,9 +1117,10 @@ let speakOn = store.get("bw-speak") !== "off";
 let baselineHz = null;
 
 let current = "s-start";
+let talking = false;   // a conversation is open
 function show(id) {
   for (const s of document.querySelectorAll(".screen")) s.hidden = s.id !== id;
-  if (!["s-options", "s-profile", "s-know", "s-story"].includes(id)) current = id;
+  if (!["s-options", "s-profile", "s-know", "s-story", "s-services"].includes(id)) current = id;
   paintHead(id);
 }
 function who() { return ($("name") && $("name").value.trim()) || store.get("bw-name") || ""; }
@@ -1141,16 +1196,18 @@ $("pair-btn").onclick = async () => {
 
 /* ---------- start ---------- */
 $("start-btn").onclick = startSession;
-async function startSession() {
+async function startSession(resumeId) {
   $("start-err").textContent = "";
   const consents = {};
   for (const c of document.querySelectorAll("[data-c]")) consents[c.dataset.c] = c.checked;
   const name = $("name").value.trim();
   store.set("bw-name", name);
   try {
-    const d = await api("/api/start", { name, consents: store.get("bw-consented-4") ? null : consents });
+    const d = await api("/api/start", Object.assign({ name, consents: store.get("bw-consented-4") ? null : consents },
+                                                    typeof resumeId === "string" ? { continue: resumeId } : {}));
     store.set("bw-consented-4", "1");
     baselineHz = d.baseline_hz;
+    talking = true;
     $("log").innerHTML = "";
     show("s-talk");
     say(d.reply);
@@ -1408,6 +1465,7 @@ $("memo").onchange = (e) => { const f = e.target.files && e.target.files[0]; e.t
 $("end-btn").onclick = async () => {
   try {
     const d = await api("/api/end");
+    talking = false;
     say(d.message, false, 1 + (d.voice_style ? d.voice_style.pitch_shift * 2 : 0), d.melody);
     setTimeout(() => report(d), 400);
   } catch (e) { say(e.message, true); }
@@ -1441,6 +1499,9 @@ function report(d) {
     : "Please reach out to one of the support lines today.";
   const recs = $("recs"); recs.innerHTML = "";
   if (d.breakdown) { const li = document.createElement("li"); li.innerHTML = `<b>What we talked about</b>` + breakdownHTML(d.breakdown); recs.append(li); }
+  if (d.vector && d.vector.path) { const li = document.createElement("li"); li.innerHTML = `<b>The direction of today's conversation</b>` + vectorSVG(d.vector); recs.append(li); }
+  if (d.moods && d.moods.path) { const li = document.createElement("li"); li.innerHTML = `<b>The notes of today's conversation</b><span style="font-size:15px">${escT(d.moods.path)}</span><br><small style="color:var(--ink-soft)">Each mood of speech has its note: Sa is peace, the home note.</small>`; recs.append(li); }
+  if (d.loop) { const li = document.createElement("li"); li.innerHTML = `<b>Your 21 dimensions, as one loop</b>` + loopSVG(d.loop); recs.append(li); }
   const item = (label, html) => { const li = document.createElement("li"); li.innerHTML = `<b>${label}</b>`; const s = document.createElement("span"); s.innerHTML = html; li.append(s); recs.append(li); };
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   if (d.coherence && d.coherence.process !== "listen") {
@@ -1544,6 +1605,51 @@ for (const b of document.querySelectorAll("[data-rate]")) b.onclick = async () =
         : ` ${Math.max(0, 5 - r.ratings)} more answer${5 - r.ratings === 1 ? "" : "s"} and I'll start tuning myself to you.`);
   } catch (e) { $("rate-note").textContent = e.message; }
 };
+function whyHTML(w) {
+  // Why I said this: what each principle read, what it predicted, and the action it chose
+  const part = (title, items) => items && items.length ? `<div class="why-part"><b>${title}</b>` + items.map((x) =>
+    `<p><span class="why-v">${escT(String(x.value))}</span> <span class="why-t">${escT(x.title)}:</span> ${escT(x.text)}</p>`).join("") + `</div>` : "";
+  return part("What I read", w.read) + part("What I expected next", w.predict) + part("What I chose", w.act);
+}
+function vectorSVG(v) {
+  // The Conversation Vector: the path on the circle of moods (left unpleasant, right pleasant; low calm, high stirred)
+  const W = 300, H = 210, X = (x) => 30 + (x + 1) / 2 * 240, Y = (a) => 180 - a * 160;
+  let out = `<rect x="30" y="20" width="240" height="160" rx="10" fill="none" stroke="var(--line)"/>` +
+    `<line x1="150" y1="20" x2="150" y2="180" stroke="var(--line)" stroke-dasharray="2 4"/>` +
+    `<line x1="30" y1="${Y(0.3)}" x2="270" y2="${Y(0.3)}" stroke="var(--line)" stroke-dasharray="2 4"/>` +
+    `<text x="34" y="196" font-size="9" fill="var(--ink-soft)">harder</text><text x="266" y="196" font-size="9" text-anchor="end" fill="var(--ink-soft)">better</text>` +
+    `<text x="26" y="28" font-size="9" text-anchor="end" fill="var(--ink-soft)">stirred</text><text x="26" y="${Y(0.3) + 3}" font-size="9" text-anchor="end" fill="var(--ink-soft)">calm</text>`;
+  const pts = v.path.map((p) => [X(p[0]), Y(p[1])]);
+  out += `<polyline points="${pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")}" fill="none" stroke="var(--calm)" stroke-width="1.8" stroke-linejoin="round"/>`;
+  out += pts.map((p, i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i === pts.length - 1 ? 4.5 : 3}" fill="var(--calm)" opacity="${0.4 + 0.6 * (i + 1) / pts.length}"/>`).join("");
+  const g = [X(v.goal[0]), Y(v.goal[1])];
+  out += `<path d="M${g[0]} ${g[1] - 7}l2 5 5 0-4 3 2 5-5-3-5 3 2-5-4-3 5 0z" fill="var(--high)"/>`;
+  const pc = (x) => Math.round(x * 100) + "%";
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:320px;display:block;margin:6px auto" role="img" aria-label="The direction of today's conversation">${out}</svg>` +
+    `<p style="margin:4px 0;font-size:15px">${v.towards === null ? "" : `Moving towards a better place in <strong>${pc(v.towards)}</strong> of the turns. `}` +
+    `${v.closer > 0.02 ? "You ended closer to it than you began." : v.closer < -0.02 ? "Today pulled further from it, and that's alright: some days are like that." : "You held steady today."}</p>` +
+    `<p style="margin:4px 0;font-size:13px;color:var(--ink-soft)">Each dot is one thing you said, placed by your voice and words. The star is where the conversation was heading: a calmer, better place, a little deeper.</p>`;
+}
+function loopSVG(l) {
+  // Value 21: every value's reading as one closed loop around a circle (a perfect loop is an even circle)
+  const C = 150, R = 104, pts = [], out = [];
+  const ang = (i) => -Math.PI / 2 + 2 * Math.PI * (i - 1) / 21;
+  for (let i = 1; i <= 21; i++) {
+    const a = ang(i), v = l.dims[String(i)];
+    out.push(`<line x1="${C}" y1="${C}" x2="${(C + R * Math.cos(a)).toFixed(1)}" y2="${(C + R * Math.sin(a)).toFixed(1)}" stroke="var(--line)"/>`);
+    out.push(`<text x="${(C + (R + 14) * Math.cos(a)).toFixed(1)}" y="${(C + (R + 14) * Math.sin(a) + 3).toFixed(1)}" text-anchor="middle" font-size="9" fill="${i === 21 ? "var(--calm)" : "var(--ink-soft)"}" font-weight="${i === 21 || i === l.weakest.value ? 700 : 400}">${i}</text>`);
+    if (v !== null && v !== undefined) pts.push([C + R * v * Math.cos(a), C + R * v * Math.sin(a), i]);
+  }
+  out.unshift(`<circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="var(--line)"/><circle cx="${C}" cy="${C}" r="${R * l.radius}" fill="none" stroke="var(--calm)" stroke-dasharray="3 3" opacity=".6"/>`);
+  out.push(`<polygon points="${pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")}" fill="var(--calm)" fill-opacity=".15" stroke="var(--calm)" stroke-width="1.6"/>`);
+  out.push(pts.map((p) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${p[2] === l.weakest.value ? 4 : 2.5}" fill="${p[2] === l.weakest.value ? "var(--high)" : "var(--calm)"}"/>`).join(""));
+  const pc = (x) => Math.round(x * 100) + "%";
+  return `<svg viewBox="0 0 300 300" style="width:100%;max-width:300px;display:block;margin:6px auto" role="img" aria-label="Your 21 dimensions as one closed loop">${out.join("")}</svg>` +
+    `<p style="margin:4px 0;font-size:15px">How closed the loop is: <strong>${pc(l.closure)}</strong> (every value working: ${pc(l.completeness)}, evenly: ${pc(l.evenness)}). How far out it sits: ${pc(l.radius)}.</p>` +
+    `<p style="margin:4px 0;font-size:15px">The weakest link today: <strong>${escT(l.weakest.name)}</strong> (value ${l.weakest.value}). ` +
+    (l.missing.length ? `Not part of today's loop yet: ${escT(l.missing.join(", "))}.` : "Every value took part today.") + `</p>` +
+    `<p style="margin:4px 0;font-size:13px;color:var(--ink-soft)">Value 21 is where Infinity (20) comes back to Foundation (1): whatever you gain returns to connection. A perfect loop is an even circle. It's a picture of today's conversation, never a score of you.</p>`;
+}
 function breakdownHTML(b) {
   // the main idea of the talk, and how it unfolded (all from the person's own words)
   if (!b) return "";
@@ -1557,7 +1663,9 @@ function breakdownHTML(b) {
     li("Mood", escT(b.arc)) +
     li("How far we went", escT(b.depth)) +
     li("Your step", b.step ? escT(b.step) + (b.when ? " (" + escT(b.when) + ")" : "") : "") +
-    li("Still open", b.open_thread ? escT(b.open_thread) : "") + `</ul>`;
+    li("Still open", b.open_thread ? escT(b.open_thread) : "") +
+    li("Where it settled", b.field && b.field.places ? b.field.places.slice(0, 3).map((p) => escT(p.label.replace(/^your /, ""))).join(", ") : "") +
+    li("The deepest thing you said", b.field && b.field.deepest ? `“${escT(b.field.deepest.text)}” <small style="color:var(--ink-soft)">(${escT(b.field.deepest.layer)}, depth ${b.field.deepest.depth})</small>` : "") + `</ul>`;
 }
 function drawVision(v) {
   // Value 16: the light broken into Maslow colours (bars = reality, dashed = Planck potential),
@@ -1644,7 +1752,7 @@ function drawSpiral(c, v, aura) {
     `Turn ${c.cycle} of your spiral: ${ch > 0 ? "further out and higher up" : ch < 0 ? "pulled in a little, height kept" : "steady and rising"}.`) +
     " Outward is distance from the low notes; upward is the good you've built.";
 }
-$("again-btn").onclick = startSession;
+$("again-btn").onclick = () => startSession();
 $("fb-btn").onclick = async () => {
   const t = $("fb-text").value.trim();
   if (!t) return;
@@ -1791,6 +1899,42 @@ function setTab(t) {
 }
 $("tab-conv").onclick = () => setTab("conv");
 $("tab-ins").onclick = () => setTab("ins");
+/* ---------- Services: offered, never imposed ---------- */
+const SERVICES = [
+  { group: "Any time, day or night (UK)", items: [
+    { name: "Samaritans", for: "Someone to talk to about anything, without judgement. Free.", num: "116 123", hours: "24/7" },
+    { name: "Shout", for: "The same kind of support by text message, if talking out loud is hard.", num: "85258", text: "Text SHOUT to", hours: "24/7" },
+    { name: "NHS 111", for: "Urgent health questions, including your mental health.", num: "111", hours: "24/7" },
+    { name: "Emergency services", for: "If you or someone else is in immediate danger.", num: "999", hours: "24/7" } ] },
+  { group: "Home and relationships (UK)", items: [
+    { name: "National Domestic Abuse Helpline (Refuge)", for: "If someone at home hurts, frightens or controls you. Free and confidential.", num: "0808 2000 247", hours: "24/7" },
+    { name: "Men's Advice Line (Respect)", for: "For men experiencing domestic abuse.", num: "0808 801 0327" },
+    { name: "Relate", for: "Counselling for couples, families and separated parents.", web: "relate.org.uk" } ] },
+  { group: "Separation, children and money (UK)", items: [
+    { name: "Citizens Advice", for: "Free advice on separation, housing, money and your rights.", num: "0800 144 8848", hours: "weekdays, England" },
+    { name: "Family Mediation Council", for: "Find a mediator, and the £500 voucher towards mediation about children.", web: "familymediationcouncil.org.uk" } ] },
+  { group: "Your health (UK)", items: [
+    { name: "Your GP", for: "Your own doctor, for how you're sleeping, feeling or coping." },
+    { name: "NHS Talking Therapies", for: "Counselling and CBT in England. You can refer yourself, no GP needed.", web: "nhs.uk/talk" } ] },
+  { group: "Latvia", items: [
+    { name: "Skalbes", for: "Krīžu un konsultāciju centrs: someone to talk to, any time.", num: "116 123", hours: "24/7" },
+    { name: "Atbalsta tālrunis cietušajiem", for: "Support for people harmed by violence.", num: "116 006", hours: "12:00-22:00" },
+    { name: "Neatliekamā palīdzība", for: "Emergency services.", num: "112", hours: "24/7" } ] },
+];
+function renderServices() {
+  $("svc-list").innerHTML = SERVICES.map((g) => `<div class="card"><h3>${escT(g.group)}</h3><ul class="kept">` + g.items.map((x, i) =>
+    `<li style="display:block"><span style="color:var(--ink);font-weight:600">${escT(x.name)}</span>${x.hours ? ` <small style="color:var(--ink-soft)">${escT(x.hours)}</small>` : ""}` +
+    `<br><span style="font-size:13px">${escT(x.for)}</span>` +
+    (x.num ? `<div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap"><span style="font-size:17px;font-weight:600;user-select:all;-webkit-user-select:all">${x.text ? escT(x.text) + " " : ""}${escT(x.num)}</span>` +
+      `<button class="secondary svc-copy" data-num="${escT(x.num)}" style="width:auto;margin:0;padding:6px 12px;font-size:14px">Copy</button>` +
+      (x.text ? "" : `<a href="tel:${x.num.replace(/\s/g, "")}" style="color:var(--calm);font-size:14px">Call</a>`) + `</div>` : "") +
+    (x.web ? `<div style="margin-top:4px"><a href="https://${x.web}" target="_blank" rel="noopener" style="color:var(--calm);font-size:14px">${escT(x.web)}</a></div>` : "") +
+    `</li>`).join("") + `</ul></div>`).join("");
+  for (const b of document.querySelectorAll(".svc-copy")) b.onclick = async () => {
+    try { await navigator.clipboard.writeText(b.dataset.num); b.textContent = "Copied"; } catch { b.textContent = "Select the number to copy"; }
+  };
+}
+$("services-btn").onclick = () => { renderServices(); show("s-services"); $("s-services").scrollTop = 0; };
 $("options-btn").onclick = () => { $("opt-err").textContent = ""; show("s-options"); setTab(optTab); };
 for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => show(current);
 async function loadConversations() {
@@ -1798,15 +1942,21 @@ async function loadConversations() {
   try {
     const d = await api("/api/insights/conversations", { name: who() });
     const list = d.conversations || [];
-    $("conv-list").innerHTML = list.length ? list.map((c) =>
+    const saved = list.filter((c) => c.saved);
+    const topicsHTML = saved.length ? `<h3 class="know-h2" style="font-size:19px;margin:4px 0 8px">Saved topics</h3>` + saved.map((c) =>
+      `<button class="conv" data-i="${escT(c.i)}" style="border-color:var(--calm)"><span class="when"><span>★ ${escT(c.saved)}</span>` +
+      `<span>${c.thread} conversation${c.thread === 1 ? "" : "s"}</span></span><span class="sum">${escT(c.summary || "")}</span></button>`).join("") +
+      `<h3 class="know-h2" style="font-size:19px;margin:14px 0 8px">All conversations</h3>` : "";
+    $("conv-list").innerHTML = topicsHTML + (list.length ? list.map((c) =>
       `<button class="conv" data-i="${c.i}"><span class="when"><span>${escT(niceDate(c.started))}</span><span>${c.lines} lines${c.finished ? "" : " · open"}</span></span>` +
       `<span class="sum">${escT(c.summary || "A short conversation")}</span>` +
       (c.topic ? `<span class="chips"><span>${escT(c.topic)}</span></span>` : "") +
       (c.mood.length ? `<span class="moodline" aria-label="Mood through the conversation">${c.mood.map((m) => `<span class="dot ${TONE_CLASS[m] || ""}" title="${escT(m)}"></span>`).join("")}</span>` : "") +
+      (c.continues ? `<span class="next">↻ continues a saved topic</span>` : "") +
       (c.next && c.next.question ? `<span class="next">Next time: ${escT(c.next.question)}</span>` : "") + `</button>`).join("")
       : `<p class="empty">${d.allowed ? "No saved conversations yet. Talk with me and they'll appear here." :
-          "Conversations aren't being saved. Turn on \"Remember our conversations as text\" in your profile to keep them."}</p>`;
-    for (const b of document.querySelectorAll(".conv")) b.onclick = () => openConversation(+b.dataset.i);
+          "Conversations aren't being saved. Turn on \"Remember our conversations as text\" in your profile to keep them."}</p>`);
+    for (const b of document.querySelectorAll(".conv")) b.onclick = () => openConversation(b.dataset.i);
   } catch (e) { $("opt-err").textContent = e.message; }
 }
 async function openConversation(i) {
@@ -1814,9 +1964,47 @@ async function openConversation(i) {
     const c = await api("/api/insights/conversation", { name: who(), i });
     $("conv-list").hidden = true; $("conv-detail").hidden = false;
     $("conv-when").textContent = niceDate(c.started);
-    $("conv-lines").innerHTML = c.lines.map((l) => `<div class="line ${l.who}">${escT(l.text)}` +
-      (l.who === "person" && l.mood ? `<small>${escT(l.time)} · ${escT(l.mood)}</small>` : l.time ? `<small>${escT(l.time)}</small>` : "") + `</div>`).join("");
+    $("conv-lines").innerHTML = c.lines.map((l, i) => `<div class="line ${l.who}">${escT(l.text)}` +
+      (l.who === "person" && l.mood ? `<small>${escT(l.time)} · ${escT(l.mood)}</small>` : l.time ? `<small>${escT(l.time)}</small>` : "") +
+      (l.why ? `<button class="why-btn" data-w="${i}" aria-expanded="false">Why I said this</button><div class="why" id="why-${i}" hidden>${whyHTML(l.why)}</div>` : "") +
+      `</div>`).join("");
+    for (const b of document.querySelectorAll(".why-btn")) b.onclick = () => {
+      const box = $("why-" + b.dataset.w), open = box.hidden;
+      box.hidden = !open; b.setAttribute("aria-expanded", String(open)); b.textContent = open ? "Hide why" : "Why I said this";
+    };
     $("conv-when").innerHTML = escT(niceDate(c.started)) + (c.end && c.end.breakdown ? `<div class="card" style="margin-top:8px"><h3>What we talked about</h3>${breakdownHTML(c.end.breakdown)}</div>` : "");
+    // keep it as a topic, carry it on, copy or save it
+    const bd = (c.end && c.end.breakdown) || {};
+    const title = c.saved || (bd.topic ? bd.topic.replace(/^your /, "").replace(/^./, (x) => x.toUpperCase()) : "") || "";
+    const dev = (c.development || []).length > 1 ? `<div class="card"><h3>How this topic has developed</h3>` +
+      c.development.map((d) => `<p style="color:var(--ink);margin:6px 0 2px"><b>${escT(niceDate(d.started))}</b>: ${escT(d.main_idea || "")}</p>` +
+        (d.step ? `<p>Step: ${escT(d.step)}</p>` : "") + (d.insights || []).map((x) => `<p>• ${escT(x)}</p>`).join("")).join("") + `</div>` : "";
+    $("conv-actions").innerHTML = (c.saved
+        ? `<p class="note" style="margin:0 0 6px">★ Saved topic: <b>${escT(c.saved)}</b></p>`
+        : `<div style="display:flex;gap:8px"><input class="text" id="topic-title" maxlength="80" value="${escT(title)}" placeholder="Name this topic" style="font-size:15px;padding:10px 12px">` +
+          `<button class="secondary" id="topic-save" style="margin:0;width:auto;padding:10px 14px;white-space:nowrap">★ Save topic</button></div>`) +
+      `<button class="primary" id="topic-continue" style="margin-top:8px">Continue this topic</button>` +
+      `<div style="display:flex;gap:8px"><button class="secondary" id="conv-copy">Copy text</button><button class="secondary" id="conv-file">Save as file</button></div>` +
+      (c.saved ? `<button class="secondary" id="topic-remove" style="margin-top:6px">Remove from saved topics</button>` : "") + dev;
+    const rid = c.root || c.i;
+    const ts = $("topic-save"); if (ts) ts.onclick = async () => {
+      try { await api("/api/insights/save_topic", { name: who(), i: c.i, title: $("topic-title").value.trim() || title || "My topic" }); openConversation(c.i); }
+      catch (e) { $("opt-err").textContent = e.message; } };
+    const tr = $("topic-remove"); if (tr) tr.onclick = async () => { await api("/api/insights/save_topic", { name: who(), i: rid, title: "" }); openConversation(c.i); };
+    $("topic-continue").onclick = async () => {
+      if (talking) { try { await api("/api/end"); } catch {} talking = false; }   // close the open conversation first
+      await startSession(rid);
+    };
+    $("conv-copy").onclick = async () => {
+      try { await navigator.clipboard.writeText(c.text); $("conv-copy").textContent = "Copied"; }
+      catch { $("conv-copy").textContent = "Couldn't copy here"; }
+    };
+    $("conv-file").onclick = () => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([c.text], { type: "text/plain" }));
+      a.download = `Be Whole ${c.started.slice(0, 10)}${c.saved ? " - " + c.saved.replace(/[^\w -]/g, "") : ""}.txt`;
+      document.body.append(a); a.click(); a.remove();
+    };
     const n = c.end && c.end.next;
     $("conv-next").hidden = !(n && n.question);
     if (n && n.question) $("conv-next").innerHTML = `<h3>Note for next time</h3>${n.note ? `<p>${escT(n.note)}</p>` : ""}<p><i>${escT(n.question)}</i></p>`;
@@ -1857,6 +2045,23 @@ async function loadInsights() {
     } catch {}
     if (d.resonance && d.resonance.elements && d.resonance.elements.length) html += card("Your circles", resonanceSVG(d.resonance) + `<p>${resonanceText(d.resonance)}</p>`,
       "Each dot is something in your life you've talked about, on the circle where it sits. It changes as you tell me more.");
+    {   // Value 20: Be Whole 2.0, and the person's path towards 2.0
+      let lvl = "1.0";
+      try { if (window.BW_DEEP && window.BW_DEEP.level) lvl = await window.BW_DEEP.level(); } catch {}
+      const inf = d.infinity;
+      const mode = lvl === "2.0" ? "<b>Be Whole 2.0 is on.</b> Claude is connected, so any question you ask is answered in full, through what you've told me about your life."
+        : "<b>Be Whole is at 1.0.</b> It answers from its own rules and facts. Add your Claude key in the start screen for 2.0, where any question is answered in full.";
+      const bar = (v) => `<div class="layer-row"><span>${v.toFixed(2)}</span><div class="bar"><span style="width:${Math.round((v - 1) * 100)}%"></span></div><span>2.0</span></div>`;
+      html += card("Towards 2.0", `<p style="color:var(--ink);font-size:14px;margin:0 0 8px">${mode}</p>` +
+        (inf ? `<p style="margin:0 0 4px">Your level now (1.0 = everything weighs, 2.0 = everything supports you):</p>${bar(inf.level)}` +
+          (inf.step ? `<p style="color:var(--ink);margin:8px 0 2px">The step that would lift it most: <b>${escT(inf.step)}</b>.</p>` : "") +
+          `<p>Each small step closes about 38% of what's left: ${inf.path.slice(0, 5).map((v) => v.toFixed(2)).join(" → ")} → 2.0</p>` : ""),
+        "2.0 is a direction, never a grade. It's worked out only from what you've told me about who and what helps or weighs on you.");
+    }
+    if (d.cloud && d.cloud.length) html += card("What I know to be true", `<ul class="kept">${d.cloud.map((c) =>
+      `<li><span>${escT(c.said)}<br><small style="color:var(--ink-soft)">from ${c.statements} thing${c.statements === 1 ? "" : "s"} you said</small></span>` +
+      `<b style="min-width:3.2em;text-align:right">${Math.round(c.T * 100)}%</b></li>`).join("")}</ul>`,
+      "How sure I am of each, from your own words only (100% = certain). Nothing is guessed: tell me if any of it is wrong.");
     if (d.interests && d.interests.length) html += card("What you enjoy", `<ul class="kept">${d.interests.map((i) =>
       `<li><span>${escT(i.label)}${i.said ? `<br><small style="color:var(--ink-soft)">"${escT(i.said)}"</small>` : ""}</span><b>${i.state === "yes" ? "chosen" : "noticed " + i.noticed + "×"}</b></li>`).join("")}</ul>`,
       "I use these to make our chats about things you like, on good days. Change them in your profile.");
@@ -1932,7 +2137,7 @@ function paintVoice() {
 $("pf-voice").onchange = () => { $("pf-voice").value ? store.set("bw-voice", $("pf-voice").value) : store.del("bw-voice"); speak("Hello, this is how I'll sound.", 1, null, 0.96, true); };
 $("pf-rate").oninput = () => { store.set("bw-rate", $("pf-rate").value); paintVoice(); };
 $("pf-rate").onchange = () => speak("Hello, this is how I'll sound.", 1, null, 0.96, true);
-$("pf-hear").onclick = () => speak("Hello. I'm here to listen, not to judge. Samaritans are on 116 123, any time.", 1, null, 0.96, true);
+$("pf-hear").onclick = () => speak("Hello. I'm here to listen, not to judge. Take your time.", 1, null, 0.96, true);
 $("pf-exit").onchange = () => store.set("bw-exit-url", $("pf-exit").value);
 $("pf-quiet").onchange = () => { store.set("bw-quiet", $("pf-quiet").checked ? "on" : "off"); paintQuiet(); };
 $("pf-pause").onchange = () => store.set("bw-pause", $("pf-pause").value);
