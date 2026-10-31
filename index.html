@@ -6,11 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Be Whole 48">
+<meta name="apple-mobile-web-app-title" content="Be Whole 50">
 <meta name="theme-color" content="#14231f">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>Be Whole 48</title>
+<title>Be Whole 50</title>
 <style>
 :root {
   --bg: #14231f;
@@ -324,7 +324,7 @@ body { padding-top: 0 !important; }
 <header>
   <div class="mark">
     <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="var(--calm)" stroke-width="2.5"/><circle cx="13" cy="13" r="5" fill="var(--calm)"/></svg>
-    Be Whole 48<span class="test-badge">TEST</span>
+    Be Whole 50<span class="test-badge">TEST</span>
   </div>
   <div class="head-actions">
     <button class="icon-btn" id="voice-toggle" aria-pressed="true" aria-label="Read replies aloud: on" title="Read replies aloud"></button>
@@ -427,7 +427,7 @@ body { padding-top: 0 !important; }
     <button class="secondary" id="know-btn">Get to know me first (optional, 3 minutes)</button>
     <button class="secondary" id="demo-btn" hidden>Use the demo person "Tester" (3 past conversations)</button>
     <p class="error" id="start-err" role="alert"></p>
-    <p class="note" style="text-align:center;margin-top:8px">Be Whole version 0.48.0-test</p>
+    <p class="note" style="text-align:center;margin-top:8px">Be Whole version 0.50.0-test</p>
   </section>
 
   <!-- 3. conversation -->
@@ -556,7 +556,7 @@ body { padding-top: 0 !important; }
         <select class="text" id="pf-exit" style="font-size:16px;padding:10px 12px"></select></label>
       <p>Choose a page that looks ordinary for you. Your conversations stay saved; open Be Whole again to come back.</p></div>
     <p class="note">Services (♡ at the top) lists people you can talk to, whenever you choose.</p>
-    <p class="note" style="text-align:center">Be Whole version 0.48.0-test</p>
+    <p class="note" style="text-align:center">Be Whole version 0.50.0-test</p>
     <p class="error" id="pf-err" role="alert"></p>
   </section>
 </main>
@@ -1112,6 +1112,7 @@ window.BW_DEEP = (() => {
       $("local-go").textContent = L.ready() ? "Remove the model from this phone" : L.wanted() ? "Load the reply model" : "Download the reply model";
       if (msg !== undefined) $("local-note").textContent = msg;
       else if (!L.supported()) $("local-note").textContent = "This browser can't run it yet. It needs Safari on iOS 26 or newer (or a recent desktop browser).";
+      else if (L.crashed && L.crashed()) $("local-note").textContent = "Last time the model was too big for this phone's free memory, so the page was closed. Close other apps and try once more, or keep the basic replies.";
       else if (L.ready()) $("local-note").textContent = "Ready: replies are written on this phone (" + L.model() + ").";
       else $("local-note").textContent = "";
       $("local-go").disabled = !L.supported();
@@ -1170,7 +1171,11 @@ window.BW_PHONE_LLM = (() => {
   "use strict";
   const LIB = window.BW_WEBLLM_URL || "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.83/+esm";
   // best first: Llama 3.2 1B (about 880 MB of GPU memory), then Qwen2.5 0.5B
-  const PREFS = ["Llama-3.2-1B-Instruct-q4f16_1-MLC", "Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Qwen2.5-0.5B-Instruct-q4f32_1-MLC"];
+  // On iPhone and iPad memory is tight (Safari closes a page that uses too much), so the smallest model comes first.
+  const MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+  const PREFS = MOBILE ? ["Qwen2.5-0.5B-Instruct-q4f16_1-MLC", "Llama-3.2-1B-Instruct-q4f16_1-MLC"]
+                       : ["Llama-3.2-1B-Instruct-q4f16_1-MLC", "Qwen2.5-0.5B-Instruct-q4f16_1-MLC"];
+  const CHAT = { context_window_size: 1024 };   // a short memory window keeps the model's working memory small
   const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
                set(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   let engine = null, loading = null, model = null, failed = null;
@@ -1183,6 +1188,8 @@ window.BW_PHONE_LLM = (() => {
     if (engine) return engine;
     if (loading) return loading;
     if (!supported()) { failed = "no-webgpu"; throw new Error("no-webgpu"); }
+    // crash guard: mark the attempt; if the page is closed by the phone while loading, the next visit sees the mark
+    ls.set("bw-local-attempt", String(Date.now()));
     loading = (async () => {
       const lib = await import(LIB);
       const ids = new Set(((lib.prebuiltAppConfig || {}).model_list || []).map((m) => m.model_id));
@@ -1190,12 +1197,13 @@ window.BW_PHONE_LLM = (() => {
       let lastErr = null;
       for (const id of order) {
         try {
-          engine = await lib.CreateMLCEngine(id, { initProgressCallback: (r) => progress && progress(r) });
-          model = id; failed = null; ls.set("bw-local", "on");
+          engine = await lib.CreateMLCEngine(id, { initProgressCallback: (r) => progress && progress(r) }, CHAT);
+          model = id; failed = null; ls.set("bw-local", "on"); ls.set("bw-local-ok", id); ls.set("bw-local-attempt", null);
           return engine;
         } catch (e) { lastErr = e; engine = null; }   // too big for this phone: try the next, smaller one
       }
       failed = String(lastErr && lastErr.message || lastErr || "load failed");
+      ls.set("bw-local-attempt", null);
       throw lastErr || new Error("load failed");
     })();
     try { return await loading; } finally { loading = null; }
@@ -1244,10 +1252,13 @@ window.BW_PHONE_LLM = (() => {
     return text;
   }
 
-  // start loading in the background if it was switched on before (from the phone's storage, no new download)
-  if (wanted() && supported()) setTimeout(() => load().catch(() => {}), 4000);
+  // A load that never finished means the phone closed the page (out of memory): never try again on its own.
+  let crashed = false;
+  if (ls.get("bw-local-attempt")) { crashed = true; ls.set("bw-local-attempt", null); ls.set("bw-local", null); ls.set("bw-local-ok", null); }
+  // Load in the background at start only after a load has once finished on this phone, and never after a crash.
+  if (!crashed && wanted() && ls.get("bw-local-ok") && supported()) setTimeout(() => load().catch(() => {}), 6000);
 
-  return { supported, wanted, ready, load, forget, write, model: () => model, failed: () => failed };
+  return { supported, wanted, ready, load, forget, write, model: () => model, failed: () => failed, crashed: () => crashed };
 })();
 </script>
 <script>
@@ -2074,6 +2085,8 @@ const SERVICES = [
     { name: "Family Mediation Council", for: "Find a mediator, and the £500 voucher towards mediation about children.", web: "familymediationcouncil.org.uk" } ] },
   { group: "Your health (UK)", items: [
     { name: "Your GP", for: "Your own doctor, for how you're sleeping, feeling or coping." },
+    { name: "FRANK", for: "Honest, non-judgemental advice about drugs. Free and confidential.", num: "0300 123 6600", hours: "24/7, or text 82111" },
+    { name: "Drinkline", for: "Free, confidential advice if you're worried about drinking.", num: "0300 123 1110", hours: "weekdays 9am-8pm, weekends 11am-4pm" },
     { name: "NHS Talking Therapies", for: "Counselling and CBT in England. You can refer yourself, no GP needed.", web: "nhs.uk/talk" } ] },
   { group: "Latvia", items: [
     { name: "Skalbes", for: "Krīžu un konsultāciju centrs: someone to talk to, any time.", num: "116 123", hours: "24/7" },
